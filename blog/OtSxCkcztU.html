@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>H5播放视频（一）H5播放.m3u8视频src 为blob - 我是程序员</title>
+        <meta name="keywords" content="blob播放视频,视频切割,.m3u8格式视频">
+        <meta name="description" content="H5播放视频 src为blob，播放.m3u8视频 ，播放视频切片，防止下载">
+
+    <link rel="stylesheet" href="../resource/static/plugin/highlight/styles/github.min.css">
+    <link rel="stylesheet" href="../resource/static/plugin/viewer/viewer.min.css">
+    <script src="../resource/static/plugin/highlight/highlight.min.js"></script>
+    <script src="../resource/static/plugin/jquery/jquery.min.js"></script>
+    <script src="../resource/static/plugin/viewer/viewer-jquery.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <link rel="stylesheet" href="../resource/static/css/blog.detail.css">
+    <script>
+        $(document).ready(function (e) {
+            createToc();
+            $("#content").viewer({
+                navbar: false
+            });
+
+            $("#content a").each(function (index, element) {
+                $(element).attr("target", "_blank");
+            })
+        });
+
+        function createToc() {
+            let hCount = 0;
+            $("#content").children().each(function (index, element) {
+                var tagName = $(this).get(0).tagName;
+                if (tagName.substr(0, 1).toUpperCase() == "H") {
+                    hCount++;
+                    var contentH = $(this).text();//获取内容
+                    var markid = "mark-" + tagName + "-" + index.toString();
+                    $(this).attr("id", markid);//为当前h标签设置id
+                    let spaceNum = "0";
+                    if (tagName === 'H1') {
+                        spaceNum = "0";
+                    } else if (tagName === 'H2') {
+                        spaceNum = "1.5";
+                    } else if (tagName === 'H3') {
+                        spaceNum = "3";
+                    } else if (tagName === 'H4') {
+                        spaceNum = "4.5";
+                    } else if (tagName === 'H5') {
+                        spaceNum = "6";
+                    } else if (tagName === 'H6') {
+                        spaceNum = "7.5";
+                    }
+                    spaceNum += "em";
+                    $("<a href='javascript:scroll(\"" + markid + "\")' style='text-indent:" + spaceNum + "'>" + contentH + "</a>").appendTo($("#toc"));
+                }
+            });
+            if (hCount == 0) {
+                $("<div class='no-data'>暂无目录信息</div>").appendTo($("#toc"));
+            }
+            let url = document.location.href;
+            if (url.indexOf("#") != -1) {
+                let markId = url.substr(url.indexOf("#") + 1);
+                scroll(markId);
+            }
+        }
+
+        $(window).scroll(function () {
+            //console.log($(document).scrollTop());
+            $("#right-container").css("top", $(document).scrollTop() + "px");
+        });
+
+        function scroll(markId) {
+            let url = document.location.href;
+            if (url.indexOf("#") == -1) {
+                document.location.href = url + "#" + markId;
+            } else {
+                document.location.href = url.substring(0, url.indexOf("#") + 1) + markId;
+            }
+            $("html,body").animate({scrollTop: $("#" + markId).offset().top - 80}, 100);
+        }
+    </script>
+</head>
+<body>
+    <div class="top">
+        <div class="top-container">
+            <div class="logo">
+                    <a href="../index.html">我是程序员</a>
+            </div>
+                <a href="../index.html" class="nav active">博客</a>
+                <a href="../category.html" class="nav ">分类专栏</a>
+                <a href="../special.html" class="nav ">专题</a>
+                <a href="../user.html" class="nav ">成员</a>
+                <a href="../comment.html" class="nav ">留言板</a>
+        </div>
+    </div>
+<div class="body-container">
+    <div class="blog-detail">
+        <div class="container">
+            <div class="container-content">
+                <div>
+                    <div class="blog-title">H5播放视频（一）H5播放.m3u8视频src 为blob</div>
+                    <div class="blog-info">
+                        <div class="time">2022-01-25 10:51:32</div>
+                        <div class="nick-name">作者：<a href="../user.html#100000">多多洛2020</a></div>
+                        <div class="category">分类专栏：<a href="../category/10001.html">Java</a></div>
+
+                    </div>
+                    <div class="content" id="content"><h1 data-v-md-heading="先上实现效果图" data-v-md-line="1">先上实现效果图</h1>
+<p data-v-md-line="2">我们常见的网页播放视频，基本就是.mp4，或者就是blob<br>
+看下我本地实现的播放blob效果图<br>
+<img src="../resource/image/202201/UONhqWMPGqfvDCqDFDstlMrJwXQskZ.png" alt="image.png"><br>
+想要知道怎么实现blob播放，就继续往下看吧。</p>
+<h1 data-v-md-heading="常见的视频格式" data-v-md-line="6">常见的视频格式</h1>
+<h2 data-v-md-heading="mp4格式" data-v-md-line="7">mp4格式</h2>
+<p data-v-md-line="8">比如这个<br>
+https://haokan.baidu.com/v?vid=10059354104672194686&amp;tab=dongman_new&amp;sfrom=dongman_new<br>
+我们打开控制台，可以看到视频后缀为mp4<br>
+<img src="../resource/image/202201/HgoZuQRgwBMhnwhweGMjKCqMDCUGdQ.png" alt="image.png"><br>
+这样的直接播放的是一个完整的mp4文件，可以直接下载</p>
+<h2 data-v-md-heading="src为blob" data-v-md-line="14">src为blob</h2>
+<p data-v-md-line="15">比如这个地址<br>
+https://www.pianku.li/py/lRGZzYzYphmY_1.html?153710<br>
+<img src="../resource/image/202201/putzmHmuzsTCJKxpnupaRkARxczlyX.png" alt="image.png"><br>
+是一个blob，而且这个地址是打不开的<br>
+抓包会发现请求了 m3u8格式的文件，文件内容列举了很多.ts文件<br>
+<img src="../resource/image/202201/dQAWSFLYNiAFcfOUSgHttSfiXrlAao.png" alt="image.png"><br>
+这一个个的.ts文件就是视频切割后的小片段，.m3u8是视频的索引文件，是一个文本文件，并非视频文件。</p>
+<p data-v-md-line="23">那么我们要实现这种src为blob的，就需要使用支持播放.m3u8的播放器了。</p>
+<h1 data-v-md-heading="支持-m3u8的播放器" data-v-md-line="25">支持.m3u8的播放器</h1>
+<h2 data-v-md-heading="dplayer" data-v-md-line="26">dplayer</h2>
+<p data-v-md-line="27">dplayer 官网 <a href="http://dplayer.js.org/zh/guide.html" target="_blank">http://dplayer.js.org/zh/guide.html</a><br>
+其实就是要H5播放器能支持hls就可以实现播放.m3u8，这个播放器刚好支持。</p>
+<h3 data-v-md-heading="在vue中实现播放-m3u8" data-v-md-line="29">在vue中实现播放.m3u8</h3>
+<p data-v-md-line="30">添加依赖</p>
+<div data-v-md-line="31"><div class="v-md-pre-wrapper v-md-pre-wrapper-shell extra-class"><pre class="v-md-hljs-shell"><code>npm install -S hls.js
+npm install dplayer --save
+</code></pre>
+</div></div><p data-v-md-line="35">因为要使用.m3u8所以要添加hls依赖</p>
+<p data-v-md-line="37">dplayer.vue</p>
+<div data-v-md-line="38"><div class="v-md-pre-wrapper v-md-pre-wrapper-javascript extra-class"><pre class="v-md-hljs-javascript"><code>&lt;202209late&gt;
+  <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;dplayer&quot;</span> <span class="hljs-attr">ref</span>=<span class="hljs-string">&quot;player&quot;</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;dplayer&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+&lt;/202209late&gt;
+
+<span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="language-javascript">
+<span class="hljs-keyword">import</span> <span class="hljs-title class_">Hls</span> <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;hls.js&#x27;</span>
+<span class="hljs-keyword">import</span> <span class="hljs-title class_">DPlayer</span> <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;dplayer&#x27;</span>
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> {
+  data () {
+    <span class="hljs-keyword">return</span> {
+      <span class="hljs-attr">dp</span>: <span class="hljs-literal">null</span>,
+      <span class="hljs-attr">video</span>: {}
+    }
+  },
+  <span class="hljs-attr">methods</span>: {
+    loadVideo (videoInfo) {
+      <span class="hljs-variable language_">this</span>.<span class="hljs-property">dp</span> = <span class="hljs-keyword">new</span> <span class="hljs-title class_">DPlayer</span>({
+        <span class="hljs-attr">element</span>: <span class="hljs-variable language_">this</span>.<span class="hljs-property">$refs</span>.<span class="hljs-property">player</span>,
+        <span class="hljs-attr">video</span>: {
+          <span class="hljs-comment">//  pic: videoInfo.img, // 封面</span>
+          <span class="hljs-attr">url</span>: videoInfo.<span class="hljs-property">video</span>,
+          <span class="hljs-attr">type</span>: <span class="hljs-string">&#x27;customHls&#x27;</span>,
+          <span class="hljs-attr">customType</span>: {
+            <span class="hljs-attr">customHls</span>: <span class="hljs-keyword">function</span> (<span class="hljs-params">video, player</span>) {
+              <span class="hljs-keyword">const</span> hls = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Hls</span>()
+              hls.<span class="hljs-title function_">loadSource</span>(video.<span class="hljs-property">src</span>)
+              hls.<span class="hljs-title function_">attachMedia</span>(video)
+            }
+          }
+        }
+      })
+    }
+  },
+  mounted () {
+    <span class="hljs-comment">// getVideo: ajax request for getting videoInfo</span>
+    <span class="hljs-comment">/*   getVideo().then(res =&gt; {
+        this.video = res.data.video
+        this.laodVideo(this.video)
+      }) */</span>
+    <span class="hljs-variable language_">this</span>.<span class="hljs-property">video</span> = {
+      <span class="hljs-comment">//封面</span>
+      <span class="hljs-comment">//img: &quot;https://cn.bing.com/th?id=OHR.MeotoIwa_ZH-CN3126370410_1920x1080.jpg&amp;rf=LaDigue_1920x1080.jpg&quot;,</span>
+      <span class="hljs-attr">video</span>: <span class="hljs-string">&quot;https://vod3.bdzybf3.com/20210509/ZMHA3RpS/1000kb/hls/index.m3u8&quot;</span>,
+    }
+    <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">loadVideo</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">video</span>)
+  }
+}
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></span>
+<span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">style</span> <span class="hljs-attr">lang</span>=<span class="hljs-string">&quot;less&quot;</span> <span class="hljs-attr">scoped</span>&gt;</span><span class="language-css">
+<span class="hljs-selector-class">.dplayer</span> {
+  <span class="hljs-attribute">width</span>: <span class="hljs-number">500px</span>;
+}
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">style</span>&gt;</span></span>
+</code></pre>
+</div></div><p data-v-md-line="97">或者直接使用一个静态页面</p>
+<p data-v-md-line="99">test.html</p>
+<div data-v-md-line="100"><div class="v-md-pre-wrapper v-md-pre-wrapper-html extra-class"><pre class="v-md-hljs-html"><code><span class="hljs-meta">&lt;!DOCTYPE <span class="hljs-keyword">html</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">html</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">title</span>&gt;</span>dplayer播放m3u8<span class="hljs-tag">&lt;/<span class="hljs-name">title</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">charset</span>=<span class="hljs-string">&quot;UTF-8&quot;</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;renderer&quot;</span> <span class="hljs-attr">content</span>=<span class="hljs-string">&quot;webkit&quot;</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">http-equiv</span>=<span class="hljs-string">&quot;X-UA-Compatible&quot;</span> <span class="hljs-attr">content</span>=<span class="hljs-string">&quot;IE=edge,chrome=1&quot;</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;https://cdn.staticfile.org/hls.js/1.1.2/hls.min.js&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;https://cdn.staticfile.org/dplayer/1.26.0/DPlayer.min.js&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">style</span>&gt;</span><span class="language-css">
+    <span class="hljs-selector-id">#dplayer</span> {
+      <span class="hljs-attribute">width</span>: <span class="hljs-number">500px</span>
+    }
+  </span><span class="hljs-tag">&lt;/<span class="hljs-name">style</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="language-javascript">
+    <span class="hljs-keyword">function</span> <span class="hljs-title function_">init</span>(<span class="hljs-params"></span>) {
+      <span class="hljs-keyword">const</span> dp = <span class="hljs-keyword">new</span> <span class="hljs-title class_">DPlayer</span>({
+        <span class="hljs-attr">element</span>: <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">getElementById</span>(<span class="hljs-string">&#x27;dplayer&#x27;</span>),
+        <span class="hljs-attr">video</span>: {
+          <span class="hljs-comment">//  pic: videoInfo.img, // 封面</span>
+          <span class="hljs-attr">url</span>: <span class="hljs-string">&quot;https://vod3.bdzybf3.com/20210509/ZMHA3RpS/1000kb/hls/index.m3u8&quot;</span>,
+          <span class="hljs-attr">type</span>: <span class="hljs-string">&#x27;customHls&#x27;</span>,
+          <span class="hljs-attr">customType</span>: {
+            <span class="hljs-attr">customHls</span>: <span class="hljs-keyword">function</span> (<span class="hljs-params">video, player</span>) {
+              <span class="hljs-keyword">const</span> hls = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Hls</span>()
+              hls.<span class="hljs-title function_">loadSource</span>(video.<span class="hljs-property">src</span>)
+              hls.<span class="hljs-title function_">attachMedia</span>(video)
+            }
+          }
+        }
+      })
+    }
+  </span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">head</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">body</span> <span class="hljs-attr">onload</span>=<span class="hljs-string">&quot;init()&quot;</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;dplayer&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span>
+</code></pre>
+</div></div><p data-v-md-line="144">直接引用js，效果是一样的，直接双击打开就可以看到效果了。</p>
+<p data-v-md-line="146"><img src="../resource/image/202201/PmrJIwnMfTKbppVcsBykCiJKjAdIIT.png" alt="image.png"><br>
+视频已经是blob了<br>
+真实请求的是<br>
+<img src="../resource/image/202201/lPhYSnINAGeYWKOkaVCWxPrGbFVJGU.png" alt="image.png"></p>
+<p data-v-md-line="151">这样其实简单的实现了视频src为blob,播放.m3u8。dplayer的更多配置参数请看官网 <a href="http://dplayer.js.org/zh/guide.html" target="_blank">http://dplayer.js.org/zh/guide.html</a><br>
+是不是很简单，这个.m3u8文件是外链的别人的网站，现在很多电影网站都是这样的，外链的别人的电影资源，如何将自己的视频转为.m3u8呢，那么请看这一篇 <a href="http://www.wuhancoder.com/blog/spXTOTpLnb.html" target="_blank">使用ffmpeg 对mp4转.m3u8,ts 实现视频切片</a>，这样就可以从自己的服务端获取视频分片，并播放。</p>
+<p data-v-md-line="154">还有很多支持.m3u8的播放器，大家可以搜索 支持hls的H5播放器，会有很多结果，基本都大同小异，选择一个适合自己的就可以了。</p>
+</div>
+                </div>
+            </div>
+                <div class="container-comment">
+                    <div class="comment-title">评论</div>
+                    <div id="SOHUCS" sid="OtSxCkcztU"></div>
+                    <script charset="utf-8" type="text/javascript" src="https://cy-cdn.kuaizhan.com/upload/changyan.js"></script>
+                    <script type="text/javascript">
+                        window.changyan.api.config({
+                            appid: "cyvP1EXdR",
+                            conf: '0264664c4b9d1fb578d732b34abf3246'
+                        });
+                    </script>
+                </div>
+        </div>
+        <div class="right">
+            <div class="container" id="right-container">
+                <div class="right-title toc-title">目录结构</div>
+                <div id="toc"></div>
+
+                <div class="right-title category-title">
+                    <span>分类专栏</span>
+                    <a href="../category.html" class="more">更多>></a>
+                </div>
+                    <a href="../category/10000.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/image/202112/EFUgXqXkPTFORpHpeTTnbLTTMVsJgf.png">
+                        </span>
+                        <span class="category-name" title="EasyBlog">EasyBlog</span>
+                        <span class="blog-count">0篇</span>
+                    </a>
+                    <a href="../category/10001.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/image/202201/fBNKwBWNHXNERqYdAupUXAMdHZWLJv.png">
+                        </span>
+                        <span class="category-name" title="Java">Java</span>
+                        <span class="blog-count">5篇</span>
+                    </a>
+                    <a href="../category/10002.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/static/default_img.png">
+                        </span>
+                        <span class="category-name" title="electron">electron</span>
+                        <span class="blog-count">2篇</span>
+                    </a>
+                    <a href="../category/10003.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/static/default_img.png">
+                        </span>
+                        <span class="category-name" title="Vue3">Vue3</span>
+                        <span class="blog-count">4篇</span>
+                    </a>
+            </div>
+        </div>
+    </div>
+</div>
+        <div class="footer">
+            <div>
+                <span>©2021-2022 www.wuhancoder.com All rights reserved. </span>
+                <a target="_blank" href="https://beian.miit.gov.cn/">鄂ICP备13017512号-3</a></div>
+            <div>
+                <img src="../resource/static/beian.png">
+                <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=42011502000890">
+                    鄂公网安备 42011502000890号
+                </a></div>
+        </div>
+</body>
+</html>

@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Java中重写equals就必须重写hashCode吗？ - 我是程序员</title>
+        <meta name="keywords" content="equals ,hashCode,equals重写hashCode重写">
+        <meta name="description" content="重写equals 不一定要重写 hashCode，什么时候要重写hashCode 可根据实际情况来定夺">
+
+    <link rel="stylesheet" href="../resource/static/plugin/highlight/styles/github.min.css">
+    <link rel="stylesheet" href="../resource/static/plugin/viewer/viewer.min.css">
+    <script src="../resource/static/plugin/highlight/highlight.min.js"></script>
+    <script src="../resource/static/plugin/jquery/jquery.min.js"></script>
+    <script src="../resource/static/plugin/viewer/viewer-jquery.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <link rel="stylesheet" href="../resource/static/css/blog.detail.css">
+    <script>
+        $(document).ready(function (e) {
+            createToc();
+            $("#content").viewer({
+                navbar: false
+            });
+
+            $("#content a").each(function (index, element) {
+                $(element).attr("target", "_blank");
+            })
+        });
+
+        function createToc() {
+            let hCount = 0;
+            $("#content").children().each(function (index, element) {
+                var tagName = $(this).get(0).tagName;
+                if (tagName.substr(0, 1).toUpperCase() == "H") {
+                    hCount++;
+                    var contentH = $(this).text();//获取内容
+                    var markid = "mark-" + tagName + "-" + index.toString();
+                    $(this).attr("id", markid);//为当前h标签设置id
+                    let spaceNum = "0";
+                    if (tagName === 'H1') {
+                        spaceNum = "0";
+                    } else if (tagName === 'H2') {
+                        spaceNum = "1.5";
+                    } else if (tagName === 'H3') {
+                        spaceNum = "3";
+                    } else if (tagName === 'H4') {
+                        spaceNum = "4.5";
+                    } else if (tagName === 'H5') {
+                        spaceNum = "6";
+                    } else if (tagName === 'H6') {
+                        spaceNum = "7.5";
+                    }
+                    spaceNum += "em";
+                    $("<a href='javascript:scroll(\"" + markid + "\")' style='text-indent:" + spaceNum + "'>" + contentH + "</a>").appendTo($("#toc"));
+                }
+            });
+            if (hCount == 0) {
+                $("<div class='no-data'>暂无目录信息</div>").appendTo($("#toc"));
+            }
+            let url = document.location.href;
+            if (url.indexOf("#") != -1) {
+                let markId = url.substr(url.indexOf("#") + 1);
+                scroll(markId);
+            }
+        }
+
+        $(window).scroll(function () {
+            //console.log($(document).scrollTop());
+            $("#right-container").css("top", $(document).scrollTop() + "px");
+        });
+
+        function scroll(markId) {
+            let url = document.location.href;
+            if (url.indexOf("#") == -1) {
+                document.location.href = url + "#" + markId;
+            } else {
+                document.location.href = url.substring(0, url.indexOf("#") + 1) + markId;
+            }
+            $("html,body").animate({scrollTop: $("#" + markId).offset().top - 80}, 100);
+        }
+    </script>
+</head>
+<body>
+    <div class="top">
+        <div class="top-container">
+            <div class="logo">
+                    <a href="../index.html">我是程序员</a>
+            </div>
+                <a href="../index.html" class="nav active">博客</a>
+                <a href="../category.html" class="nav ">分类专栏</a>
+                <a href="../special.html" class="nav ">专题</a>
+                <a href="../user.html" class="nav ">成员</a>
+                <a href="../comment.html" class="nav ">留言板</a>
+        </div>
+    </div>
+<div class="body-container">
+    <div class="blog-detail">
+        <div class="container">
+            <div class="container-content">
+                <div>
+                    <div class="blog-title">Java中重写equals就必须重写hashCode吗？</div>
+                    <div class="blog-info">
+                        <div class="time">2022-02-09 11:06:29</div>
+                        <div class="nick-name">作者：<a href="../user.html#100000">多多洛2020</a></div>
+                        <div class="category">分类专栏：<a href="../category/10001.html">Java</a></div>
+
+                    </div>
+                    <div class="content" id="content"><h1 data-v-md-heading="事件" data-v-md-line="1">事件</h1>
+<p data-v-md-line="2">今天同事跑过来问我，我用list判断是否包含对象，我只重写了equals方法，居然可以正确判断，不是说重写equals就必须重写hashCode么？我让她看看ArrayList的 contains 方法，然后她就明白了。</p>
+<p data-v-md-line="5">== ：它计算的是操作数的值之间的关系，如果是基本数据类型，值相等即可，如果是引用类型，内存地址要一样<br>
+equals ： Object 的 实例方法，比较两个对象的content是否相同<br>
+hashCode ： Object 的 native方法 , 获取对象的哈希值，用于确定该对象在哈希表中的索引位置，它实际上是一个int型整数</p>
+<p data-v-md-line="9">文字表达太空洞了，我们直接上代码</p>
+<h1 data-v-md-heading="不重写-equals-也不重写-hashcode" data-v-md-line="10">不重写 equals 也不重写 hashCode</h1>
+<div data-v-md-line="12"><div class="v-md-pre-wrapper v-md-pre-wrapper-java extra-class"><pre class="v-md-hljs-java"><code><span class="hljs-keyword">class</span> <span class="hljs-title class_">Student</span> {
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">Student</span><span class="hljs-params">(String name, Integer age)</span> {
+        <span class="hljs-built_in">this</span>.name = name;
+        <span class="hljs-built_in">this</span>.age = age;
+    }
+
+    <span class="hljs-keyword">private</span> String name;
+    <span class="hljs-keyword">private</span> Integer age;
+
+    <span class="hljs-keyword">public</span> String <span class="hljs-title function_">getName</span><span class="hljs-params">()</span> {
+        <span class="hljs-keyword">return</span> name;
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setName</span><span class="hljs-params">(String name)</span> {
+        <span class="hljs-built_in">this</span>.name = name;
+    }
+
+    <span class="hljs-keyword">public</span> Integer <span class="hljs-title function_">getAge</span><span class="hljs-params">()</span> {
+        <span class="hljs-keyword">return</span> age;
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setAge</span><span class="hljs-params">(Integer age)</span> {
+        <span class="hljs-built_in">this</span>.age = age;
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> {
+        <span class="hljs-type">Student</span> <span class="hljs-variable">student1</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Student</span>(<span class="hljs-string">&quot;张三&quot;</span>, <span class="hljs-number">1</span>);
+        <span class="hljs-type">Student</span> <span class="hljs-variable">student2</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Student</span>(<span class="hljs-string">&quot;张三&quot;</span>, <span class="hljs-number">2</span>);
+        System.out.println(<span class="hljs-string">&quot;==:&quot;</span> + (student1 == student2));
+        System.out.println(<span class="hljs-string">&quot;equals:&quot;</span> + (student1.equals(student2)));
+        System.out.println(<span class="hljs-string">&quot;student1 hashCode:&quot;</span> + student1.hashCode() + <span class="hljs-string">&quot;，student2 hashCode:&quot;</span> + student2.hashCode());
+        Set&lt;Student&gt; set = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashSet</span>&lt;&gt;();
+        set.add(student1);
+        set.add(student2);
+        System.out.println(<span class="hljs-string">&quot;set的大小:&quot;</span> + set.size());
+        List&lt;Student&gt; list = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayList</span>&lt;&gt;();
+        list.add(student1);
+        System.out.println(<span class="hljs-string">&quot;list contains:&quot;</span> + list.contains(student2));
+    }
+}
+</code></pre>
+</div></div><p data-v-md-line="54">运行结果：</p>
+<div data-v-md-line="55"><div class="v-md-pre-wrapper v-md-pre-wrapper-shell extra-class"><pre class="v-md-hljs-shell"><code>==:false
+equals:false
+student1 hashCode:30852576，student2 hashCode:20929316
+set的大小:2
+list contains:false
+</code></pre>
+</div></div><p data-v-md-line="62">没有重写equals 所以也是false<br>
+hashSet 无序，不能重复，大小是2说明 是两个对象<br>
+list 是有序集合，可重复 包含 是两个对象，所以是false</p>
+<h1 data-v-md-heading="只重写-equals-不重写-hashcode" data-v-md-line="66">只重写 equals 不重写 hashCode</h1>
+<p data-v-md-line="67">此时equals等，hashCode不等</p>
+<div data-v-md-line="68"><div class="v-md-pre-wrapper v-md-pre-wrapper-java extra-class"><pre class="v-md-hljs-java"><code><span class="hljs-keyword">class</span> <span class="hljs-title class_">Student</span> {
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">Student</span><span class="hljs-params">(String name, Integer age)</span> {
+        <span class="hljs-built_in">this</span>.name = name;
+        <span class="hljs-built_in">this</span>.age = age;
+    }
+
+    <span class="hljs-keyword">private</span> String name;
+    <span class="hljs-keyword">private</span> Integer age;
+
+    <span class="hljs-keyword">public</span> String <span class="hljs-title function_">getName</span><span class="hljs-params">()</span> {
+        <span class="hljs-keyword">return</span> name;
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setName</span><span class="hljs-params">(String name)</span> {
+        <span class="hljs-built_in">this</span>.name = name;
+    }
+
+    <span class="hljs-keyword">public</span> Integer <span class="hljs-title function_">getAge</span><span class="hljs-params">()</span> {
+        <span class="hljs-keyword">return</span> age;
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setAge</span><span class="hljs-params">(Integer age)</span> {
+        <span class="hljs-built_in">this</span>.age = age;
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">equals</span><span class="hljs-params">(Object obj)</span> {
+        <span class="hljs-keyword">if</span> (obj == <span class="hljs-literal">null</span>) {
+            <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+        }
+        <span class="hljs-keyword">if</span> (obj.getClass() != <span class="hljs-built_in">this</span>.getClass()) {
+            <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+        }
+        <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>.getName().equals(((Student) obj).getName());
+    }
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> {
+        <span class="hljs-type">Student</span> <span class="hljs-variable">student1</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Student</span>(<span class="hljs-string">&quot;张三&quot;</span>, <span class="hljs-number">1</span>);
+        <span class="hljs-type">Student</span> <span class="hljs-variable">student2</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Student</span>(<span class="hljs-string">&quot;张三&quot;</span>, <span class="hljs-number">2</span>);
+        System.out.println(<span class="hljs-string">&quot;==:&quot;</span> + (student1 == student2));
+        System.out.println(<span class="hljs-string">&quot;equals:&quot;</span> + (student1.equals(student2)));
+        System.out.println(<span class="hljs-string">&quot;student1 hashCode:&quot;</span> + student1.hashCode() + <span class="hljs-string">&quot;，student2 hashCode:&quot;</span> + student2.hashCode());
+        Set&lt;Student&gt; set = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashSet</span>&lt;&gt;();
+        set.add(student1);
+        set.add(student2);
+        System.out.println(<span class="hljs-string">&quot;set的大小:&quot;</span> + set.size());
+        List&lt;Student&gt; list = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayList</span>&lt;&gt;();
+        list.add(student1);
+        System.out.println(<span class="hljs-string">&quot;list contains:&quot;</span> + list.contains(student2));
+    }
+}
+
+</code></pre>
+</div></div><div data-v-md-line="121"><div class="v-md-pre-wrapper v-md-pre-wrapper-shell extra-class"><pre class="v-md-hljs-shell"><code>==:false
+equals:true
+student1 hashCode:30852576，student2 hashCode:20929316
+set的大小:2
+list contains:true
+</code></pre>
+</div></div><p data-v-md-line="128">equals 肯定是true,因为重写了equals方法，name值一样，所以是true<br>
+hashCode 不一样 hashSet 也认为是两个值<br>
+list 是包含的，我们看下ArryList contains 实现<br>
+<img src="../resource/image/202202/NKSgCIuDDbZRgdBuUptqGERwjtJRgE.png" alt="image.png"><br>
+对比的就是equals方法，所以集合判断是否包含只需重写 equals 就可以了</p>
+<h1 data-v-md-heading="只重写-hashcode-不重写-equals" data-v-md-line="134">只重写 hashCode  不重写 equals</h1>
+<p data-v-md-line="135">此时 hashCode等，但是equals不等</p>
+<div data-v-md-line="136"><div class="v-md-pre-wrapper v-md-pre-wrapper-java extra-class"><pre class="v-md-hljs-java"><code><span class="hljs-keyword">class</span> <span class="hljs-title class_">Student</span> {
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">Student</span><span class="hljs-params">(String name, Integer age)</span> {
+        <span class="hljs-built_in">this</span>.name = name;
+        <span class="hljs-built_in">this</span>.age = age;
+    }
+
+    <span class="hljs-keyword">private</span> String name;
+    <span class="hljs-keyword">private</span> Integer age;
+
+    <span class="hljs-keyword">public</span> String <span class="hljs-title function_">getName</span><span class="hljs-params">()</span> {
+        <span class="hljs-keyword">return</span> name;
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setName</span><span class="hljs-params">(String name)</span> {
+        <span class="hljs-built_in">this</span>.name = name;
+    }
+
+    <span class="hljs-keyword">public</span> Integer <span class="hljs-title function_">getAge</span><span class="hljs-params">()</span> {
+        <span class="hljs-keyword">return</span> age;
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setAge</span><span class="hljs-params">(Integer age)</span> {
+        <span class="hljs-built_in">this</span>.age = age;
+    }
+
+   <span class="hljs-comment">/* @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj.getClass() != this.getClass()) {
+            return false;
+        }
+        return this.getName().equals(((Student) obj).getName());
+    }*/</span>
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">hashCode</span><span class="hljs-params">()</span> {
+        <span class="hljs-keyword">return</span> getName().hashCode();
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> {
+        <span class="hljs-type">Student</span> <span class="hljs-variable">student1</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Student</span>(<span class="hljs-string">&quot;张三&quot;</span>, <span class="hljs-number">1</span>);
+        <span class="hljs-type">Student</span> <span class="hljs-variable">student2</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Student</span>(<span class="hljs-string">&quot;张三&quot;</span>, <span class="hljs-number">2</span>);
+        System.out.println(<span class="hljs-string">&quot;==:&quot;</span> + (student1 == student2));
+        System.out.println(<span class="hljs-string">&quot;equals:&quot;</span> + (student1.equals(student2)));
+        System.out.println(<span class="hljs-string">&quot;student1 hashCode:&quot;</span> + student1.hashCode() + <span class="hljs-string">&quot;，student2 hashCode:&quot;</span> + student2.hashCode());
+        Set&lt;Student&gt; set = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashSet</span>&lt;&gt;();
+        set.add(student1);
+        set.add(student2);
+        System.out.println(<span class="hljs-string">&quot;set的大小:&quot;</span> + set.size());
+        List&lt;Student&gt; list = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayList</span>&lt;&gt;();
+        list.add(student1);
+        System.out.println(<span class="hljs-string">&quot;list contains:&quot;</span> + list.contains(student2));
+    }
+}
+</code></pre>
+</div></div><p data-v-md-line="194">运行结果：</p>
+<div data-v-md-line="195"><div class="v-md-pre-wrapper v-md-pre-wrapper-shell extra-class"><pre class="v-md-hljs-shell"><code>==:false
+equals:false
+student1 hashCode:774889，student2 hashCode:774889
+set的大小:2
+list contains:false
+</code></pre>
+</div></div><p data-v-md-line="202">跟equals相关的都是false了，此时hashCode等，但是equals 不等 hash对比的也认为是两个对象，我们用HashMap,和 HashSet都可以测试。</p>
+<h1 data-v-md-heading="重写-equals-和-hashcode" data-v-md-line="204">重写 equals 和 hashCode</h1>
+<p data-v-md-line="205">此时 equals等，是hashCode等</p>
+<div data-v-md-line="206"><div class="v-md-pre-wrapper v-md-pre-wrapper-java extra-class"><pre class="v-md-hljs-java"><code><span class="hljs-keyword">class</span> <span class="hljs-title class_">Student</span> {
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">Student</span><span class="hljs-params">(String name, Integer age)</span> {
+        <span class="hljs-built_in">this</span>.name = name;
+        <span class="hljs-built_in">this</span>.age = age;
+    }
+
+    <span class="hljs-keyword">private</span> String name;
+    <span class="hljs-keyword">private</span> Integer age;
+
+    <span class="hljs-keyword">public</span> String <span class="hljs-title function_">getName</span><span class="hljs-params">()</span> {
+        <span class="hljs-keyword">return</span> name;
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setName</span><span class="hljs-params">(String name)</span> {
+        <span class="hljs-built_in">this</span>.name = name;
+    }
+
+    <span class="hljs-keyword">public</span> Integer <span class="hljs-title function_">getAge</span><span class="hljs-params">()</span> {
+        <span class="hljs-keyword">return</span> age;
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setAge</span><span class="hljs-params">(Integer age)</span> {
+        <span class="hljs-built_in">this</span>.age = age;
+    }
+
+   <span class="hljs-meta">@Override</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">equals</span><span class="hljs-params">(Object obj)</span> {
+        <span class="hljs-keyword">if</span> (obj == <span class="hljs-literal">null</span>) {
+            <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+        }
+        <span class="hljs-keyword">if</span> (obj.getClass() != <span class="hljs-built_in">this</span>.getClass()) {
+            <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+        }
+        <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>.getName().equals(((Student) obj).getName());
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">hashCode</span><span class="hljs-params">()</span> {
+        <span class="hljs-keyword">return</span> getName().hashCode();
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> {
+        <span class="hljs-type">Student</span> <span class="hljs-variable">student1</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Student</span>(<span class="hljs-string">&quot;张三&quot;</span>, <span class="hljs-number">1</span>);
+        <span class="hljs-type">Student</span> <span class="hljs-variable">student2</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Student</span>(<span class="hljs-string">&quot;张三&quot;</span>, <span class="hljs-number">2</span>);
+        System.out.println(<span class="hljs-string">&quot;==:&quot;</span> + (student1 == student2));
+        System.out.println(<span class="hljs-string">&quot;equals:&quot;</span> + (student1.equals(student2)));
+        System.out.println(<span class="hljs-string">&quot;student1 hashCode:&quot;</span> + student1.hashCode() + <span class="hljs-string">&quot;，student2 hashCode:&quot;</span> + student2.hashCode());
+        Set&lt;Student&gt; set = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashSet</span>&lt;&gt;();
+        set.add(student1);
+        set.add(student2);
+        System.out.println(<span class="hljs-string">&quot;set的大小:&quot;</span> + set.size());
+        List&lt;Student&gt; list = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayList</span>&lt;&gt;();
+        list.add(student1);
+        System.out.println(<span class="hljs-string">&quot;list contains:&quot;</span> + list.contains(student2));
+    }
+}
+</code></pre>
+</div></div><p data-v-md-line="264">运行结果</p>
+<div data-v-md-line="265"><div class="v-md-pre-wrapper v-md-pre-wrapper-shell extra-class"><pre class="v-md-hljs-shell"><code>==:false
+equals:true
+student1 hashCode:774889，student2 hashCode:774889
+set的大小:1
+list contains:true
+</code></pre>
+</div></div><p data-v-md-line="272">此时 hash对比的才认为是一个对象，hash对比的操作 必须重写 equals 和 hashCode</p>
+<h1 data-v-md-heading="总结" data-v-md-line="274">总结</h1>
+<p data-v-md-line="275">在重写 equals 的时候，我们可以根据实际情况来判断，并非说 重写 equals 就必须重写 hashCode<br>
+如果是 集合对比，重写 equals 即可<br>
+如果是 hash对比，比如 HashMap,HashSet 就需要重写 equals和hashCode 了。</p>
+<p data-v-md-line="279">我说的可能不对哈，请高人在评论区指出我的错误。</p>
+</div>
+                </div>
+            </div>
+                <div class="container-comment">
+                    <div class="comment-title">评论</div>
+                    <div id="SOHUCS" sid="hMWDItugoP"></div>
+                    <script charset="utf-8" type="text/javascript" src="https://cy-cdn.kuaizhan.com/upload/changyan.js"></script>
+                    <script type="text/javascript">
+                        window.changyan.api.config({
+                            appid: "cyvP1EXdR",
+                            conf: '0264664c4b9d1fb578d732b34abf3246'
+                        });
+                    </script>
+                </div>
+        </div>
+        <div class="right">
+            <div class="container" id="right-container">
+                <div class="right-title toc-title">目录结构</div>
+                <div id="toc"></div>
+
+                <div class="right-title category-title">
+                    <span>分类专栏</span>
+                    <a href="../category.html" class="more">更多>></a>
+                </div>
+                    <a href="../category/10000.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/image/202112/EFUgXqXkPTFORpHpeTTnbLTTMVsJgf.png">
+                        </span>
+                        <span class="category-name" title="EasyBlog">EasyBlog</span>
+                        <span class="blog-count">0篇</span>
+                    </a>
+                    <a href="../category/10001.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/image/202201/fBNKwBWNHXNERqYdAupUXAMdHZWLJv.png">
+                        </span>
+                        <span class="category-name" title="Java">Java</span>
+                        <span class="blog-count">5篇</span>
+                    </a>
+                    <a href="../category/10002.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/static/default_img.png">
+                        </span>
+                        <span class="category-name" title="electron">electron</span>
+                        <span class="blog-count">2篇</span>
+                    </a>
+                    <a href="../category/10003.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/static/default_img.png">
+                        </span>
+                        <span class="category-name" title="Vue3">Vue3</span>
+                        <span class="blog-count">4篇</span>
+                    </a>
+            </div>
+        </div>
+    </div>
+</div>
+        <div class="footer">
+            <div>
+                <span>©2021-2022 www.wuhancoder.com All rights reserved. </span>
+                <a target="_blank" href="https://beian.miit.gov.cn/">鄂ICP备13017512号-3</a></div>
+            <div>
+                <img src="../resource/static/beian.png">
+                <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=42011502000890">
+                    鄂公网安备 42011502000890号
+                </a></div>
+        </div>
+</body>
+</html>

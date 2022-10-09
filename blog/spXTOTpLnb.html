@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>H5播放视频（二）使用ffmpeg 对mp4转.m3u8,ts 实现视频切片 - 我是程序员</title>
+        <meta name="keywords" content=".m3u8生成,视频文件切片">
+        <meta name="description" content="使用ffmpeg对视频切片，生成.m3u8文件，.ts 切片，配合H5播放器，播放本地视频文件">
+
+    <link rel="stylesheet" href="../resource/static/plugin/highlight/styles/github.min.css">
+    <link rel="stylesheet" href="../resource/static/plugin/viewer/viewer.min.css">
+    <script src="../resource/static/plugin/highlight/highlight.min.js"></script>
+    <script src="../resource/static/plugin/jquery/jquery.min.js"></script>
+    <script src="../resource/static/plugin/viewer/viewer-jquery.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <link rel="stylesheet" href="../resource/static/css/blog.detail.css">
+    <script>
+        $(document).ready(function (e) {
+            createToc();
+            $("#content").viewer({
+                navbar: false
+            });
+
+            $("#content a").each(function (index, element) {
+                $(element).attr("target", "_blank");
+            })
+        });
+
+        function createToc() {
+            let hCount = 0;
+            $("#content").children().each(function (index, element) {
+                var tagName = $(this).get(0).tagName;
+                if (tagName.substr(0, 1).toUpperCase() == "H") {
+                    hCount++;
+                    var contentH = $(this).text();//获取内容
+                    var markid = "mark-" + tagName + "-" + index.toString();
+                    $(this).attr("id", markid);//为当前h标签设置id
+                    let spaceNum = "0";
+                    if (tagName === 'H1') {
+                        spaceNum = "0";
+                    } else if (tagName === 'H2') {
+                        spaceNum = "1.5";
+                    } else if (tagName === 'H3') {
+                        spaceNum = "3";
+                    } else if (tagName === 'H4') {
+                        spaceNum = "4.5";
+                    } else if (tagName === 'H5') {
+                        spaceNum = "6";
+                    } else if (tagName === 'H6') {
+                        spaceNum = "7.5";
+                    }
+                    spaceNum += "em";
+                    $("<a href='javascript:scroll(\"" + markid + "\")' style='text-indent:" + spaceNum + "'>" + contentH + "</a>").appendTo($("#toc"));
+                }
+            });
+            if (hCount == 0) {
+                $("<div class='no-data'>暂无目录信息</div>").appendTo($("#toc"));
+            }
+            let url = document.location.href;
+            if (url.indexOf("#") != -1) {
+                let markId = url.substr(url.indexOf("#") + 1);
+                scroll(markId);
+            }
+        }
+
+        $(window).scroll(function () {
+            //console.log($(document).scrollTop());
+            $("#right-container").css("top", $(document).scrollTop() + "px");
+        });
+
+        function scroll(markId) {
+            let url = document.location.href;
+            if (url.indexOf("#") == -1) {
+                document.location.href = url + "#" + markId;
+            } else {
+                document.location.href = url.substring(0, url.indexOf("#") + 1) + markId;
+            }
+            $("html,body").animate({scrollTop: $("#" + markId).offset().top - 80}, 100);
+        }
+    </script>
+</head>
+<body>
+    <div class="top">
+        <div class="top-container">
+            <div class="logo">
+                    <a href="../index.html">我是程序员</a>
+            </div>
+                <a href="../index.html" class="nav active">博客</a>
+                <a href="../category.html" class="nav ">分类专栏</a>
+                <a href="../special.html" class="nav ">专题</a>
+                <a href="../user.html" class="nav ">成员</a>
+                <a href="../comment.html" class="nav ">留言板</a>
+        </div>
+    </div>
+<div class="body-container">
+    <div class="blog-detail">
+        <div class="container">
+            <div class="container-content">
+                <div>
+                    <div class="blog-title">H5播放视频（二）使用ffmpeg 对mp4转.m3u8,ts 实现视频切片</div>
+                    <div class="blog-info">
+                        <div class="time">2022-01-25 12:05:39</div>
+                        <div class="nick-name">作者：<a href="../user.html#100000">多多洛2020</a></div>
+                        <div class="category">分类专栏：<a href="../category/10001.html">Java</a></div>
+
+                    </div>
+                    <div class="content" id="content"><h1 data-v-md-heading="前言" data-v-md-line="1">前言</h1>
+<p data-v-md-line="2">上一篇将了H5如何播放.m3u8文件 <a href="http://www.wuhancoder.com/blog/OtSxCkcztU.html" target="_blank">H5播放.m3u8视频src 为blob</a>，这一篇讲下如何将常见的大视频文件比如mp4转为.m3u8文件。<br>
+如果不将视频切割，直接返回给客户端一个.mp4的文件，小文件还好，如果是一个几个G的大文件，服务器压力大，占带宽，而且视频轻易就被下载。切割成一个个很小的文件可以减轻带宽，服务器压力，同时也为下载原视频增加了难度。通过一些加密手段，就可以进一步增加视频下载的难度了。</p>
+<h1 data-v-md-heading="ffmpeg-媒体处理神奇" data-v-md-line="5">ffmpeg 媒体处理神奇</h1>
+<p data-v-md-line="6">ffmpeg 目前市面上用得最多的媒体处理工具，liunx,windows版本都有，今天我们就用它来切割mp4文件</p>
+<h2 data-v-md-heading="安装ffmpeg" data-v-md-line="7">安装ffmpeg</h2>
+<p data-v-md-line="8">首先到官网下载 <a href="https://ffmpeg.org/download.html" target="_blank">官网</a> 或者这里下载 <a href="https://www.gyan.dev/ffmpeg/builds/ffmpeg-git-full.7z" target="_blank">点击下载</a></p>
+<p data-v-md-line="10">下载解压后，配置好环境变量<br>
+开启doc，执行ffmpeg<br>
+<img src="../resource/image/202201/AhpCaFlGsQYHVuJaaaxKHFwYrrrMxP.png" alt="image.png"><br>
+出现上图说明ffmpeg已经配置好</p>
+<h2 data-v-md-heading="切割视频" data-v-md-line="15">切割视频</h2>
+<p data-v-md-line="16">准备一个视频，打开doc，切换到该目录<br>
+<img src="../resource/image/202201/yhVKjyWGDtAlJqLylDflyIQolmoQQI.png" alt="image.png"></p>
+<h3 data-v-md-heading="生成-ts" data-v-md-line="19">生成.ts</h3>
+<div data-v-md-line="20"><div class="v-md-pre-wrapper v-md-pre-wrapper-shell extra-class"><pre class="v-md-hljs-shell"><code>ffmpeg -y -i test.mp4  -vcodec copy -acodec copy -vbsf h264_mp4toannexb test_ts.ts
+</code></pre>
+</div></div><p data-v-md-line="23"><img src="../resource/image/202201/kEDipntSuSAbLHtetOAIDNxhRTBpdZ.png" alt="image.png"><br>
+此时会生成一个.ts的文件</p>
+<h3 data-v-md-heading="生成索引文件-m3u8-和切片-ts" data-v-md-line="26">生成索引文件.m3u8 和切片.ts</h3>
+<div data-v-md-line="27"><div class="v-md-pre-wrapper v-md-pre-wrapper-shell extra-class"><pre class="v-md-hljs-shell"><code>ffmpeg -i test_ts.ts -c copy -map 0 -f segment -segment_list test_m3u8.m3u8 -segment_time 10 10s_%3d.ts 
+</code></pre>
+</div></div><p data-v-md-line="30"><img src="../resource/image/202201/DfBAswmoRsOEjHkkrpfQZwtAtqzfyn.png" alt="image.png"><br>
+可以看到 生成.m3u8索引文件，还有很多分片.ts文件。ts文件可以直接打开播放</p>
+<div data-v-md-line="32"><div class="v-md-pre-wrapper v-md-pre-wrapper-shell extra-class"><pre class="v-md-hljs-shell"><code>-segment_list 索引文件名
+-segment_time 10 每个分片时长  这个貌似不是特别的精准
+<span class="hljs-meta prompt_">10s_%</span><span class="language-bash">3d.ts 索引文件前缀和索引编号这里是3个0补全</span>
+</code></pre>
+</div></div><h3 data-v-md-heading="一步到位" data-v-md-line="37">一步到位</h3>
+<div data-v-md-line="38"><div class="v-md-pre-wrapper v-md-pre-wrapper-shell extra-class"><pre class="v-md-hljs-shell"><code>ffmpeg -i test.mp4 -c:v h264 -flags +cgop -g 30 -hls_time 10 -hls_list_size 0 -threads 1 -hls_segment_filename  index%3d.ts index.m3u8
+</code></pre>
+</div></div><p data-v-md-line="41"><img src="../resource/image/202201/yZiSILEOuJdiaTKSlGQUDAHtyhHNXW.png" alt="image.png"><br>
+一步到位就一个命令，但是耗时比较长，推荐使用第一种用两步完成，也可能是我对ffmpeg不熟悉，是不是哪个参数设置的不对，有ffmpeg高手可以指点一下。</p>
+<p data-v-md-line="44">更多ffmpeg参数可以自行搜索，这里重点不是ffmpeg，只是简单的介绍ffmpeg如何切割视频生成.m3u8 索引文件，还可以对切割文件加密生成key，没有key直接打开切片文件是无法打开的。</p>
+<p data-v-md-line="46">我们生成了.m3u8，和.ts切片，然后配合h5播放器，就可以实现本地视频播放了。</p>
+</div>
+                </div>
+            </div>
+                <div class="container-comment">
+                    <div class="comment-title">评论</div>
+                    <div id="SOHUCS" sid="spXTOTpLnb"></div>
+                    <script charset="utf-8" type="text/javascript" src="https://cy-cdn.kuaizhan.com/upload/changyan.js"></script>
+                    <script type="text/javascript">
+                        window.changyan.api.config({
+                            appid: "cyvP1EXdR",
+                            conf: '0264664c4b9d1fb578d732b34abf3246'
+                        });
+                    </script>
+                </div>
+        </div>
+        <div class="right">
+            <div class="container" id="right-container">
+                <div class="right-title toc-title">目录结构</div>
+                <div id="toc"></div>
+
+                <div class="right-title category-title">
+                    <span>分类专栏</span>
+                    <a href="../category.html" class="more">更多>></a>
+                </div>
+                    <a href="../category/10000.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/image/202112/EFUgXqXkPTFORpHpeTTnbLTTMVsJgf.png">
+                        </span>
+                        <span class="category-name" title="EasyBlog">EasyBlog</span>
+                        <span class="blog-count">0篇</span>
+                    </a>
+                    <a href="../category/10001.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/image/202201/fBNKwBWNHXNERqYdAupUXAMdHZWLJv.png">
+                        </span>
+                        <span class="category-name" title="Java">Java</span>
+                        <span class="blog-count">5篇</span>
+                    </a>
+                    <a href="../category/10002.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/static/default_img.png">
+                        </span>
+                        <span class="category-name" title="electron">electron</span>
+                        <span class="blog-count">2篇</span>
+                    </a>
+                    <a href="../category/10003.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/static/default_img.png">
+                        </span>
+                        <span class="category-name" title="Vue3">Vue3</span>
+                        <span class="blog-count">4篇</span>
+                    </a>
+            </div>
+        </div>
+    </div>
+</div>
+        <div class="footer">
+            <div>
+                <span>©2021-2022 www.wuhancoder.com All rights reserved. </span>
+                <a target="_blank" href="https://beian.miit.gov.cn/">鄂ICP备13017512号-3</a></div>
+            <div>
+                <img src="../resource/static/beian.png">
+                <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=42011502000890">
+                    鄂公网安备 42011502000890号
+                </a></div>
+        </div>
+</body>
+</html>

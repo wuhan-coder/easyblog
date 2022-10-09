@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>简介 - 我是程序员</title>
+        <meta name="keywords" content="简介">
+        <meta name="description" content="EasyBlog是一个可以生成静态页面的团队博客，可以创建博客，和专题文章。博客可以生成静态页面，可以在线导出所有静态页面，也可以提交到githubpagse,giteepages。EasyBlog可以自己平时写博客，还可以邀请志同道合的朋友，同事一起来维护一个博客。">
+
+    <link rel="stylesheet" href="../resource/static/plugin/highlight/styles/github.min.css">
+    <link rel="stylesheet" href="../resource/static/plugin/viewer/viewer.min.css">
+    <script src="../resource/static/plugin/highlight/highlight.min.js"></script>
+    <script src="../resource/static/plugin/jquery/jquery.min.js"></script>
+    <script src="../resource/static/plugin/viewer/viewer-jquery.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <link rel="stylesheet" href="../resource/static/css/special.detail.css">
+    <script>
+        $(document).ready(function (e) {
+            createToc();
+            $("#content").viewer({
+                navbar: false
+            });
+
+            $("#content a").each(function (index, element) {
+                $(element).attr("target", "_blank");
+            })
+
+            $(".icon-arrow").click(function () {
+                let nextLiDom = $(this).parent().next("div").eq(0)
+                if ($(this).hasClass("arrow-down")) {
+                    $(this).removeClass("arrow-down");
+                    $(this).addClass("arrow-right");
+                    nextLiDom.hide();
+                } else {
+                    $(this).removeClass("arrow-right");
+                    $(this).addClass("arrow-down");
+                    nextLiDom.show();
+                }
+            });
+
+            //目录展开收齐
+            $("#toc-title").click(function () {
+                let spanDom = $(this).find(".icon-arrow")
+                if (spanDom.hasClass("arrow-down")) {
+                    spanDom.removeClass("arrow-down");
+                    spanDom.addClass("arrow-right");
+                    $("#toc").hide();
+                } else {
+                    spanDom.removeClass("arrow-right");
+                    spanDom.addClass("arrow-down");
+                    $("#toc").show();
+                }
+            });
+
+            let currentUrl = document.location.href;
+            currentUrl = currentUrl.substring(currentUrl.lastIndexOf("/") + 1, currentUrl.lastIndexOf("."));
+            $("#" + currentUrl).addClass("active");
+        });
+
+        function createToc() {
+            let hCount = 0;
+            $("#content").children().each(function (index, element) {
+                var tagName = $(this).get(0).tagName;
+                if (tagName.substr(0, 1).toUpperCase() == "H") {
+                    hCount++;
+                    var contentH = $(this).text();//获取内容
+                    var markid = "mark-" + tagName + "-" + index.toString();
+                    $(this).attr("id", markid);//为当前h标签设置id
+                    let spaceNum = "0";
+                    if (tagName === 'H1') {
+                        spaceNum = "0";
+                    } else if (tagName === 'H2') {
+                        spaceNum = "1.5";
+                    } else if (tagName === 'H3') {
+                        spaceNum = "3";
+                    } else if (tagName === 'H4') {
+                        spaceNum = "4.5";
+                    } else if (tagName === 'H5') {
+                        spaceNum = "6";
+                    } else if (tagName === 'H6') {
+                        spaceNum = "7.5";
+                    }
+                    spaceNum += "em";
+                    $("<a href='javascript:scroll(\"" + markid + "\")' style='text-indent:" + spaceNum + "' title=" + contentH + ">" + contentH + "</a>").appendTo($("#toc"));
+                }
+            });
+            if (hCount == 0) {
+                $("<div class='no-data'>暂无目录信息</div>").appendTo($("#toc"));
+            }
+            let url = document.location.href;
+            if (url.indexOf("#") != -1) {
+                let markId = url.substr(url.indexOf("#") + 1);
+                scroll(markId);
+            }
+        }
+
+        $(window).scroll(function () {
+            //console.log($(document).scrollTop());
+            $("#right-container").css("top", $(document).scrollTop() + "px");
+        });
+
+        function scroll(markId) {
+            let url = document.location.href;
+            if (url.indexOf("#") == -1) {
+                document.location.href = url + "#" + markId;
+            } else {
+                document.location.href = url.substring(0, url.indexOf("#") + 1) + markId;
+            }
+            $("html,body").animate({scrollTop: $("#" + markId).offset().top - 80}, 100);
+        }
+    </script>
+</head>
+<body>
+    <div class="top">
+        <div class="top-container">
+            <div class="logo">
+                    <a href="../index.html">我是程序员</a>
+            </div>
+                <a href="../index.html" class="nav ">博客</a>
+                <a href="../category.html" class="nav ">分类专栏</a>
+                <a href="../special.html" class="nav active">专题</a>
+                <a href="../user.html" class="nav ">成员</a>
+                <a href="../comment.html" class="nav ">留言板</a>
+        </div>
+    </div>
+<div class="body-container">
+    <div class="blog-detail">
+        <div class="blog-special-list">
+            <div class="blog-special">
+                <div class="category-image">
+                        <img src="../resource/image/202209/qmHjiTxzjtapHaOojwciCzTlqCPFWs.jpg">
+                </div>
+                <div class="category-info">
+                    <div class="category-title" title="EasyBlog文档">EasyBlog文档</div>
+                    <div class="blog-count">文章数：6</div>
+                </div>
+            </div>
+            <div class="category-desc" title="EasyBlog 相关文档，接口，环境搭建">简介：EasyBlog 相关文档，接口，环境搭建</div>
+            <div class="blog-list">
+        <div>
+            <div class="title" style="padding-left:26px" id="DEdkCxjkqy">
+                <a href="DEdkCxjkqy.html">简介</a>
+            </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:10px" id="gTvGKLsNNZ">
+                    <span class="icon-arrow arrow-down"></span>
+                <a href="gTvGKLsNNZ.html">后端服务部署</a>
+            </div>
+                <div class="sub-title">
+        <div>
+            <div class="title" style="padding-left:42px" id="vbbStsCMXs">
+                <a href="vbbStsCMXs.html">安装后端程序</a>
+            </div>
+        </div>
+                </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:10px" id="azvNIIFQCy">
+                    <span class="icon-arrow arrow-down"></span>
+                <a href="azvNIIFQCy.html">接口文档</a>
+            </div>
+                <div class="sub-title">
+        <div>
+            <div class="title" style="padding-left:42px" id="cqzKWftzyr">
+                <a href="cqzKWftzyr.html">管理端</a>
+            </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:42px" id="wBURpKFtiT">
+                <a href="wBURpKFtiT.html">web端</a>
+            </div>
+        </div>
+                </div>
+        </div>
+            </div>
+
+        </div>
+        <div class="container">
+            <div class="container-content">
+                <div>
+                    <div class="blog-title">简介</div>
+                    <div class="blog-info">
+                        <div class="time">2022-09-21 09:14:45</div>
+                        <div class="nick-name">作者：<a href="../user.html#100000">多多洛2020</a></div>
+
+                    </div>
+                    <div class="content" id="content"><p data-v-md-line="1">EasyBlog是一个可以生成静态页面的团队博客，可以创建博客，和专题文章。博客可以生成静态页面，可以在线导出所有静态页面，也可以提交到github pagse,gitee pages。<br>
+EasyBlog可以自己平时写博客，还可以邀请志同道合的朋友，同事一起来维护一个博客。</p>
+</div>
+                </div>
+            </div>
+                <div class="container-comment">
+                    <div class="comment-title">评论</div>
+                    <div id="SOHUCS" sid="DEdkCxjkqy"></div>
+                    <script charset="utf-8" type="text/javascript" src="https://cy-cdn.kuaizhan.com/upload/changyan.js"></script>
+                    <script type="text/javascript">
+                        window.changyan.api.config({
+                            appid: "cyvP1EXdR",
+                            conf: '0264664c4b9d1fb578d732b34abf3246'
+                        });
+                    </script>
+                </div>
+            <div id="right-container">
+                <div class="toc-title" id="toc-title">目录<span class="icon-arrow arrow-down"></span></div>
+                <div id="toc"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+        <div class="footer">
+            <div>
+                <span>©2021-2022 www.wuhancoder.com All rights reserved. </span>
+                <a target="_blank" href="https://beian.miit.gov.cn/">鄂ICP备13017512号-3</a></div>
+            <div>
+                <img src="../resource/static/beian.png">
+                <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=42011502000890">
+                    鄂公网安备 42011502000890号
+                </a></div>
+        </div>
+</body>
+</html>

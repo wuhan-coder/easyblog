@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vue3 prototype使用 - 我是程序员</title>
+        <meta name="keywords" content="Vue3 prototype">
+        <meta name="description" content="Vue3 prototype使用 vue2可以用派生，Vue3 没有this对象，无法派生">
+
+    <link rel="stylesheet" href="../resource/static/plugin/highlight/styles/github.min.css">
+    <link rel="stylesheet" href="../resource/static/plugin/viewer/viewer.min.css">
+    <script src="../resource/static/plugin/highlight/highlight.min.js"></script>
+    <script src="../resource/static/plugin/jquery/jquery.min.js"></script>
+    <script src="../resource/static/plugin/viewer/viewer-jquery.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <link rel="stylesheet" href="../resource/static/css/blog.detail.css">
+    <script>
+        $(document).ready(function (e) {
+            createToc();
+            $("#content").viewer({
+                navbar: false
+            });
+
+            $("#content a").each(function (index, element) {
+                $(element).attr("target", "_blank");
+            })
+        });
+
+        function createToc() {
+            let hCount = 0;
+            $("#content").children().each(function (index, element) {
+                var tagName = $(this).get(0).tagName;
+                if (tagName.substr(0, 1).toUpperCase() == "H") {
+                    hCount++;
+                    var contentH = $(this).text();//获取内容
+                    var markid = "mark-" + tagName + "-" + index.toString();
+                    $(this).attr("id", markid);//为当前h标签设置id
+                    let spaceNum = "0";
+                    if (tagName === 'H1') {
+                        spaceNum = "0";
+                    } else if (tagName === 'H2') {
+                        spaceNum = "1.5";
+                    } else if (tagName === 'H3') {
+                        spaceNum = "3";
+                    } else if (tagName === 'H4') {
+                        spaceNum = "4.5";
+                    } else if (tagName === 'H5') {
+                        spaceNum = "6";
+                    } else if (tagName === 'H6') {
+                        spaceNum = "7.5";
+                    }
+                    spaceNum += "em";
+                    $("<a href='javascript:scroll(\"" + markid + "\")' style='text-indent:" + spaceNum + "'>" + contentH + "</a>").appendTo($("#toc"));
+                }
+            });
+            if (hCount == 0) {
+                $("<div class='no-data'>暂无目录信息</div>").appendTo($("#toc"));
+            }
+            let url = document.location.href;
+            if (url.indexOf("#") != -1) {
+                let markId = url.substr(url.indexOf("#") + 1);
+                scroll(markId);
+            }
+        }
+
+        $(window).scroll(function () {
+            //console.log($(document).scrollTop());
+            $("#right-container").css("top", $(document).scrollTop() + "px");
+        });
+
+        function scroll(markId) {
+            let url = document.location.href;
+            if (url.indexOf("#") == -1) {
+                document.location.href = url + "#" + markId;
+            } else {
+                document.location.href = url.substring(0, url.indexOf("#") + 1) + markId;
+            }
+            $("html,body").animate({scrollTop: $("#" + markId).offset().top - 80}, 100);
+        }
+    </script>
+</head>
+<body>
+    <div class="top">
+        <div class="top-container">
+            <div class="logo">
+                    <a href="../index.html">我是程序员</a>
+            </div>
+                <a href="../index.html" class="nav active">博客</a>
+                <a href="../category.html" class="nav ">分类专栏</a>
+                <a href="../special.html" class="nav ">专题</a>
+                <a href="../user.html" class="nav ">成员</a>
+                <a href="../comment.html" class="nav ">留言板</a>
+        </div>
+    </div>
+<div class="body-container">
+    <div class="blog-detail">
+        <div class="container">
+            <div class="container-content">
+                <div>
+                    <div class="blog-title">Vue3 prototype使用</div>
+                    <div class="blog-info">
+                        <div class="time">2022-05-29 01:27:03</div>
+                        <div class="nick-name">作者：<a href="../user.html#100000">多多洛2020</a></div>
+                        <div class="category">分类专栏：<a href="../category/10003.html">Vue3</a></div>
+
+                    </div>
+                    <div class="content" id="content"><h1 data-v-md-heading="vue3-prototype使用" data-v-md-line="1">Vue3 prototype使用</h1>
+<h2 data-v-md-heading="vue2-x-中使用" data-v-md-line="2">Vue2.x 中使用</h2>
+<p data-v-md-line="3">先说 Vue2.x 中我们可以直接派生vue对象<br>
+比如<br>
+在main.js中配置</p>
+<div data-v-md-line="6"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code><span class="hljs-title class_">Vue</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>.<span class="hljs-property">$echarts</span> = echarts
+</code></pre>
+</div></div><p data-v-md-line="9">然后使用就直接 this.$echarts 就可以了</p>
+<h2 data-v-md-heading="vue3-x-中使用" data-v-md-line="11">Vue3.x 中使用</h2>
+<p data-v-md-line="12">在main.js中配置</p>
+<div data-v-md-line="13"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code><span class="hljs-keyword">const</span> app = <span class="hljs-title function_">createApp</span>(<span class="hljs-title class_">App</span>)
+app.<span class="hljs-property">config</span>.<span class="hljs-property">globalProperties</span>.<span class="hljs-property">$echarts</span>= echarts
+app.<span class="hljs-title function_">use</span>(router)
+app.<span class="hljs-title function_">mount</span>(<span class="hljs-string">&#x27;#app&#x27;</span>)
+</code></pre>
+</div></div><h3 data-v-md-heading="申明式-api-使用" data-v-md-line="19">申明式 Api 使用</h3>
+<p data-v-md-line="20">就是跟vue2一样的 使用 data()  methods 这样的，用法就跟vue2一样直接this.$echats</p>
+<h3 data-v-md-heading="组合式api" data-v-md-line="22">组合式Api</h3>
+<div data-v-md-line="23"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code><span class="hljs-keyword">import</span> {  getCurrentInstance } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;vue&#x27;</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> {
+    setup () {
+        <span class="hljs-keyword">let</span> { proxy } = <span class="hljs-title function_">getCurrentInstance</span>();
+        <span class="hljs-comment">// 这样使用 proxy.$echarts</span>
+        <span class="hljs-keyword">return</span> {
+
+        }
+    }
+}
+</code></pre>
+</div></div></div>
+                </div>
+            </div>
+                <div class="container-comment">
+                    <div class="comment-title">评论</div>
+                    <div id="SOHUCS" sid="FpBIgZPiSV"></div>
+                    <script charset="utf-8" type="text/javascript" src="https://cy-cdn.kuaizhan.com/upload/changyan.js"></script>
+                    <script type="text/javascript">
+                        window.changyan.api.config({
+                            appid: "cyvP1EXdR",
+                            conf: '0264664c4b9d1fb578d732b34abf3246'
+                        });
+                    </script>
+                </div>
+        </div>
+        <div class="right">
+            <div class="container" id="right-container">
+                <div class="right-title toc-title">目录结构</div>
+                <div id="toc"></div>
+
+                <div class="right-title category-title">
+                    <span>分类专栏</span>
+                    <a href="../category.html" class="more">更多>></a>
+                </div>
+                    <a href="../category/10000.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/image/202112/EFUgXqXkPTFORpHpeTTnbLTTMVsJgf.png">
+                        </span>
+                        <span class="category-name" title="EasyBlog">EasyBlog</span>
+                        <span class="blog-count">0篇</span>
+                    </a>
+                    <a href="../category/10001.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/image/202201/fBNKwBWNHXNERqYdAupUXAMdHZWLJv.png">
+                        </span>
+                        <span class="category-name" title="Java">Java</span>
+                        <span class="blog-count">5篇</span>
+                    </a>
+                    <a href="../category/10002.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/static/default_img.png">
+                        </span>
+                        <span class="category-name" title="electron">electron</span>
+                        <span class="blog-count">2篇</span>
+                    </a>
+                    <a href="../category/10003.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/static/default_img.png">
+                        </span>
+                        <span class="category-name" title="Vue3">Vue3</span>
+                        <span class="blog-count">4篇</span>
+                    </a>
+            </div>
+        </div>
+    </div>
+</div>
+        <div class="footer">
+            <div>
+                <span>©2021-2022 www.wuhancoder.com All rights reserved. </span>
+                <a target="_blank" href="https://beian.miit.gov.cn/">鄂ICP备13017512号-3</a></div>
+            <div>
+                <img src="../resource/static/beian.png">
+                <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=42011502000890">
+                    鄂公网安备 42011502000890号
+                </a></div>
+        </div>
+</body>
+</html>

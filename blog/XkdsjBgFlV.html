@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Springboot 内部调用事务失效 - 我是程序员</title>
+        <meta name="keywords" content="springboot,内部调用事务失效">
+        <meta name="description" content="Springboot 内部调用事务失效，内部调用的正确姿势">
+
+    <link rel="stylesheet" href="../resource/static/plugin/highlight/styles/github.min.css">
+    <link rel="stylesheet" href="../resource/static/plugin/viewer/viewer.min.css">
+    <script src="../resource/static/plugin/highlight/highlight.min.js"></script>
+    <script src="../resource/static/plugin/jquery/jquery.min.js"></script>
+    <script src="../resource/static/plugin/viewer/viewer-jquery.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <link rel="stylesheet" href="../resource/static/css/blog.detail.css">
+    <script>
+        $(document).ready(function (e) {
+            createToc();
+            $("#content").viewer({
+                navbar: false
+            });
+
+            $("#content a").each(function (index, element) {
+                $(element).attr("target", "_blank");
+            })
+        });
+
+        function createToc() {
+            let hCount = 0;
+            $("#content").children().each(function (index, element) {
+                var tagName = $(this).get(0).tagName;
+                if (tagName.substr(0, 1).toUpperCase() == "H") {
+                    hCount++;
+                    var contentH = $(this).text();//获取内容
+                    var markid = "mark-" + tagName + "-" + index.toString();
+                    $(this).attr("id", markid);//为当前h标签设置id
+                    let spaceNum = "0";
+                    if (tagName === 'H1') {
+                        spaceNum = "0";
+                    } else if (tagName === 'H2') {
+                        spaceNum = "1.5";
+                    } else if (tagName === 'H3') {
+                        spaceNum = "3";
+                    } else if (tagName === 'H4') {
+                        spaceNum = "4.5";
+                    } else if (tagName === 'H5') {
+                        spaceNum = "6";
+                    } else if (tagName === 'H6') {
+                        spaceNum = "7.5";
+                    }
+                    spaceNum += "em";
+                    $("<a href='javascript:scroll(\"" + markid + "\")' style='text-indent:" + spaceNum + "'>" + contentH + "</a>").appendTo($("#toc"));
+                }
+            });
+            if (hCount == 0) {
+                $("<div class='no-data'>暂无目录信息</div>").appendTo($("#toc"));
+            }
+            let url = document.location.href;
+            if (url.indexOf("#") != -1) {
+                let markId = url.substr(url.indexOf("#") + 1);
+                scroll(markId);
+            }
+        }
+
+        $(window).scroll(function () {
+            //console.log($(document).scrollTop());
+            $("#right-container").css("top", $(document).scrollTop() + "px");
+        });
+
+        function scroll(markId) {
+            let url = document.location.href;
+            if (url.indexOf("#") == -1) {
+                document.location.href = url + "#" + markId;
+            } else {
+                document.location.href = url.substring(0, url.indexOf("#") + 1) + markId;
+            }
+            $("html,body").animate({scrollTop: $("#" + markId).offset().top - 80}, 100);
+        }
+    </script>
+</head>
+<body>
+    <div class="top">
+        <div class="top-container">
+            <div class="logo">
+                    <a href="../index.html">我是程序员</a>
+            </div>
+                <a href="../index.html" class="nav active">博客</a>
+                <a href="../category.html" class="nav ">分类专栏</a>
+                <a href="../special.html" class="nav ">专题</a>
+                <a href="../user.html" class="nav ">成员</a>
+                <a href="../comment.html" class="nav ">留言板</a>
+        </div>
+    </div>
+<div class="body-container">
+    <div class="blog-detail">
+        <div class="container">
+            <div class="container-content">
+                <div>
+                    <div class="blog-title">Springboot 内部调用事务失效</div>
+                    <div class="blog-info">
+                        <div class="time">2022-01-20 04:12:56</div>
+                        <div class="nick-name">作者：<a href="../user.html#100000">多多洛2020</a></div>
+                        <div class="category">分类专栏：<a href="../category/10001.html">Java</a></div>
+
+                    </div>
+                    <div class="content" id="content"><h1 data-v-md-heading="事件" data-v-md-line="1">事件</h1>
+<p data-v-md-line="2">今天一个同事跑来帮我帮看个问题，她说她写的两个方法，一个事务生效，一个事务不生效，我也纳闷还有这种事，帮忙看了才发现问题。<br>
+两个方法大致是这么写的<br>
+生效的方式是这么写的</p>
+<div data-v-md-line="5"><div class="v-md-pre-wrapper v-md-pre-wrapper-java extra-class"><pre class="v-md-hljs-java"><code>	<span class="hljs-meta">@Override</span>
+	<span class="hljs-meta">@Transactional(rollbackFor = Exception.class)</span>
+	<span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">saveInfo</span><span class="hljs-params">(User user)</span> {
+		<span class="hljs-comment">//do something</span>
+		<span class="hljs-built_in">this</span>.saveUser(user);
+		<span class="hljs-comment">//do something	</span>
+	}
+
+	<span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">saveUser</span><span class="hljs-params">(User user)</span> {
+		<span class="hljs-built_in">this</span>.userMapper.insert(user);
+	}
+
+</code></pre>
+</div></div><p data-v-md-line="20">另外一个方法是这么写的(不生效)</p>
+<div data-v-md-line="21"><div class="v-md-pre-wrapper v-md-pre-wrapper-java extra-class"><pre class="v-md-hljs-java"><code>	<span class="hljs-meta">@Override</span>
+	<span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">saveInfo2</span><span class="hljs-params">(User user)</span> {
+		<span class="hljs-comment">//do something</span>
+		<span class="hljs-built_in">this</span>.saveUser2(user);
+		<span class="hljs-comment">//do something	</span>
+	}
+
+	<span class="hljs-meta">@Transactional(rollbackFor = Exception.class)</span>
+	<span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">saveUser2</span><span class="hljs-params">(User user)</span> {
+		<span class="hljs-built_in">this</span>.userMapper.insert(user);
+		<span class="hljs-comment">//do something</span>
+	}
+
+</code></pre>
+</div></div><p data-v-md-line="36">在 saveUser2中的方法事务不生效，因为她的需求是要 saveUser2有事务，saveInfo2不需要事务<br>
+咋一看两个方法，就是@Transactional 加的位置不一样而已<br>
+由于SpringBoot是通过代理来进行扩展功能的(@Transactional的意思是生成ServiceImpl的代理类时，会为saveInfo方法加上事务），这样的话，由于saveUser()没有声明事务,所以不会回滚。</p>
+<h1 data-v-md-heading="错误的使用内部调用" data-v-md-line="40">错误的使用内部调用</h1>
+<div data-v-md-line="42"><div class="v-md-pre-wrapper v-md-pre-wrapper-java extra-class"><pre class="v-md-hljs-java"><code>	<span class="hljs-meta">@Override</span>
+	<span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">saveInfo2</span><span class="hljs-params">(User user)</span> {
+		<span class="hljs-comment">//do something</span>
+		<span class="hljs-built_in">this</span>.saveUser2(user);
+		<span class="hljs-comment">//do something	</span>
+	}
+
+	<span class="hljs-meta">@Transactional(rollbackFor = Exception.class)</span>
+	<span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">saveUser2</span><span class="hljs-params">(User user)</span> {
+		<span class="hljs-built_in">this</span>.userMapper.insert(user);
+		<span class="hljs-comment">//do something</span>
+	}
+
+</code></pre>
+</div></div><p data-v-md-line="57">将注解加在内部方法中。</p>
+<h1 data-v-md-heading="正确的方式" data-v-md-line="59">正确的方式</h1>
+<h2 data-v-md-heading="bean调用方法上添加注解" data-v-md-line="60">bean调用方法上添加注解</h2>
+<p data-v-md-line="61">注解加在直接service调用的方法上，也就是最外层的方法上</p>
+<div data-v-md-line="63"><div class="v-md-pre-wrapper v-md-pre-wrapper-java extra-class"><pre class="v-md-hljs-java"><code>	<span class="hljs-meta">@Override</span>
+	<span class="hljs-meta">@Transactional(rollbackFor = Exception.class)</span>
+	<span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">saveInfo</span><span class="hljs-params">(User user)</span> {
+		<span class="hljs-comment">//do something</span>
+		<span class="hljs-built_in">this</span>.saveUser(user);
+		<span class="hljs-comment">//do something	</span>
+	}
+
+	<span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">saveUser</span><span class="hljs-params">(User user)</span> {
+		<span class="hljs-built_in">this</span>.userMapper.insert(user);
+	}
+
+</code></pre>
+</div></div><h2 data-v-md-heading="注入内部bean" data-v-md-line="78">注入内部bean</h2>
+<p data-v-md-line="79">将service自己注入到service bean中</p>
+<div data-v-md-line="80"><div class="v-md-pre-wrapper v-md-pre-wrapper-java extra-class"><pre class="v-md-hljs-java"><code>
+	<span class="hljs-meta">@Resource</span>
+	<span class="hljs-meta">@Lazy</span>
+	<span class="hljs-keyword">private</span> ServiceImpl service
+
+	<span class="hljs-meta">@Override</span>
+	<span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">saveInfo2</span><span class="hljs-params">(User user)</span> {
+		<span class="hljs-comment">//do something</span>
+		<span class="hljs-comment">//使用内部service bean对象调用，不要用this</span>
+		service.saveUser2(user);
+		<span class="hljs-comment">//do something	</span>
+	}
+
+	<span class="hljs-meta">@Transactional(rollbackFor = Exception.class)</span>
+	<span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">saveUser2</span><span class="hljs-params">(User user)</span> {
+		<span class="hljs-built_in">this</span>.userMapper.insert(user);
+		<span class="hljs-comment">//do something</span>
+	}
+
+</code></pre>
+</div></div><p data-v-md-line="101">注意这里要加上@Lazy否则会出现<br>
+The dependencies of some of the beans in the application context form a cycle:<br>
+这个错误，就是循环依赖了，所以要延迟加在内部的bean,要使用 @Lazy 来注入内部bean<br>
+最后记得 启动类上加上  @EnableTransactionManagement</p>
+</div>
+                </div>
+            </div>
+                <div class="container-comment">
+                    <div class="comment-title">评论</div>
+                    <div id="SOHUCS" sid="XkdsjBgFlV"></div>
+                    <script charset="utf-8" type="text/javascript" src="https://cy-cdn.kuaizhan.com/upload/changyan.js"></script>
+                    <script type="text/javascript">
+                        window.changyan.api.config({
+                            appid: "cyvP1EXdR",
+                            conf: '0264664c4b9d1fb578d732b34abf3246'
+                        });
+                    </script>
+                </div>
+        </div>
+        <div class="right">
+            <div class="container" id="right-container">
+                <div class="right-title toc-title">目录结构</div>
+                <div id="toc"></div>
+
+                <div class="right-title category-title">
+                    <span>分类专栏</span>
+                    <a href="../category.html" class="more">更多>></a>
+                </div>
+                    <a href="../category/10000.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/image/202112/EFUgXqXkPTFORpHpeTTnbLTTMVsJgf.png">
+                        </span>
+                        <span class="category-name" title="EasyBlog">EasyBlog</span>
+                        <span class="blog-count">0篇</span>
+                    </a>
+                    <a href="../category/10001.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/image/202201/fBNKwBWNHXNERqYdAupUXAMdHZWLJv.png">
+                        </span>
+                        <span class="category-name" title="Java">Java</span>
+                        <span class="blog-count">5篇</span>
+                    </a>
+                    <a href="../category/10002.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/static/default_img.png">
+                        </span>
+                        <span class="category-name" title="electron">electron</span>
+                        <span class="blog-count">2篇</span>
+                    </a>
+                    <a href="../category/10003.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/static/default_img.png">
+                        </span>
+                        <span class="category-name" title="Vue3">Vue3</span>
+                        <span class="blog-count">4篇</span>
+                    </a>
+            </div>
+        </div>
+    </div>
+</div>
+        <div class="footer">
+            <div>
+                <span>©2021-2022 www.wuhancoder.com All rights reserved. </span>
+                <a target="_blank" href="https://beian.miit.gov.cn/">鄂ICP备13017512号-3</a></div>
+            <div>
+                <img src="../resource/static/beian.png">
+                <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=42011502000890">
+                    鄂公网安备 42011502000890号
+                </a></div>
+        </div>
+</body>
+</html>

@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>EasyJava 一个java代码生成工具 - 我是程序员</title>
+        <meta name="keywords" content="Java代码生成工具">
+        <meta name="description" content="一款Java代码生成工具，可以生成 基本的 分页查询、单条插入、单条插入或者更新、批量插入、批量插入或者更新、根据主键、唯一索引 单挑查询、修改、删除。用了，你一定会喜欢。用了mybatis-plus，不妨试试这块代码生成工具">
+
+    <link rel="stylesheet" href="../resource/static/plugin/highlight/styles/github.min.css">
+    <link rel="stylesheet" href="../resource/static/plugin/viewer/viewer.min.css">
+    <script src="../resource/static/plugin/highlight/highlight.min.js"></script>
+    <script src="../resource/static/plugin/jquery/jquery.min.js"></script>
+    <script src="../resource/static/plugin/viewer/viewer-jquery.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <link rel="stylesheet" href="../resource/static/css/blog.detail.css">
+    <script>
+        $(document).ready(function (e) {
+            createToc();
+            $("#content").viewer({
+                navbar: false
+            });
+
+            $("#content a").each(function (index, element) {
+                $(element).attr("target", "_blank");
+            })
+        });
+
+        function createToc() {
+            let hCount = 0;
+            $("#content").children().each(function (index, element) {
+                var tagName = $(this).get(0).tagName;
+                if (tagName.substr(0, 1).toUpperCase() == "H") {
+                    hCount++;
+                    var contentH = $(this).text();//获取内容
+                    var markid = "mark-" + tagName + "-" + index.toString();
+                    $(this).attr("id", markid);//为当前h标签设置id
+                    let spaceNum = "0";
+                    if (tagName === 'H1') {
+                        spaceNum = "0";
+                    } else if (tagName === 'H2') {
+                        spaceNum = "1.5";
+                    } else if (tagName === 'H3') {
+                        spaceNum = "3";
+                    } else if (tagName === 'H4') {
+                        spaceNum = "4.5";
+                    } else if (tagName === 'H5') {
+                        spaceNum = "6";
+                    } else if (tagName === 'H6') {
+                        spaceNum = "7.5";
+                    }
+                    spaceNum += "em";
+                    $("<a href='javascript:scroll(\"" + markid + "\")' style='text-indent:" + spaceNum + "'>" + contentH + "</a>").appendTo($("#toc"));
+                }
+            });
+            if (hCount == 0) {
+                $("<div class='no-data'>暂无目录信息</div>").appendTo($("#toc"));
+            }
+            let url = document.location.href;
+            if (url.indexOf("#") != -1) {
+                let markId = url.substr(url.indexOf("#") + 1);
+                scroll(markId);
+            }
+        }
+
+        $(window).scroll(function () {
+            //console.log($(document).scrollTop());
+            $("#right-container").css("top", $(document).scrollTop() + "px");
+        });
+
+        function scroll(markId) {
+            let url = document.location.href;
+            if (url.indexOf("#") == -1) {
+                document.location.href = url + "#" + markId;
+            } else {
+                document.location.href = url.substring(0, url.indexOf("#") + 1) + markId;
+            }
+            $("html,body").animate({scrollTop: $("#" + markId).offset().top - 80}, 100);
+        }
+    </script>
+</head>
+<body>
+    <div class="top">
+        <div class="top-container">
+            <div class="logo">
+                    <a href="../index.html">我是程序员</a>
+            </div>
+                <a href="../index.html" class="nav active">博客</a>
+                <a href="../category.html" class="nav ">分类专栏</a>
+                <a href="../special.html" class="nav ">专题</a>
+                <a href="../user.html" class="nav ">成员</a>
+                <a href="../comment.html" class="nav ">留言板</a>
+        </div>
+    </div>
+<div class="body-container">
+    <div class="blog-detail">
+        <div class="container">
+            <div class="container-content">
+                <div>
+                    <div class="blog-title">EasyJava 一个java代码生成工具</div>
+                    <div class="blog-info">
+                        <div class="time">2022-09-10 08:58:03</div>
+                        <div class="nick-name">作者：<a href="../user.html#100000">多多洛2020</a></div>
+                        <div class="category">分类专栏：<a href="../category/10001.html">Java</a></div>
+
+                    </div>
+                    <div class="content" id="content"><h1 data-v-md-heading="前言" data-v-md-line="1">前言</h1>
+<p data-v-md-line="2">经过半个月的时间，终于把我自己写的java代码生成工具，录制成了视频教程。视频地址<br>
+接下来我们简单介绍下生成的项目结构.</p>
+<h1 data-v-md-heading="视频教程" data-v-md-line="5">视频教程</h1>
+<p data-v-md-line="6">地址：<a href="https://www.bilibili.com/video/BV1EN4y1c7sL/" target="_blank">https://www.bilibili.com/video/BV1EN4y1c7sL/</a></p>
+<h1 data-v-md-heading="表结构" data-v-md-line="8">表结构</h1>
+<div data-v-md-line="9"><div class="v-md-pre-wrapper v-md-pre-wrapper-sql extra-class"><pre class="v-md-hljs-sql"><code><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> `tb_product_info` (
+  `id` <span class="hljs-type">int</span>(<span class="hljs-number">11</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span> AUTO_INCREMENT COMMENT <span class="hljs-string">&#x27;自增ID&#x27;</span>,
+  `company_id` <span class="hljs-type">varchar</span>(<span class="hljs-number">30</span>) <span class="hljs-keyword">DEFAULT</span> <span class="hljs-keyword">NULL</span> COMMENT <span class="hljs-string">&#x27;公司ID&#x27;</span>,
+  `code` <span class="hljs-type">varchar</span>(<span class="hljs-number">11</span>) <span class="hljs-keyword">DEFAULT</span> <span class="hljs-keyword">NULL</span> COMMENT <span class="hljs-string">&#x27;商品编号&#x27;</span>,
+  `product_name` <span class="hljs-type">varchar</span>(<span class="hljs-number">200</span>) <span class="hljs-keyword">DEFAULT</span> <span class="hljs-keyword">NULL</span> COMMENT <span class="hljs-string">&#x27;商品名称&#x27;</span>,
+  `price` <span class="hljs-type">decimal</span>(<span class="hljs-number">15</span>,<span class="hljs-number">2</span>) <span class="hljs-keyword">DEFAULT</span> <span class="hljs-keyword">NULL</span> COMMENT <span class="hljs-string">&#x27;价格&#x27;</span>,
+  `sku_type` tinyint(<span class="hljs-number">4</span>) <span class="hljs-keyword">DEFAULT</span> <span class="hljs-keyword">NULL</span> COMMENT <span class="hljs-string">&#x27;sku类型&#x27;</span>,
+  `color_type` tinyint(<span class="hljs-number">4</span>) <span class="hljs-keyword">DEFAULT</span> <span class="hljs-keyword">NULL</span> COMMENT <span class="hljs-string">&#x27;颜色类型&#x27;</span>,
+  `create_time` datetime <span class="hljs-keyword">DEFAULT</span> <span class="hljs-keyword">NULL</span> COMMENT <span class="hljs-string">&#x27;创建时间&#x27;</span>,
+  `create_date` <span class="hljs-type">date</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-keyword">NULL</span> COMMENT <span class="hljs-string">&#x27;创建日期&#x27;</span>,
+  `stock` <span class="hljs-type">bigint</span>(<span class="hljs-number">20</span>) <span class="hljs-keyword">DEFAULT</span> <span class="hljs-keyword">NULL</span> COMMENT <span class="hljs-string">&#x27;库存&#x27;</span>,
+  `status` tinyint(<span class="hljs-number">4</span>) <span class="hljs-keyword">DEFAULT</span> <span class="hljs-keyword">NULL</span> COMMENT <span class="hljs-string">&#x27;状态:0 未上架  1:已上架&#x27;</span>,
+  `is_del` tinyint(<span class="hljs-number">4</span>) <span class="hljs-keyword">DEFAULT</span> <span class="hljs-keyword">NULL</span> COMMENT <span class="hljs-string">&#x27;0:删除 1:正常&#x27;</span>,
+  <span class="hljs-keyword">PRIMARY</span> KEY (`id`),
+  <span class="hljs-keyword">UNIQUE</span> KEY `idx_code` (`code`) <span class="hljs-keyword">USING</span> BTREE,
+  <span class="hljs-keyword">UNIQUE</span> KEY `idx_sku_color` (`sku_type`,`color_type`),
+  KEY `idx_name` (`product_name`)
+) ENGINE<span class="hljs-operator">=</span>InnoDB AUTO_INCREMENT<span class="hljs-operator">=</span><span class="hljs-number">24</span> <span class="hljs-keyword">DEFAULT</span> CHARSET<span class="hljs-operator">=</span>utf8 COMMENT<span class="hljs-operator">=</span><span class="hljs-string">&#x27;商品信息&#x27;</span>;
+</code></pre>
+</div></div><p data-v-md-line="29">这个表有 一个自增ID，一个唯一索引 code，还有一个 联合唯一索引，我们会根据这些关键的表信息生成相关的方法</p>
+<h1 data-v-md-heading="生成java代码" data-v-md-line="31">生成Java代码</h1>
+<h2 data-v-md-heading="项目结构" data-v-md-line="33">项目结构</h2>
+<p data-v-md-line="34"><img src="../resource/image/202209/xmCslQnLwIBDmNCyrMMwhRxMQPhqRM.png" alt><br>
+<img src="../resource/image/202209/myQCxFrlzMUpeOLiaeRdCgPeJrGzdb.png" alt></p>
+<h2 data-v-md-heading="生成的controller" data-v-md-line="37">生成的controller</h2>
+<div data-v-md-line="38"><div class="v-md-pre-wrapper v-md-pre-wrapper-java extra-class"><pre class="v-md-hljs-java"><code><span class="hljs-meta">@RestController</span>
+<span class="hljs-meta">@RequestMapping(&quot;/productInfo&quot;)</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ProductInfoController</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">ABaseController</span> {
+
+   <span class="hljs-meta">@Resource</span>
+   <span class="hljs-keyword">private</span> ProductInfoService productInfoService;
+
+   <span class="hljs-meta">@RequestMapping(&quot;loadDataList&quot;)</span>
+   <span class="hljs-keyword">public</span> ResponseVO <span class="hljs-title function_">loadDataList</span><span class="hljs-params">(ProductInfoQuery query)</span> {
+      <span class="hljs-keyword">return</span> getSuccessResponseVO(productInfoService.findListByPage(query));
+   }
+   <span class="hljs-comment">/**
+    * 新增
+    */</span>
+
+   <span class="hljs-meta">@RequestMapping(&quot;add&quot;)</span>
+   <span class="hljs-keyword">public</span> ResponseVO <span class="hljs-title function_">add</span><span class="hljs-params">(ProductInfo bean)</span> {
+      <span class="hljs-built_in">this</span>.productInfoService.add(bean);
+      <span class="hljs-keyword">return</span> getSuccessResponseVO(<span class="hljs-literal">null</span>);
+   }
+
+   <span class="hljs-comment">/**
+    * 批量新增
+    */</span>
+
+   <span class="hljs-meta">@RequestMapping(&quot;addBatch&quot;)</span>
+   <span class="hljs-keyword">public</span> ResponseVO <span class="hljs-title function_">addBatch</span><span class="hljs-params">(<span class="hljs-meta">@RequestBody</span> List&lt;ProductInfo&gt; listBean)</span> {
+      <span class="hljs-built_in">this</span>.productInfoService.addBatch(listBean);
+      <span class="hljs-keyword">return</span> getSuccessResponseVO(<span class="hljs-literal">null</span>);
+   }
+
+   <span class="hljs-comment">/**
+    * 批量新增或修改
+    */</span>
+
+   <span class="hljs-meta">@RequestMapping(&quot;addOrUpdateBatch&quot;)</span>
+   <span class="hljs-keyword">public</span> ResponseVO <span class="hljs-title function_">addOrUpdateBatch</span><span class="hljs-params">(<span class="hljs-meta">@RequestBody</span> List&lt;ProductInfo&gt; listBean)</span> {
+      <span class="hljs-built_in">this</span>.productInfoService.addOrUpdateBatch(listBean);
+      <span class="hljs-keyword">return</span> getSuccessResponseVO(<span class="hljs-literal">null</span>);
+   }
+   <span class="hljs-comment">/**
+    * 根据Id查询
+    */</span>
+
+   <span class="hljs-meta">@RequestMapping(&quot;getProductInfoById&quot;)</span>
+   <span class="hljs-keyword">public</span> ResponseVO <span class="hljs-title function_">getProductInfoById</span><span class="hljs-params">(Integer id)</span> {
+      <span class="hljs-keyword">return</span> getSuccessResponseVO(<span class="hljs-built_in">this</span>.productInfoService.getProductInfoById(id));
+   }
+
+   <span class="hljs-comment">/**
+    * 根据Id更新
+    */</span>
+
+   <span class="hljs-meta">@RequestMapping(&quot;updateProductInfoById&quot;)</span>
+   <span class="hljs-keyword">public</span> ResponseVO <span class="hljs-title function_">updateProductInfoById</span><span class="hljs-params">(ProductInfo bean, Integer id)</span> {
+      <span class="hljs-built_in">this</span>.productInfoService.updateProductInfoById(bean,id);
+      <span class="hljs-keyword">return</span> getSuccessResponseVO(<span class="hljs-literal">null</span>);
+   }
+
+   <span class="hljs-comment">/**
+    * 根据Id删除
+    */</span>
+
+   <span class="hljs-meta">@RequestMapping(&quot;deleteProductInfoById&quot;)</span>
+   <span class="hljs-keyword">public</span> ResponseVO <span class="hljs-title function_">deleteProductInfoById</span><span class="hljs-params">(Integer id)</span> {
+      <span class="hljs-built_in">this</span>.productInfoService.deleteProductInfoById(id);
+      <span class="hljs-keyword">return</span> getSuccessResponseVO(<span class="hljs-literal">null</span>);
+   }
+
+   <span class="hljs-comment">/**
+    * 根据Code查询
+    */</span>
+
+   <span class="hljs-meta">@RequestMapping(&quot;getProductInfoByCode&quot;)</span>
+   <span class="hljs-keyword">public</span> ResponseVO <span class="hljs-title function_">getProductInfoByCode</span><span class="hljs-params">(String code)</span> {
+      <span class="hljs-keyword">return</span> getSuccessResponseVO(<span class="hljs-built_in">this</span>.productInfoService.getProductInfoByCode(code));
+   }
+
+   <span class="hljs-comment">/**
+    * 根据Code更新
+    */</span>
+
+   <span class="hljs-meta">@RequestMapping(&quot;updateProductInfoByCode&quot;)</span>
+   <span class="hljs-keyword">public</span> ResponseVO <span class="hljs-title function_">updateProductInfoByCode</span><span class="hljs-params">(ProductInfo bean, String code)</span> {
+      <span class="hljs-built_in">this</span>.productInfoService.updateProductInfoByCode(bean,code);
+      <span class="hljs-keyword">return</span> getSuccessResponseVO(<span class="hljs-literal">null</span>);
+   }
+
+   <span class="hljs-comment">/**
+    * 根据Code删除
+    */</span>
+
+   <span class="hljs-meta">@RequestMapping(&quot;deleteProductInfoByCode&quot;)</span>
+   <span class="hljs-keyword">public</span> ResponseVO <span class="hljs-title function_">deleteProductInfoByCode</span><span class="hljs-params">(String code)</span> {
+      <span class="hljs-built_in">this</span>.productInfoService.deleteProductInfoByCode(code);
+      <span class="hljs-keyword">return</span> getSuccessResponseVO(<span class="hljs-literal">null</span>);
+   }
+
+   <span class="hljs-comment">/**
+    * 根据SkuTypeAndColorType查询
+    */</span>
+
+   <span class="hljs-meta">@RequestMapping(&quot;getProductInfoBySkuTypeAndColorType&quot;)</span>
+   <span class="hljs-keyword">public</span> ResponseVO <span class="hljs-title function_">getProductInfoBySkuTypeAndColorType</span><span class="hljs-params">(Integer skuType, Integer colorType)</span> {
+      <span class="hljs-keyword">return</span> getSuccessResponseVO(<span class="hljs-built_in">this</span>.productInfoService.getProductInfoBySkuTypeAndColorType(skuType, colorType));
+   }
+
+   <span class="hljs-comment">/**
+    * 根据SkuTypeAndColorType更新
+    */</span>
+
+   <span class="hljs-meta">@RequestMapping(&quot;updateProductInfoBySkuTypeAndColorType&quot;)</span>
+   <span class="hljs-keyword">public</span> ResponseVO <span class="hljs-title function_">updateProductInfoBySkuTypeAndColorType</span><span class="hljs-params">(ProductInfo bean, Integer skuType, Integer colorType)</span> {
+      <span class="hljs-built_in">this</span>.productInfoService.updateProductInfoBySkuTypeAndColorType(bean,skuType, colorType);
+      <span class="hljs-keyword">return</span> getSuccessResponseVO(<span class="hljs-literal">null</span>);
+   }
+
+   <span class="hljs-comment">/**
+    * 根据SkuTypeAndColorType删除
+    */</span>
+
+   <span class="hljs-meta">@RequestMapping(&quot;deleteProductInfoBySkuTypeAndColorType&quot;)</span>
+   <span class="hljs-keyword">public</span> ResponseVO <span class="hljs-title function_">deleteProductInfoBySkuTypeAndColorType</span><span class="hljs-params">(Integer skuType, Integer colorType)</span> {
+      <span class="hljs-built_in">this</span>.productInfoService.deleteProductInfoBySkuTypeAndColorType(skuType, colorType);
+      <span class="hljs-keyword">return</span> getSuccessResponseVO(<span class="hljs-literal">null</span>);
+   }
+
+
+}
+</code></pre>
+</div></div><p data-v-md-line="170">我就不把所有类都列举出来了，重点看下mapper.xml</p>
+<h2 data-v-md-heading="mapper-xml" data-v-md-line="172">Mapper.xml</h2>
+<div data-v-md-line="173"><div class="v-md-pre-wrapper v-md-pre-wrapper-xml extra-class"><pre class="v-md-hljs-xml"><code><span class="hljs-meta">&lt;?xml version=<span class="hljs-string">&quot;1.0&quot;</span> encoding=<span class="hljs-string">&quot;UTF-8&quot;</span>?&gt;</span>
+<span class="hljs-meta">&lt;!DOCTYPE <span class="hljs-keyword">mapper</span> <span class="hljs-keyword">PUBLIC</span> <span class="hljs-string">&quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;</span>
+        <span class="hljs-string">&quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">mapper</span> <span class="hljs-attr">namespace</span>=<span class="hljs-string">&quot;com.easyjava.mappers.ProductInfoMapper&quot;</span>&gt;</span>
+    <span class="hljs-comment">&lt;!--实体映射--&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">resultMap</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;base_result_map&quot;</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;com.easyjava.entity.po.ProductInfo&quot;</span>&gt;</span>       
+		<span class="hljs-comment">&lt;!-- 自增ID--&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">id</span> <span class="hljs-attr">column</span>=<span class="hljs-string">&quot;id&quot;</span> <span class="hljs-attr">property</span>=<span class="hljs-string">&quot;id&quot;</span>/&gt;</span>
+        <span class="hljs-comment">&lt;!-- 公司ID--&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">result</span> <span class="hljs-attr">column</span>=<span class="hljs-string">&quot;company_id&quot;</span> <span class="hljs-attr">property</span>=<span class="hljs-string">&quot;companyId&quot;</span>/&gt;</span>
+        <span class="hljs-comment">&lt;!-- 商品编号--&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">result</span> <span class="hljs-attr">column</span>=<span class="hljs-string">&quot;code&quot;</span> <span class="hljs-attr">property</span>=<span class="hljs-string">&quot;code&quot;</span>/&gt;</span>
+        <span class="hljs-comment">&lt;!-- 商品名称--&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">result</span> <span class="hljs-attr">column</span>=<span class="hljs-string">&quot;product_name&quot;</span> <span class="hljs-attr">property</span>=<span class="hljs-string">&quot;productName&quot;</span>/&gt;</span>
+        <span class="hljs-comment">&lt;!-- 价格--&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">result</span> <span class="hljs-attr">column</span>=<span class="hljs-string">&quot;price&quot;</span> <span class="hljs-attr">property</span>=<span class="hljs-string">&quot;price&quot;</span>/&gt;</span>
+        <span class="hljs-comment">&lt;!-- sku类型--&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">result</span> <span class="hljs-attr">column</span>=<span class="hljs-string">&quot;sku_type&quot;</span> <span class="hljs-attr">property</span>=<span class="hljs-string">&quot;skuType&quot;</span>/&gt;</span>
+        <span class="hljs-comment">&lt;!-- 颜色类型--&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">result</span> <span class="hljs-attr">column</span>=<span class="hljs-string">&quot;color_type&quot;</span> <span class="hljs-attr">property</span>=<span class="hljs-string">&quot;colorType&quot;</span>/&gt;</span>
+        <span class="hljs-comment">&lt;!-- 创建时间--&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">result</span> <span class="hljs-attr">column</span>=<span class="hljs-string">&quot;create_time&quot;</span> <span class="hljs-attr">property</span>=<span class="hljs-string">&quot;createTime&quot;</span>/&gt;</span>
+        <span class="hljs-comment">&lt;!-- 创建日期--&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">result</span> <span class="hljs-attr">column</span>=<span class="hljs-string">&quot;create_date&quot;</span> <span class="hljs-attr">property</span>=<span class="hljs-string">&quot;createDate&quot;</span>/&gt;</span>
+        <span class="hljs-comment">&lt;!-- 库存--&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">result</span> <span class="hljs-attr">column</span>=<span class="hljs-string">&quot;stock&quot;</span> <span class="hljs-attr">property</span>=<span class="hljs-string">&quot;stock&quot;</span>/&gt;</span>
+        <span class="hljs-comment">&lt;!-- 状态:0 未上架  1:已上架--&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">result</span> <span class="hljs-attr">column</span>=<span class="hljs-string">&quot;status&quot;</span> <span class="hljs-attr">property</span>=<span class="hljs-string">&quot;status&quot;</span>/&gt;</span>
+        <span class="hljs-comment">&lt;!-- 0:删除 1:正常--&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">result</span> <span class="hljs-attr">column</span>=<span class="hljs-string">&quot;is_del&quot;</span> <span class="hljs-attr">property</span>=<span class="hljs-string">&quot;isDel&quot;</span>/&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">resultMap</span>&gt;</span>
+
+    <span class="hljs-comment">&lt;!--通用查询结果列--&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">sql</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;base_column_list&quot;</span>&gt;</span>
+      id,company_id,code,product_name,price,sku_type,color_type,create_time,create_date,stock,status,is_del
+   <span class="hljs-tag">&lt;/<span class="hljs-name">sql</span>&gt;</span>
+
+    <span class="hljs-comment">&lt;!--基础查询条件--&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">sql</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;base_query_condition&quot;</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;query.id != null&quot;</span>&gt;</span>
+            and id = #{query.id}
+        <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;query.companyId != null and query.companyId!=&#x27;&#x27;&quot;</span>&gt;</span>
+            and id = #{query.companyId}
+        <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;query.code != null and query.code!=&#x27;&#x27;&quot;</span>&gt;</span>
+            and id = #{query.code}
+        <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;query.productName != null and query.productName!=&#x27;&#x27;&quot;</span>&gt;</span>
+            and id = #{query.productName}
+        <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;query.price != null&quot;</span>&gt;</span>
+            and id = #{query.price}
+        <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;query.skuType != null&quot;</span>&gt;</span>
+            and id = #{query.skuType}
+        <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;query.colorType != null&quot;</span>&gt;</span>
+            and id = #{query.colorType}
+        <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;query.createTime != null&quot;</span>&gt;</span>
+            and id = #{query.createTime}
+        <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;query.createDate != null&quot;</span>&gt;</span>
+            and id = #{query.createDate}
+        <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;query.stock != null&quot;</span>&gt;</span>
+            and id = #{query.stock}
+        <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;query.status != null&quot;</span>&gt;</span>
+            and id = #{query.status}
+        <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;query.isDel != null&quot;</span>&gt;</span>
+            and id = #{query.isDel}
+        <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">sql</span>&gt;</span>
+
+    <span class="hljs-comment">&lt;!--扩展的查询条件--&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">sql</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;base_query_condition_extend&quot;</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;query.companyIdFuzzy != null and query.companyIdFuzzy !=&#x27;&#x27;&quot;</span>&gt;</span>
+            and company_id like concat(&#x27;%&#x27;, #{query.companyIdFuzzy}, &#x27;%&#x27;)
+        <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;query.codeFuzzy != null and query.codeFuzzy !=&#x27;&#x27;&quot;</span>&gt;</span>
+            and code like concat(&#x27;%&#x27;, #{query.codeFuzzy}, &#x27;%&#x27;)
+        <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;query.productNameFuzzy != null and query.productNameFuzzy !=&#x27;&#x27;&quot;</span>&gt;</span>
+            and product_name like concat(&#x27;%&#x27;, #{query.productNameFuzzy}, &#x27;%&#x27;)
+        <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;query.createTimeStart != null and query.createTimeStart !=&#x27;&#x27;&quot;</span>&gt;</span>
+            &lt;![CDATA[ and  create_time &gt;= str_to_date(#{query.createTimeStart}, &#x27;%Y-%m-%d&#x27;) ]]&gt;
+        <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;query.createTimeEnd != null and query.createTimeEnd !=&#x27;&#x27;&quot;</span>&gt;</span>
+            &lt;![CDATA[ and  create_time &lt; date_sub(str_to_date(#{query.createTimeEnd},&#x27;%Y-%m-%d&#x27;),interval -1 day) ]]&gt;
+        <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;query.createDateStart != null and query.createDateStart !=&#x27;&#x27;&quot;</span>&gt;</span>
+            &lt;![CDATA[ and  create_date &gt;= str_to_date(#{query.createDateStart}, &#x27;%Y-%m-%d&#x27;) ]]&gt;
+        <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;query.createDateEnd != null and query.createDateEnd !=&#x27;&#x27;&quot;</span>&gt;</span>
+            &lt;![CDATA[ and  create_date &lt; date_sub(str_to_date(#{query.createDateEnd},&#x27;%Y-%m-%d&#x27;),interval -1 day) ]]&gt;
+        <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">sql</span>&gt;</span>
+
+    <span class="hljs-comment">&lt;!--扩展的查询条件--&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">sql</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;query_condition&quot;</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">where</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">include</span> <span class="hljs-attr">refid</span>=<span class="hljs-string">&quot;base_query_condition&quot;</span>/&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">include</span> <span class="hljs-attr">refid</span>=<span class="hljs-string">&quot;base_query_condition_extend&quot;</span>/&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">where</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">sql</span>&gt;</span>
+
+    <span class="hljs-comment">&lt;!--查询列表--&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">select</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;selectList&quot;</span> <span class="hljs-attr">resultMap</span>=<span class="hljs-string">&quot;base_result_map&quot;</span>&gt;</span>
+        SELECT
+        <span class="hljs-tag">&lt;<span class="hljs-name">include</span> <span class="hljs-attr">refid</span>=<span class="hljs-string">&quot;base_column_list&quot;</span>/&gt;</span>
+        FROM tb_product_info
+        <span class="hljs-tag">&lt;<span class="hljs-name">include</span> <span class="hljs-attr">refid</span>=<span class="hljs-string">&quot;query_condition&quot;</span>/&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;query.orderBy!=null&quot;</span>&gt;</span>order by ${query.orderBy}<span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;query.simplePage!=null&quot;</span>&gt;</span>limit #{query.simplePage.start},#{query.simplePage.end}<span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">select</span>&gt;</span>
+
+    <span class="hljs-comment">&lt;!--查询数量--&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">select</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;selectCount&quot;</span> <span class="hljs-attr">resultType</span>=<span class="hljs-string">&quot;java.lang.Integer&quot;</span>&gt;</span>
+        SELECT count(1) FROM tb_product_info
+        <span class="hljs-tag">&lt;<span class="hljs-name">include</span> <span class="hljs-attr">refid</span>=<span class="hljs-string">&quot;query_condition&quot;</span>/&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">select</span>&gt;</span>
+
+    <span class="hljs-comment">&lt;!--插入 （匹配有值的字段）--&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">insert</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;insert&quot;</span> <span class="hljs-attr">parameterType</span>=<span class="hljs-string">&quot;com.easyjava.entity.po.ProductInfo&quot;</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">selectKey</span> <span class="hljs-attr">keyProperty</span>=<span class="hljs-string">&quot;bean.id&quot;</span> <span class="hljs-attr">resultType</span>=<span class="hljs-string">&quot;Integer&quot;</span> <span class="hljs-attr">order</span>=<span class="hljs-string">&quot;AFTER&quot;</span>&gt;</span>
+            SELECT LAST_INSERT_ID()
+        <span class="hljs-tag">&lt;/<span class="hljs-name">selectKey</span>&gt;</span>
+        INSERT INTO tb_product_info
+        <span class="hljs-tag">&lt;<span class="hljs-name">trim</span> <span class="hljs-attr">prefix</span>=<span class="hljs-string">&quot;(&quot;</span> <span class="hljs-attr">suffix</span>=<span class="hljs-string">&quot;)&quot;</span> <span class="hljs-attr">suffixOverrides</span>=<span class="hljs-string">&quot;,&quot;</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.id != null&quot;</span>&gt;</span>
+                id,
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.companyId != null&quot;</span>&gt;</span>
+                company_id,
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.code != null&quot;</span>&gt;</span>
+                code,
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.productName != null&quot;</span>&gt;</span>
+                product_name,
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.price != null&quot;</span>&gt;</span>
+                price,
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.skuType != null&quot;</span>&gt;</span>
+                sku_type,
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.colorType != null&quot;</span>&gt;</span>
+                color_type,
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.createTime != null&quot;</span>&gt;</span>
+                create_time,
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.createDate != null&quot;</span>&gt;</span>
+                create_date,
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.stock != null&quot;</span>&gt;</span>
+                stock,
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.status != null&quot;</span>&gt;</span>
+                status,
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.isDel != null&quot;</span>&gt;</span>
+                is_del,
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">trim</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">trim</span> <span class="hljs-attr">prefix</span>=<span class="hljs-string">&quot;values (&quot;</span> <span class="hljs-attr">suffix</span>=<span class="hljs-string">&quot;)&quot;</span> <span class="hljs-attr">suffixOverrides</span>=<span class="hljs-string">&quot;,&quot;</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.id!=null&quot;</span>&gt;</span>
+                #{bean.id},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.companyId!=null&quot;</span>&gt;</span>
+                #{bean.companyId},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.code!=null&quot;</span>&gt;</span>
+                #{bean.code},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.productName!=null&quot;</span>&gt;</span>
+                #{bean.productName},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.price!=null&quot;</span>&gt;</span>
+                #{bean.price},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.skuType!=null&quot;</span>&gt;</span>
+                #{bean.skuType},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.colorType!=null&quot;</span>&gt;</span>
+                #{bean.colorType},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.createTime!=null&quot;</span>&gt;</span>
+                #{bean.createTime},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.createDate!=null&quot;</span>&gt;</span>
+                #{bean.createDate},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.stock!=null&quot;</span>&gt;</span>
+                #{bean.stock},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.status!=null&quot;</span>&gt;</span>
+                #{bean.status},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.isDel!=null&quot;</span>&gt;</span>
+                #{bean.isDel},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">trim</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">insert</span>&gt;</span>
+
+    <span class="hljs-comment">&lt;!-- 插入或者更新 （匹配有值的字段）--&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">insert</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;insertOrUpdate&quot;</span> <span class="hljs-attr">parameterType</span>=<span class="hljs-string">&quot;com.easyjava.entity.po.ProductInfo&quot;</span>&gt;</span>
+        INSERT INTO tb_product_info
+        <span class="hljs-tag">&lt;<span class="hljs-name">trim</span> <span class="hljs-attr">prefix</span>=<span class="hljs-string">&quot;(&quot;</span> <span class="hljs-attr">suffix</span>=<span class="hljs-string">&quot;)&quot;</span> <span class="hljs-attr">suffixOverrides</span>=<span class="hljs-string">&quot;,&quot;</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.id != null&quot;</span>&gt;</span>
+                id,
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.companyId != null&quot;</span>&gt;</span>
+                company_id,
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.code != null&quot;</span>&gt;</span>
+                code,
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.productName != null&quot;</span>&gt;</span>
+                product_name,
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.price != null&quot;</span>&gt;</span>
+                price,
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.skuType != null&quot;</span>&gt;</span>
+                sku_type,
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.colorType != null&quot;</span>&gt;</span>
+                color_type,
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.createTime != null&quot;</span>&gt;</span>
+                create_time,
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.createDate != null&quot;</span>&gt;</span>
+                create_date,
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.stock != null&quot;</span>&gt;</span>
+                stock,
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.status != null&quot;</span>&gt;</span>
+                status,
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.isDel != null&quot;</span>&gt;</span>
+                is_del,
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">trim</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">trim</span> <span class="hljs-attr">prefix</span>=<span class="hljs-string">&quot;values (&quot;</span> <span class="hljs-attr">suffix</span>=<span class="hljs-string">&quot;)&quot;</span> <span class="hljs-attr">suffixOverrides</span>=<span class="hljs-string">&quot;,&quot;</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.id!=null&quot;</span>&gt;</span>
+                #{bean.id},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.companyId!=null&quot;</span>&gt;</span>
+                #{bean.companyId},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.code!=null&quot;</span>&gt;</span>
+                #{bean.code},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.productName!=null&quot;</span>&gt;</span>
+                #{bean.productName},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.price!=null&quot;</span>&gt;</span>
+                #{bean.price},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.skuType!=null&quot;</span>&gt;</span>
+                #{bean.skuType},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.colorType!=null&quot;</span>&gt;</span>
+                #{bean.colorType},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.createTime!=null&quot;</span>&gt;</span>
+                #{bean.createTime},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.createDate!=null&quot;</span>&gt;</span>
+                #{bean.createDate},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.stock!=null&quot;</span>&gt;</span>
+                #{bean.stock},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.status!=null&quot;</span>&gt;</span>
+                #{bean.status},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.isDel!=null&quot;</span>&gt;</span>
+                #{bean.isDel},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">trim</span>&gt;</span>
+        on DUPLICATE key update
+        <span class="hljs-tag">&lt;<span class="hljs-name">trim</span> <span class="hljs-attr">prefix</span>=<span class="hljs-string">&quot;&quot;</span> <span class="hljs-attr">suffix</span>=<span class="hljs-string">&quot;&quot;</span> <span class="hljs-attr">suffixOverrides</span>=<span class="hljs-string">&quot;,&quot;</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.companyId!=null&quot;</span>&gt;</span>
+                company_id = VALUES(company_id),
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.productName!=null&quot;</span>&gt;</span>
+                product_name = VALUES(product_name),
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.price!=null&quot;</span>&gt;</span>
+                price = VALUES(price),
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.createTime!=null&quot;</span>&gt;</span>
+                create_time = VALUES(create_time),
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.createDate!=null&quot;</span>&gt;</span>
+                create_date = VALUES(create_date),
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.stock!=null&quot;</span>&gt;</span>
+                stock = VALUES(stock),
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.status!=null&quot;</span>&gt;</span>
+                status = VALUES(status),
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.isDel!=null&quot;</span>&gt;</span>
+                is_del = VALUES(is_del),
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">trim</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">insert</span>&gt;</span>
+
+    <span class="hljs-comment">&lt;!-- 添加 （批量插入）--&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">insert</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;insertBatch&quot;</span> <span class="hljs-attr">parameterType</span>=<span class="hljs-string">&quot;com.easyjava.entity.po.ProductInfo&quot;</span>&gt;</span>
+        INSERT INTO tb_product_info(
+        company_id,
+        code,
+        product_name,
+        price,
+        sku_type,
+        color_type,
+        create_time,
+        create_date,
+        stock,
+        status,
+        is_del
+        )
+        values
+        <span class="hljs-tag">&lt;<span class="hljs-name">foreach</span> <span class="hljs-attr">collection</span>=<span class="hljs-string">&quot;list&quot;</span> <span class="hljs-attr">item</span>=<span class="hljs-string">&quot;item&quot;</span> <span class="hljs-attr">separator</span>=<span class="hljs-string">&quot;,&quot;</span>&gt;</span>
+            (
+            #{item.companyId},
+            #{item.code},
+            #{item.productName},
+            #{item.price},
+            #{item.skuType},
+            #{item.colorType},
+            #{item.createTime},
+            #{item.createDate},
+            #{item.stock},
+            #{item.status},
+            #{item.isDel}
+            )
+        <span class="hljs-tag">&lt;/<span class="hljs-name">foreach</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">insert</span>&gt;</span>
+
+    <span class="hljs-comment">&lt;!-- 批量插入或更新 （批量插入）--&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">insert</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;insertOrUpdateBatch&quot;</span> <span class="hljs-attr">parameterType</span>=<span class="hljs-string">&quot;com.easyjava.entity.po.ProductInfo&quot;</span>&gt;</span>
+        INSERT INTO tb_product_info(
+        company_id,
+        code,
+        product_name,
+        price,
+        sku_type,
+        color_type,
+        create_time,
+        create_date,
+        stock,
+        status,
+        is_del
+        )
+        values
+        <span class="hljs-tag">&lt;<span class="hljs-name">foreach</span> <span class="hljs-attr">collection</span>=<span class="hljs-string">&quot;list&quot;</span> <span class="hljs-attr">item</span>=<span class="hljs-string">&quot;item&quot;</span> <span class="hljs-attr">separator</span>=<span class="hljs-string">&quot;,&quot;</span>&gt;</span>
+            (
+            #{item.companyId},
+            #{item.code},
+            #{item.productName},
+            #{item.price},
+            #{item.skuType},
+            #{item.colorType},
+            #{item.createTime},
+            #{item.createDate},
+            #{item.stock},
+            #{item.status},
+            #{item.isDel}
+            )
+        <span class="hljs-tag">&lt;/<span class="hljs-name">foreach</span>&gt;</span>
+        on DUPLICATE key update
+        id = VALUES(id),
+        company_id = VALUES(company_id),
+        code = VALUES(code),
+        product_name = VALUES(product_name),
+        price = VALUES(price),
+        sku_type = VALUES(sku_type),
+        color_type = VALUES(color_type),
+        create_time = VALUES(create_time),
+        create_date = VALUES(create_date),
+        stock = VALUES(stock),
+        status = VALUES(status),
+        is_del = VALUES(is_del)
+    <span class="hljs-tag">&lt;/<span class="hljs-name">insert</span>&gt;</span>
+
+    <span class="hljs-comment">&lt;!-- 根据Id查询--&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">select</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;selectById&quot;</span> <span class="hljs-attr">resultMap</span>=<span class="hljs-string">&quot;base_result_map&quot;</span>&gt;</span>
+        select
+        <span class="hljs-tag">&lt;<span class="hljs-name">include</span> <span class="hljs-attr">refid</span>=<span class="hljs-string">&quot;base_column_list&quot;</span>/&gt;</span>
+        from tb_product_info where id=#{id}
+    <span class="hljs-tag">&lt;/<span class="hljs-name">select</span>&gt;</span>
+
+    <span class="hljs-comment">&lt;!-- 根据Id更新--&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">update</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;updateById&quot;</span> <span class="hljs-attr">parameterType</span>=<span class="hljs-string">&quot;com.easyjava.entity.po.ProductInfo&quot;</span>&gt;</span>
+        update tb_product_info
+        <span class="hljs-tag">&lt;<span class="hljs-name">set</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.id!= null&quot;</span>&gt;</span>
+                id = #{bean.id},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.companyId!= null&quot;</span>&gt;</span>
+                company_id = #{bean.companyId},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.code!= null&quot;</span>&gt;</span>
+                code = #{bean.code},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.productName!= null&quot;</span>&gt;</span>
+                product_name = #{bean.productName},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.price!= null&quot;</span>&gt;</span>
+                price = #{bean.price},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.skuType!= null&quot;</span>&gt;</span>
+                sku_type = #{bean.skuType},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.colorType!= null&quot;</span>&gt;</span>
+                color_type = #{bean.colorType},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.createTime!= null&quot;</span>&gt;</span>
+                create_time = #{bean.createTime},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.createDate!= null&quot;</span>&gt;</span>
+                create_date = #{bean.createDate},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.stock!= null&quot;</span>&gt;</span>
+                stock = #{bean.stock},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.status!= null&quot;</span>&gt;</span>
+                status = #{bean.status},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.isDel!= null&quot;</span>&gt;</span>
+                is_del = #{bean.isDel},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">set</span>&gt;</span>
+        where id=#{id}
+    <span class="hljs-tag">&lt;/<span class="hljs-name">update</span>&gt;</span>
+
+    <span class="hljs-comment">&lt;!-- 根据Id删除--&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">delete</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;deleteById&quot;</span>&gt;</span>
+      delete from tb_product_info where id=#{id}
+   <span class="hljs-tag">&lt;/<span class="hljs-name">delete</span>&gt;</span>
+
+    <span class="hljs-comment">&lt;!-- 根据Code查询--&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">select</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;selectByCode&quot;</span> <span class="hljs-attr">resultMap</span>=<span class="hljs-string">&quot;base_result_map&quot;</span>&gt;</span>
+        select
+        <span class="hljs-tag">&lt;<span class="hljs-name">include</span> <span class="hljs-attr">refid</span>=<span class="hljs-string">&quot;base_column_list&quot;</span>/&gt;</span>
+        from tb_product_info where code=#{code}
+    <span class="hljs-tag">&lt;/<span class="hljs-name">select</span>&gt;</span>
+
+    <span class="hljs-comment">&lt;!-- 根据Code更新--&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">update</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;updateByCode&quot;</span> <span class="hljs-attr">parameterType</span>=<span class="hljs-string">&quot;com.easyjava.entity.po.ProductInfo&quot;</span>&gt;</span>
+        update tb_product_info
+        <span class="hljs-tag">&lt;<span class="hljs-name">set</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.id!= null&quot;</span>&gt;</span>
+                id = #{bean.id},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.companyId!= null&quot;</span>&gt;</span>
+                company_id = #{bean.companyId},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.code!= null&quot;</span>&gt;</span>
+                code = #{bean.code},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.productName!= null&quot;</span>&gt;</span>
+                product_name = #{bean.productName},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.price!= null&quot;</span>&gt;</span>
+                price = #{bean.price},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.skuType!= null&quot;</span>&gt;</span>
+                sku_type = #{bean.skuType},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.colorType!= null&quot;</span>&gt;</span>
+                color_type = #{bean.colorType},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.createTime!= null&quot;</span>&gt;</span>
+                create_time = #{bean.createTime},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.createDate!= null&quot;</span>&gt;</span>
+                create_date = #{bean.createDate},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.stock!= null&quot;</span>&gt;</span>
+                stock = #{bean.stock},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.status!= null&quot;</span>&gt;</span>
+                status = #{bean.status},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.isDel!= null&quot;</span>&gt;</span>
+                is_del = #{bean.isDel},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">set</span>&gt;</span>
+        where code=#{code}
+    <span class="hljs-tag">&lt;/<span class="hljs-name">update</span>&gt;</span>
+
+    <span class="hljs-comment">&lt;!-- 根据Code删除--&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">delete</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;deleteByCode&quot;</span>&gt;</span>
+      delete from tb_product_info where code=#{code}
+   <span class="hljs-tag">&lt;/<span class="hljs-name">delete</span>&gt;</span>
+
+    <span class="hljs-comment">&lt;!-- 根据SkuTypeAndColorType查询--&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">select</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;selectBySkuTypeAndColorType&quot;</span> <span class="hljs-attr">resultMap</span>=<span class="hljs-string">&quot;base_result_map&quot;</span>&gt;</span>
+        select
+        <span class="hljs-tag">&lt;<span class="hljs-name">include</span> <span class="hljs-attr">refid</span>=<span class="hljs-string">&quot;base_column_list&quot;</span>/&gt;</span>
+        from tb_product_info where sku_type=#{skuType} and color_type=#{colorType}
+    <span class="hljs-tag">&lt;/<span class="hljs-name">select</span>&gt;</span>
+
+    <span class="hljs-comment">&lt;!-- 根据SkuTypeAndColorType更新--&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">update</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;updateBySkuTypeAndColorType&quot;</span> <span class="hljs-attr">parameterType</span>=<span class="hljs-string">&quot;com.easyjava.entity.po.ProductInfo&quot;</span>&gt;</span>
+        update tb_product_info
+        <span class="hljs-tag">&lt;<span class="hljs-name">set</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.id!= null&quot;</span>&gt;</span>
+                id = #{bean.id},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.companyId!= null&quot;</span>&gt;</span>
+                company_id = #{bean.companyId},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.code!= null&quot;</span>&gt;</span>
+                code = #{bean.code},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.productName!= null&quot;</span>&gt;</span>
+                product_name = #{bean.productName},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.price!= null&quot;</span>&gt;</span>
+                price = #{bean.price},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.skuType!= null&quot;</span>&gt;</span>
+                sku_type = #{bean.skuType},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.colorType!= null&quot;</span>&gt;</span>
+                color_type = #{bean.colorType},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.createTime!= null&quot;</span>&gt;</span>
+                create_time = #{bean.createTime},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.createDate!= null&quot;</span>&gt;</span>
+                create_date = #{bean.createDate},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.stock!= null&quot;</span>&gt;</span>
+                stock = #{bean.stock},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.status!= null&quot;</span>&gt;</span>
+                status = #{bean.status},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;bean.isDel!= null&quot;</span>&gt;</span>
+                is_del = #{bean.isDel},
+            <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">set</span>&gt;</span>
+        where sku_type=#{skuType} and color_type=#{colorType}
+    <span class="hljs-tag">&lt;/<span class="hljs-name">update</span>&gt;</span>
+
+    <span class="hljs-comment">&lt;!-- 根据SkuTypeAndColorType删除--&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">delete</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;deleteBySkuTypeAndColorType&quot;</span>&gt;</span>
+      delete from tb_product_info where sku_type=#{skuType} and color_type=#{colorType}
+   <span class="hljs-tag">&lt;/<span class="hljs-name">delete</span>&gt;</span>
+
+<span class="hljs-tag">&lt;/<span class="hljs-name">mapper</span>&gt;</span>
+</code></pre>
+</div></div><p data-v-md-line="742">可以生成 基本的 分页查询、单条插入、单条插入或者更新、批量插入、批量插入或者更新、根据主键、唯一索引 单挑查询、修改、删除</p>
+<p data-v-md-line="744">具体有哪些功能，大家看视频吧，视频第一张有演示项目功能，如果你厌倦了CRUD，那就快学起来吧</p>
+</div>
+                </div>
+            </div>
+                <div class="container-comment">
+                    <div class="comment-title">评论</div>
+                    <div id="SOHUCS" sid="fHimhBHWFU"></div>
+                    <script charset="utf-8" type="text/javascript" src="https://cy-cdn.kuaizhan.com/upload/changyan.js"></script>
+                    <script type="text/javascript">
+                        window.changyan.api.config({
+                            appid: "cyvP1EXdR",
+                            conf: '0264664c4b9d1fb578d732b34abf3246'
+                        });
+                    </script>
+                </div>
+        </div>
+        <div class="right">
+            <div class="container" id="right-container">
+                <div class="right-title toc-title">目录结构</div>
+                <div id="toc"></div>
+
+                <div class="right-title category-title">
+                    <span>分类专栏</span>
+                    <a href="../category.html" class="more">更多>></a>
+                </div>
+                    <a href="../category/10000.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/image/202112/EFUgXqXkPTFORpHpeTTnbLTTMVsJgf.png">
+                        </span>
+                        <span class="category-name" title="EasyBlog">EasyBlog</span>
+                        <span class="blog-count">0篇</span>
+                    </a>
+                    <a href="../category/10001.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/image/202201/fBNKwBWNHXNERqYdAupUXAMdHZWLJv.png">
+                        </span>
+                        <span class="category-name" title="Java">Java</span>
+                        <span class="blog-count">5篇</span>
+                    </a>
+                    <a href="../category/10002.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/static/default_img.png">
+                        </span>
+                        <span class="category-name" title="electron">electron</span>
+                        <span class="blog-count">2篇</span>
+                    </a>
+                    <a href="../category/10003.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/static/default_img.png">
+                        </span>
+                        <span class="category-name" title="Vue3">Vue3</span>
+                        <span class="blog-count">4篇</span>
+                    </a>
+            </div>
+        </div>
+    </div>
+</div>
+        <div class="footer">
+            <div>
+                <span>©2021-2022 www.wuhancoder.com All rights reserved. </span>
+                <a target="_blank" href="https://beian.miit.gov.cn/">鄂ICP备13017512号-3</a></div>
+            <div>
+                <img src="../resource/static/beian.png">
+                <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=42011502000890">
+                    鄂公网安备 42011502000890号
+                </a></div>
+        </div>
+</body>
+</html>

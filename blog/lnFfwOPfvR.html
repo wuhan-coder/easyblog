@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>30分钟从vue2 上手 vue3 - 我是程序员</title>
+        <meta name="keywords" content="vue2,vue3,vue2和vue3的区别">
+        <meta name="description" content="后面的讲解都是使用的vue3.x 使用了setup语法糖，这个语法糖的确好用，不用每个都去return，实际开发中经常忘记return，这个语法糖就很好用了，对于setup语法糖是3.2才支持的。
+主要讲解我们开发中经常用到的一些内容，包括 router，prototype,父子组件调用 等。">
+
+    <link rel="stylesheet" href="../resource/static/plugin/highlight/styles/github.min.css">
+    <link rel="stylesheet" href="../resource/static/plugin/viewer/viewer.min.css">
+    <script src="../resource/static/plugin/highlight/highlight.min.js"></script>
+    <script src="../resource/static/plugin/jquery/jquery.min.js"></script>
+    <script src="../resource/static/plugin/viewer/viewer-jquery.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <link rel="stylesheet" href="../resource/static/css/blog.detail.css">
+    <script>
+        $(document).ready(function (e) {
+            createToc();
+            $("#content").viewer({
+                navbar: false
+            });
+
+            $("#content a").each(function (index, element) {
+                $(element).attr("target", "_blank");
+            })
+        });
+
+        function createToc() {
+            let hCount = 0;
+            $("#content").children().each(function (index, element) {
+                var tagName = $(this).get(0).tagName;
+                if (tagName.substr(0, 1).toUpperCase() == "H") {
+                    hCount++;
+                    var contentH = $(this).text();//获取内容
+                    var markid = "mark-" + tagName + "-" + index.toString();
+                    $(this).attr("id", markid);//为当前h标签设置id
+                    let spaceNum = "0";
+                    if (tagName === 'H1') {
+                        spaceNum = "0";
+                    } else if (tagName === 'H2') {
+                        spaceNum = "1.5";
+                    } else if (tagName === 'H3') {
+                        spaceNum = "3";
+                    } else if (tagName === 'H4') {
+                        spaceNum = "4.5";
+                    } else if (tagName === 'H5') {
+                        spaceNum = "6";
+                    } else if (tagName === 'H6') {
+                        spaceNum = "7.5";
+                    }
+                    spaceNum += "em";
+                    $("<a href='javascript:scroll(\"" + markid + "\")' style='text-indent:" + spaceNum + "'>" + contentH + "</a>").appendTo($("#toc"));
+                }
+            });
+            if (hCount == 0) {
+                $("<div class='no-data'>暂无目录信息</div>").appendTo($("#toc"));
+            }
+            let url = document.location.href;
+            if (url.indexOf("#") != -1) {
+                let markId = url.substr(url.indexOf("#") + 1);
+                scroll(markId);
+            }
+        }
+
+        $(window).scroll(function () {
+            //console.log($(document).scrollTop());
+            $("#right-container").css("top", $(document).scrollTop() + "px");
+        });
+
+        function scroll(markId) {
+            let url = document.location.href;
+            if (url.indexOf("#") == -1) {
+                document.location.href = url + "#" + markId;
+            } else {
+                document.location.href = url.substring(0, url.indexOf("#") + 1) + markId;
+            }
+            $("html,body").animate({scrollTop: $("#" + markId).offset().top - 80}, 100);
+        }
+    </script>
+</head>
+<body>
+    <div class="top">
+        <div class="top-container">
+            <div class="logo">
+                    <a href="../index.html">我是程序员</a>
+            </div>
+                <a href="../index.html" class="nav active">博客</a>
+                <a href="../category.html" class="nav ">分类专栏</a>
+                <a href="../special.html" class="nav ">专题</a>
+                <a href="../user.html" class="nav ">成员</a>
+                <a href="../comment.html" class="nav ">留言板</a>
+        </div>
+    </div>
+<div class="body-container">
+    <div class="blog-detail">
+        <div class="container">
+            <div class="container-content">
+                <div>
+                    <div class="blog-title">30分钟从vue2 上手 vue3</div>
+                    <div class="blog-info">
+                        <div class="time">2022-06-12 12:12:58</div>
+                        <div class="nick-name">作者：<a href="../user.html#100000">多多洛2020</a></div>
+                        <div class="category">分类专栏：<a href="../category/10003.html">Vue3</a></div>
+
+                    </div>
+                    <div class="content" id="content"><h1 data-v-md-heading="vue3-x-和-vue2-x的一些区别" data-v-md-line="1">vue3.x 和 vue2.x的一些区别</h1>
+<p data-v-md-line="2">后面的讲解都是使用的vue3.x 使用了setup语法糖，这个语法糖的确好用，不用每个都去return，实际开发中经常忘记return，这个语法糖就很好用了，对于setup语法糖是3.2才支持的。<br>
+主要讲解我们开发中经常用到的一些内容，包括 router，prototype,父子组件调用 等。</p>
+<h2 data-v-md-heading="vue3-x组合式api" data-v-md-line="5">vue3.x组合式api</h2>
+<h3 data-v-md-heading="vue2-定义属性和方法" data-v-md-line="6">vue2 定义属性和方法</h3>
+<div data-v-md-line="7"><div class="v-md-pre-wrapper v-md-pre-wrapper-html extra-class"><pre class="v-md-hljs-html"><code><span class="hljs-tag">&lt;<span class="hljs-name">template</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>简单属性<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>{{ msg }}<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">button</span> @<span class="hljs-attr">click</span>=<span class="hljs-string">&quot;updateMsg&quot;</span>&gt;</span>修改马杀鸡<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>对象属性<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>{{ ObjMsg.msg }}<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">button</span> @<span class="hljs-attr">click</span>=<span class="hljs-string">&quot;updateObjMsg&quot;</span>&gt;</span>修改对象马杀鸡<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="language-javascript">
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> {
+  <span class="hljs-title function_">data</span>(<span class="hljs-params"></span>) {
+    <span class="hljs-keyword">return</span> {
+      <span class="hljs-attr">msg</span>: <span class="hljs-string">&quot;我是马杀鸡&quot;</span>,
+      <span class="hljs-title class_">ObjMsg</span>: {
+        <span class="hljs-attr">msg</span>: <span class="hljs-string">&quot;我是对象马杀鸡&quot;</span>,
+      },
+    };
+  },
+  <span class="hljs-attr">methods</span>: {
+    <span class="hljs-title function_">updateMsg</span>(<span class="hljs-params"></span>) {
+      <span class="hljs-variable language_">this</span>.<span class="hljs-property">msg</span> = <span class="hljs-string">&quot;我是马杀鸡修改后的内容&quot;</span>;
+    },
+    <span class="hljs-title function_">updateObjMsg</span>(<span class="hljs-params"></span>) {
+      <span class="hljs-variable language_">this</span>.<span class="hljs-property">ObjMsg</span>.<span class="hljs-property">msg</span> = <span class="hljs-string">&quot;我是对象马杀鸡修改后的内容&quot;</span>;
+    },
+  },
+};
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">style</span> <span class="hljs-attr">scoped</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">style</span>&gt;</span>
+
+</code></pre>
+</div></div><h3 data-v-md-heading="vue3-定义属性和方法" data-v-md-line="46">vue3 定义属性和方法</h3>
+<div data-v-md-line="47"><div class="v-md-pre-wrapper v-md-pre-wrapper-html extra-class"><pre class="v-md-hljs-html"><code><span class="hljs-tag">&lt;<span class="hljs-name">template</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>简单属性<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>{{ msg }}<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">button</span> @<span class="hljs-attr">click</span>=<span class="hljs-string">&quot;updateMsg&quot;</span>&gt;</span>修改马杀鸡<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>对象属性<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>{{ ObjMsg.msg }}<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">button</span> @<span class="hljs-attr">click</span>=<span class="hljs-string">&quot;updateObjMsg&quot;</span>&gt;</span>修改对象马杀鸡<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">setup</span>&gt;</span><span class="language-javascript">
+<span class="hljs-comment">//注意要导入 reactive和ref</span>
+<span class="hljs-keyword">import</span> { reactive, ref } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;vue&quot;</span>;
+
+<span class="hljs-comment">//只是基本数据类型相关操作块</span>
+<span class="hljs-keyword">const</span> msg = <span class="hljs-title function_">ref</span>(<span class="hljs-string">&quot;我是马杀鸡&quot;</span>);
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">updateMsg</span> = (<span class="hljs-params"></span>) =&gt; {
+  msg.<span class="hljs-property">value</span> = <span class="hljs-string">&quot;我是马杀鸡修改后的内容&quot;</span>;
+};
+
+<span class="hljs-comment">//这是对象数据类型相关操作</span>
+<span class="hljs-keyword">const</span> <span class="hljs-title class_">ObjMsg</span> = <span class="hljs-title function_">reactive</span>({
+  <span class="hljs-attr">msg</span>: <span class="hljs-string">&quot;我是对象马杀鸡&quot;</span>,
+});
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">updateObjMsg</span> = (<span class="hljs-params"></span>) =&gt; {
+  <span class="hljs-title class_">ObjMsg</span>.<span class="hljs-property">msg</span> = <span class="hljs-string">&quot;我是对象马杀鸡修改后的内容&quot;</span>;
+};
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">style</span> <span class="hljs-attr">scoped</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">style</span>&gt;</span>
+
+</code></pre>
+</div></div><p data-v-md-line="83">官方建议简单类型使用 ref,对象类型使用reactive，reactive最终也是转为ref的，那么上面对象类型也可以这么写</p>
+<div data-v-md-line="84"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code><span class="hljs-keyword">const</span> <span class="hljs-title class_">ObjMsg</span> = <span class="hljs-title function_">ref</span>({
+  <span class="hljs-attr">msg</span>: <span class="hljs-string">&quot;我是对象马杀鸡&quot;</span>,
+});
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">updateObjMsg</span> = (<span class="hljs-params"></span>) =&gt; {
+  <span class="hljs-title class_">ObjMsg</span>.<span class="hljs-property">value</span>.<span class="hljs-property">msg</span> = <span class="hljs-string">&quot;我是对象马杀鸡修改后的内容&quot;</span>;
+};
+</code></pre>
+</div></div><p data-v-md-line="92">操作的时候需要带上value,这个就看个人习惯了，都用ref也是没有问题的</p>
+<p data-v-md-line="94">可以看出 vue3 的组合式api，可以将逻辑块写在一起，vue2，属性定义和逻辑代码是分开的，不利于维护。</p>
+<h2 data-v-md-heading="router-使用的区别" data-v-md-line="96">router 使用的区别</h2>
+<h3 data-v-md-heading="vue2-x-router使用" data-v-md-line="97">vue2.x router使用</h3>
+<p data-v-md-line="98">vue2使用的router是3.x</p>
+<h4 data-v-md-heading="定义router" data-v-md-line="100">定义router</h4>
+<div data-v-md-line="101"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code><span class="hljs-keyword">import</span> <span class="hljs-title class_">Vue</span> <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;vue&#x27;</span>
+<span class="hljs-keyword">import</span> <span class="hljs-title class_">VueRouter</span> <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;vue-router&#x27;</span>
+
+<span class="hljs-title class_">Vue</span>.<span class="hljs-title function_">use</span>(<span class="hljs-title class_">VueRouter</span>)
+
+<span class="hljs-keyword">const</span> routes = [
+  {
+    <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;首页&#x27;</span>,
+    <span class="hljs-attr">path</span>: <span class="hljs-string">&#x27;/home&#x27;</span>,
+    <span class="hljs-attr">component</span>: <span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">import</span>(<span class="hljs-string">&#x27;../views/Home.vue&#x27;</span>),
+  }
+];
+
+<span class="hljs-keyword">const</span> router = <span class="hljs-keyword">new</span> <span class="hljs-title class_">VueRouter</span>({
+  <span class="hljs-attr">mode</span>: <span class="hljs-string">&#x27;history&#x27;</span>,
+  routes
+})
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> router
+
+</code></pre>
+</div></div><h4 data-v-md-heading="在main-js中引入router" data-v-md-line="123">在main.js中引入router</h4>
+<div data-v-md-line="124"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code><span class="hljs-keyword">import</span> router <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./router&#x27;</span>
+
+<span class="hljs-title class_">Vue</span>.<span class="hljs-property">config</span>.<span class="hljs-property">productionTip</span> = <span class="hljs-literal">false</span>
+
+<span class="hljs-keyword">new</span> <span class="hljs-title class_">Vue</span>({
+  router,
+  <span class="hljs-attr">render</span>: <span class="hljs-function"><span class="hljs-params">h</span> =&gt;</span> <span class="hljs-title function_">h</span>(<span class="hljs-title class_">App</span>)
+}).$mount(<span class="hljs-string">&#x27;#app&#x27;</span>)
+
+</code></pre>
+</div></div><h4 data-v-md-heading="在vue中使用" data-v-md-line="135">在vue中使用</h4>
+<div data-v-md-line="137"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> {
+  <span class="hljs-title function_">data</span>(<span class="hljs-params"></span>) {
+    <span class="hljs-keyword">return</span> {};
+  },
+  <span class="hljs-title function_">created</span>(<span class="hljs-params"></span>) {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;当前路由&quot;</span>, <span class="hljs-variable language_">this</span>.<span class="hljs-property">$route</span>.<span class="hljs-property">path</span>);
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;过五秒后跳转到home&quot;</span>);
+    <span class="hljs-built_in">setTimeout</span>(<span class="hljs-function">() =&gt;</span> {
+      <span class="hljs-variable language_">this</span>.<span class="hljs-property">$router</span>.<span class="hljs-title function_">push</span>(<span class="hljs-string">&quot;home&quot;</span>);
+    }, <span class="hljs-number">5000</span>);
+  },
+};
+</code></pre>
+</div></div><p data-v-md-line="151">直接使用this.$route  和 this.$router 就可以直接调用，比较方便</p>
+<h3 data-v-md-heading="vue3-x使用router" data-v-md-line="153">vue3.x使用router</h3>
+<p data-v-md-line="154">vue3.x使用的router版本4.x</p>
+<h4 data-v-md-heading="定义router-1" data-v-md-line="155">定义router</h4>
+<div data-v-md-line="156"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code><span class="hljs-keyword">import</span> { createRouter, createWebHistory } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;vue-router&#x27;</span>
+<span class="hljs-keyword">const</span> routes = [
+    {
+        <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;首页&#x27;</span>,
+        <span class="hljs-attr">path</span>: <span class="hljs-string">&#x27;/home&#x27;</span>,
+        <span class="hljs-attr">component</span>: <span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">import</span>(<span class="hljs-string">&#x27;../views/Home.vue&#x27;</span>),
+    }
+];
+
+<span class="hljs-comment">//这里不是通过new来创建，通过createRouter 方法创建，使用的模式不是通过mode来定义</span>
+<span class="hljs-keyword">const</span> router = <span class="hljs-title function_">createRouter</span>({
+    routes,
+    <span class="hljs-attr">history</span>: <span class="hljs-title function_">createWebHistory</span>(),
+})
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> router
+</code></pre>
+</div></div><h4 data-v-md-heading="在main-js中引用" data-v-md-line="175">在main.js中引用</h4>
+<div data-v-md-line="176"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code><span class="hljs-keyword">import</span> router <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./router/router&#x27;</span>
+<span class="hljs-title function_">createApp</span>(<span class="hljs-title class_">App</span>).<span class="hljs-title function_">use</span>(router).<span class="hljs-title function_">mount</span>(<span class="hljs-string">&#x27;#app&#x27;</span>)
+</code></pre>
+</div></div><h4 data-v-md-heading="在vue中使用router" data-v-md-line="180">在vue中使用router</h4>
+<div data-v-md-line="181"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code>&lt;script setup&gt;
+<span class="hljs-keyword">import</span> { useRoute, useRouter } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;vue-router&quot;</span>;
+<span class="hljs-keyword">const</span> router = <span class="hljs-title function_">useRouter</span>();
+<span class="hljs-keyword">const</span> route = <span class="hljs-title function_">useRoute</span>();
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">init</span> = (<span class="hljs-params"></span>) =&gt; {
+  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;当前路由&quot;</span>, route.<span class="hljs-property">path</span>);
+  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;过五秒后跳转到home&quot;</span>);
+  <span class="hljs-built_in">setTimeout</span>(<span class="hljs-function">() =&gt;</span> {
+    router.<span class="hljs-title function_">push</span>(<span class="hljs-string">&quot;home&quot;</span>);
+  }, <span class="hljs-number">5000</span>);
+};
+<span class="hljs-title function_">init</span>();
+&lt;/script&gt;
+</code></pre>
+</div></div><p data-v-md-line="196">使用相比vue2麻烦一些，需要先引入，然后获取router,route对象，vue3不能通过this获取vue对象了。</p>
+<blockquote data-v-md-line="198">
+<p data-v-md-line="198">总结：</p>
+<p data-v-md-line="200">vue2.x 通过this.router this.route直接调用</p>
+<p data-v-md-line="202">vue3.x 需要引入useRoute，useRouter 通过useRouter()和useRoute() 方法获取相关对象，然后调用</p>
+</blockquote>
+<h2 data-v-md-heading="定义全局方法-变量" data-v-md-line="206">定义全局方法，变量</h2>
+<h3 data-v-md-heading="vue2-x定义全局方法" data-v-md-line="208">vue2.x定义全局方法</h3>
+<p data-v-md-line="210">main.js</p>
+<div data-v-md-line="212"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code><span class="hljs-keyword">import</span> <span class="hljs-title class_">Vue</span> <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;vue&#x27;</span>
+<span class="hljs-keyword">import</span> <span class="hljs-title class_">App</span> <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./App.vue&#x27;</span>
+<span class="hljs-keyword">import</span> router <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./router&#x27;</span>
+
+<span class="hljs-title class_">Vue</span>.<span class="hljs-property">config</span>.<span class="hljs-property">productionTip</span> = <span class="hljs-literal">false</span>
+
+<span class="hljs-keyword">const</span> <span class="hljs-title class_">Utils</span> = {
+  <span class="hljs-attr">isEmpty</span>: <span class="hljs-function">(<span class="hljs-params">value</span>) =&gt;</span> {
+    <span class="hljs-keyword">if</span> (value === <span class="hljs-literal">null</span> || value === <span class="hljs-literal">undefined</span> || value.<span class="hljs-title function_">trim</span>() === <span class="hljs-string">&quot;&quot;</span>) {
+      <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>
+    }
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+  }
+}
+
+<span class="hljs-title class_">Vue</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>.<span class="hljs-property">Utils</span> = <span class="hljs-title class_">Utils</span>;
+
+<span class="hljs-keyword">new</span> <span class="hljs-title class_">Vue</span>({
+  router,
+  <span class="hljs-attr">render</span>: <span class="hljs-function"><span class="hljs-params">h</span> =&gt;</span> <span class="hljs-title function_">h</span>(<span class="hljs-title class_">App</span>)
+}).$mount(<span class="hljs-string">&#x27;#app&#x27;</span>)
+
+</code></pre>
+</div></div><h3 data-v-md-heading="vue2-x中使用全局方法" data-v-md-line="237">vue2.x中使用全局方法</h3>
+<div data-v-md-line="239"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code>&lt;script&gt;
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> {
+  <span class="hljs-title function_">data</span>(<span class="hljs-params"></span>) {
+    <span class="hljs-keyword">return</span> {};
+  },
+  <span class="hljs-title function_">created</span>(<span class="hljs-params"></span>) {
+    <span class="hljs-keyword">let</span> test = <span class="hljs-string">&quot; &quot;</span>;
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;调用全局为空判断&quot;</span>, <span class="hljs-variable language_">this</span>.<span class="hljs-property">Utils</span>.<span class="hljs-title function_">isEmpty</span>(test));
+  },
+};
+&lt;/script&gt;
+输出结果：调用全局为空判断 <span class="hljs-literal">true</span>
+</code></pre>
+</div></div><p data-v-md-line="254">vue2中可以使用原生类型扩展vue对象，然后通过this直接调用</p>
+<h3 data-v-md-heading="vue3-x定义全局方法" data-v-md-line="258">vue3.x定义全局方法</h3>
+<p data-v-md-line="260">main.js</p>
+<div data-v-md-line="262"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code><span class="hljs-keyword">import</span> { createApp } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;vue&#x27;</span>
+<span class="hljs-keyword">import</span> <span class="hljs-title class_">App</span> <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./App.vue&#x27;</span>
+<span class="hljs-keyword">import</span> router <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./router/router&#x27;</span>
+
+
+<span class="hljs-keyword">const</span> <span class="hljs-title class_">Utils</span> = {
+    <span class="hljs-attr">isEmpty</span>: <span class="hljs-function">(<span class="hljs-params">value</span>) =&gt;</span> {
+        <span class="hljs-keyword">if</span> (value === <span class="hljs-literal">null</span> || value === <span class="hljs-literal">undefined</span> || value.<span class="hljs-title function_">trim</span>() === <span class="hljs-string">&quot;&quot;</span>) {
+            <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>
+        }
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+    }
+}
+
+<span class="hljs-keyword">const</span> app = <span class="hljs-title function_">createApp</span>(<span class="hljs-title class_">App</span>);
+app.<span class="hljs-property">config</span>.<span class="hljs-property">globalProperties</span>.<span class="hljs-property">Utils</span> = <span class="hljs-title class_">Utils</span>;
+
+app.<span class="hljs-title function_">use</span>(router)
+app.<span class="hljs-title function_">mount</span>(<span class="hljs-string">&#x27;#app&#x27;</span>)
+
+
+</code></pre>
+</div></div><h3 data-v-md-heading="vue3-x中使用全局方法" data-v-md-line="286">vue3.x中使用全局方法</h3>
+<div data-v-md-line="288"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code>&lt;script setup&gt;
+<span class="hljs-keyword">import</span> { getCurrentInstance } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;vue&quot;</span>;
+<span class="hljs-keyword">const</span> { proxy } = <span class="hljs-title function_">getCurrentInstance</span>();
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">init</span> = (<span class="hljs-params"></span>) =&gt; {
+  <span class="hljs-keyword">let</span> test = <span class="hljs-string">&quot; &quot;</span>;
+  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;调用全局为空判断&quot;</span>, proxy.<span class="hljs-property">Utils</span>.<span class="hljs-title function_">isEmpty</span>(test));
+};
+
+<span class="hljs-title function_">init</span>();
+&lt;/script&gt;
+
+输出结果：调用全局为空判断 <span class="hljs-literal">true</span>
+</code></pre>
+</div></div><p data-v-md-line="303">vue3 是通过代理获取全局对象，所以在使用的时候需要通过getCurrentInstance 方法获取当前实例，然后调用</p>
+<blockquote data-v-md-line="307">
+<p data-v-md-line="307">总结</p>
+<p data-v-md-line="309">vue2.x通过prototype原生类扩展属性，通过this.xxx调用</p>
+<p data-v-md-line="311">vue3.x 通过app.config.globalProperties 定义全局方法，通过getCurrentInstance 获取当前对象，然后调用</p>
+</blockquote>
+<h2 data-v-md-heading="父子组件调用" data-v-md-line="315">父子组件调用</h2>
+<h3 data-v-md-heading="vue2-x-父组件调用子组件" data-v-md-line="317">vue2.x 父组件调用子组件</h3>
+<h4 data-v-md-heading="定义子组件" data-v-md-line="319">定义子组件</h4>
+<div data-v-md-line="321"><div class="v-md-pre-wrapper v-md-pre-wrapper-html extra-class"><pre class="v-md-hljs-html"><code><span class="hljs-tag">&lt;<span class="hljs-name">template</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">:style</span>=<span class="hljs-string">&quot;{ border: &#x27;1px solid red&#x27; }&quot;</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>这里展示的是父组件传过来的参数：{{ msg }}<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>这里展示的是父组件调用子组件方法修改的参数:{{ msg2 }}<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="language-javascript">
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> {
+  <span class="hljs-attr">props</span>: {
+    <span class="hljs-attr">msg</span>: <span class="hljs-title class_">String</span>,
+  },
+  <span class="hljs-title function_">data</span>(<span class="hljs-params"></span>) {
+    <span class="hljs-keyword">return</span> {
+      <span class="hljs-attr">msg2</span>: <span class="hljs-string">&quot;&quot;</span>,
+    };
+  },
+  <span class="hljs-attr">methods</span>: {
+    <span class="hljs-title function_">changeMsg2</span>(<span class="hljs-params">msg</span>) {
+      <span class="hljs-variable language_">this</span>.<span class="hljs-property">msg2</span> = msg;
+    },
+  },
+};
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">style</span> <span class="hljs-attr">scoped</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">style</span>&gt;</span>
+</code></pre>
+</div></div><p data-v-md-line="351">通过props定义参数，同时定义了一个changeMsg2的方法，提供父组件调用</p>
+<h4 data-v-md-heading="定义父组件" data-v-md-line="353">定义父组件</h4>
+<div data-v-md-line="355"><div class="v-md-pre-wrapper v-md-pre-wrapper-html extra-class"><pre class="v-md-hljs-html"><code><span class="hljs-tag">&lt;<span class="hljs-name">template</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Son</span> <span class="hljs-attr">ref</span>=<span class="hljs-string">&quot;refSon&quot;</span> <span class="hljs-attr">:msg</span>=<span class="hljs-string">&quot;msg&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">Son</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">button</span> @<span class="hljs-attr">click</span>=<span class="hljs-string">&quot;opSonMethod&quot;</span>&gt;</span>调用子组件中的方法<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="language-javascript">
+<span class="hljs-keyword">import</span> <span class="hljs-title class_">Son</span> <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;./ParentSon.vue&quot;</span>;
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> {
+  <span class="hljs-attr">components</span>: {
+    <span class="hljs-title class_">Son</span>,
+  },
+  <span class="hljs-title function_">data</span>(<span class="hljs-params"></span>) {
+    <span class="hljs-keyword">return</span> {
+      <span class="hljs-attr">msg</span>: <span class="hljs-string">&quot;我是父组件传到子组件的参数&quot;</span>,
+      <span class="hljs-attr">sonParams</span>: <span class="hljs-string">&quot;&quot;</span>,
+    };
+  },
+  <span class="hljs-attr">methods</span>: {
+    <span class="hljs-title function_">opSonMethod</span>(<span class="hljs-params"></span>) {
+      <span class="hljs-variable language_">this</span>.<span class="hljs-property">$refs</span>.<span class="hljs-property">refSon</span>.<span class="hljs-title function_">changeMsg2</span>(<span class="hljs-string">&quot;我是父组件调用子组件方法传过来的参数&quot;</span>);
+    },
+  },
+};
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</code></pre>
+</div></div><p data-v-md-line="383"><img src="../resource/image/202206/QWPHNhNCLfjtNhixuJiHqITTwluOhY.png" alt="image.png"></p>
+<p data-v-md-line="386">父组件运行起来的效果，红框中的内容就是子组件</p>
+<p data-v-md-line="388">传入参数 msg，同时定义子组件的ref，父组件通过this.$refs.refSon 找到子组件，然后调用子组件的方法</p>
+<p data-v-md-line="390">点击按钮后的效果</p>
+<p data-v-md-line="392"><img src="../resource/image/202206/mByrWQyBOzWECIPPoJjyLWXbADtYRy.png" alt>!</p>
+<p data-v-md-line="394">看到，子组件显示了父组件传入的方法参数</p>
+<p data-v-md-line="396">这是父组件调用子组件</p>
+<h3 data-v-md-heading="vue2-x子组件调用父组件" data-v-md-line="398">vue2.x子组件调用父组件</h3>
+<h4 data-v-md-heading="定义子组件-1" data-v-md-line="400">定义子组件</h4>
+<p data-v-md-line="402">我们继续使用上面的组件</p>
+<div data-v-md-line="404"><div class="v-md-pre-wrapper v-md-pre-wrapper-html extra-class"><pre class="v-md-hljs-html"><code><span class="hljs-tag">&lt;<span class="hljs-name">template</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">:style</span>=<span class="hljs-string">&quot;{ border: &#x27;1px solid red&#x27; }&quot;</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>这里展示的是父组件传过来的参数：{{ msg }}<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>这里展示的是父组件调用子组件方法修改的参数:{{ msg2 }}<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">button</span> @<span class="hljs-attr">click</span>=<span class="hljs-string">&quot;opParentMethod&quot;</span>&gt;</span>
+      我是子组件中的按钮，我来调用父组件的方法
+    <span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="language-javascript">
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> {
+  <span class="hljs-attr">props</span>: {
+    <span class="hljs-attr">msg</span>: <span class="hljs-title class_">String</span>,
+  },
+  <span class="hljs-title function_">data</span>(<span class="hljs-params"></span>) {
+    <span class="hljs-keyword">return</span> {
+      <span class="hljs-attr">msg2</span>: <span class="hljs-string">&quot;&quot;</span>,
+    };
+  },
+  <span class="hljs-attr">methods</span>: {
+    <span class="hljs-title function_">changeMsg2</span>(<span class="hljs-params">msg</span>) {
+      <span class="hljs-variable language_">this</span>.<span class="hljs-property">msg2</span> = msg;
+    },
+    <span class="hljs-title function_">opParentMethod</span>(<span class="hljs-params"></span>) {
+      <span class="hljs-variable language_">this</span>.$emit(<span class="hljs-string">&quot;opParent&quot;</span>, <span class="hljs-string">&quot;我是子组件调用父组件传入的参数&quot;</span>);
+    },
+  },
+};
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">style</span> <span class="hljs-attr">scoped</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">style</span>&gt;</span>
+
+</code></pre>
+</div></div><p data-v-md-line="441">这里子组件定义了一个按钮，来调用父组件的opParent</p>
+<h4 data-v-md-heading="定义父组件-1" data-v-md-line="443">定义父组件</h4>
+<div data-v-md-line="445"><div class="v-md-pre-wrapper v-md-pre-wrapper-html extra-class"><pre class="v-md-hljs-html"><code><span class="hljs-tag">&lt;<span class="hljs-name">template</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Son</span> <span class="hljs-attr">ref</span>=<span class="hljs-string">&quot;refSon&quot;</span> <span class="hljs-attr">:msg</span>=<span class="hljs-string">&quot;msg&quot;</span> @<span class="hljs-attr">opParent</span>=<span class="hljs-string">&quot;myParentMethod&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">Son</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">button</span> @<span class="hljs-attr">click</span>=<span class="hljs-string">&quot;opSonMethod&quot;</span>&gt;</span>调用子组件中的方法<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>展示子组件传入的方法参数:{{ sonParams }}<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="language-javascript">
+<span class="hljs-keyword">import</span> <span class="hljs-title class_">Son</span> <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;./ParentSon.vue&quot;</span>;
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> {
+  <span class="hljs-attr">components</span>: {
+    <span class="hljs-title class_">Son</span>,
+  },
+  <span class="hljs-title function_">data</span>(<span class="hljs-params"></span>) {
+    <span class="hljs-keyword">return</span> {
+      <span class="hljs-attr">msg</span>: <span class="hljs-string">&quot;我是父组件传到子组件的参数&quot;</span>,
+      <span class="hljs-attr">sonParams</span>: <span class="hljs-string">&quot;&quot;</span>,
+    };
+  },
+  <span class="hljs-attr">methods</span>: {
+    <span class="hljs-title function_">opSonMethod</span>(<span class="hljs-params"></span>) {
+      <span class="hljs-variable language_">this</span>.<span class="hljs-property">$refs</span>.<span class="hljs-property">refSon</span>.<span class="hljs-title function_">changeMsg2</span>(<span class="hljs-string">&quot;我是父组件调用子组件方法传过来的参数&quot;</span>);
+    },
+    <span class="hljs-title function_">myParentMethod</span>(<span class="hljs-params">e</span>) {
+      <span class="hljs-variable language_">this</span>.<span class="hljs-property">sonParams</span> = e;
+    },
+  },
+};
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</code></pre>
+</div></div><p data-v-md-line="478">在调用的父组件中定义 @opParent 这里的名字要和子组件中的 this.$emit(“opParent”, “我是子组件调用父组件传入的参数”); emit里面的方法名一样</p>
+<p data-v-md-line="480">然后定义opParent要调用的方法，这样点击子组件的按钮就可以直接调用父组件的方法了。</p>
+<p data-v-md-line="482">点击子组件中的按钮，运行效果</p>
+<p data-v-md-line="484"><img src="../resource/image/202206/asjORaRpEOLCsQqmsQQxgyaHvmXEqt.png" alt="image.png"></p>
+<blockquote data-v-md-line="486">
+<p data-v-md-line="486">总结：父组件通过ref调用子组件中的方法  子组件通过this.$emit()调用父组件方法</p>
+</blockquote>
+<h3 data-v-md-heading="vue3-x父组件调用子组件" data-v-md-line="490">vue3.x父组件调用子组件</h3>
+<h4 data-v-md-heading="定义子组件-2" data-v-md-line="492">定义子组件</h4>
+<div data-v-md-line="494"><div class="v-md-pre-wrapper v-md-pre-wrapper-html extra-class"><pre class="v-md-hljs-html"><code><span class="hljs-tag">&lt;<span class="hljs-name">template</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">:style</span>=<span class="hljs-string">&quot;{ border: &#x27;1px solid red&#x27; }&quot;</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>这里展示的是父组件传过来的参数：{{ msg }}<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>这里展示的是父组件调用子组件方法修改的参数:{{ msg2 }}<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">button</span> @<span class="hljs-attr">click</span>=<span class="hljs-string">&quot;opParentMethod&quot;</span>&gt;</span>
+      我是子组件中的按钮，我来调用父组件的方法
+    <span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">setup</span>&gt;</span><span class="language-javascript">
+<span class="hljs-keyword">import</span> { ref } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;vue&quot;</span>;
+<span class="hljs-keyword">const</span> props = <span class="hljs-title function_">defineProps</span>({
+  <span class="hljs-attr">msg</span>: <span class="hljs-title class_">String</span>,
+});
+
+<span class="hljs-keyword">const</span> msg2 = <span class="hljs-title function_">ref</span>();
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">changeMsg2</span> = (<span class="hljs-params">msg</span>) =&gt; {
+  msg2.<span class="hljs-property">value</span> = msg;
+};
+
+<span class="hljs-title function_">defineExpose</span>({
+  changeMsg2,
+});
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</code></pre>
+</div></div><p data-v-md-line="522">定义props 方式跟vue2不一样，需要对外的方法要使用 defineExpose 对外，否则 父组件无法调用</p>
+<h4 data-v-md-heading="定义父组件-2" data-v-md-line="524">定义父组件</h4>
+<div data-v-md-line="526"><div class="v-md-pre-wrapper v-md-pre-wrapper-html extra-class"><pre class="v-md-hljs-html"><code><span class="hljs-tag">&lt;<span class="hljs-name">template</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Son</span> <span class="hljs-attr">ref</span>=<span class="hljs-string">&quot;refSon&quot;</span> <span class="hljs-attr">:msg</span>=<span class="hljs-string">&quot;msg&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">Son</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">button</span> @<span class="hljs-attr">click</span>=<span class="hljs-string">&quot;opSonMethod&quot;</span>&gt;</span>调用子组件中的方法<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">setup</span>&gt;</span><span class="language-javascript">
+<span class="hljs-keyword">import</span> <span class="hljs-title class_">Son</span> <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;./ParentSon.vue&quot;</span>;
+<span class="hljs-keyword">import</span> { ref } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;vue&quot;</span>;
+
+<span class="hljs-keyword">const</span> refSon = <span class="hljs-title function_">ref</span>();
+<span class="hljs-keyword">const</span> msg = <span class="hljs-title function_">ref</span>(<span class="hljs-string">&quot;我是父组件传到子组件的参数&quot;</span>);
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">opSonMethod</span> = (<span class="hljs-params"></span>) =&gt; {
+  refSon.<span class="hljs-property">value</span>.<span class="hljs-title function_">changeMsg2</span>(<span class="hljs-string">&quot;我是父组件调用子组件方法传过来的参数&quot;</span>);
+};
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</code></pre>
+</div></div><p data-v-md-line="546">调用子组件不能使用this.$refs了，需要先在html中定义ref，然后在js中定义同名的ref()对象，然后通过ref对象的.value调用</p>
+<h3 data-v-md-heading="vue3-x子组件调用父组件" data-v-md-line="550">vue3.x子组件调用父组件</h3>
+<h4 data-v-md-heading="定义子组件-3" data-v-md-line="552">定义子组件</h4>
+<div data-v-md-line="554"><div class="v-md-pre-wrapper v-md-pre-wrapper-html extra-class"><pre class="v-md-hljs-html"><code><span class="hljs-tag">&lt;<span class="hljs-name">template</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">:style</span>=<span class="hljs-string">&quot;{ border: &#x27;1px solid red&#x27; }&quot;</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">button</span> @<span class="hljs-attr">click</span>=<span class="hljs-string">&quot;opParentMethod&quot;</span>&gt;</span>
+      我是子组件中的按钮，我来调用父组件的方法
+    <span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">setup</span>&gt;</span><span class="language-javascript">
+<span class="hljs-keyword">import</span> { ref,defineExpose } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;vue&quot;</span>;
+<span class="hljs-keyword">const</span> emit = <span class="hljs-title function_">defineEmits</span>();
+<span class="hljs-keyword">const</span> props = <span class="hljs-title function_">defineProps</span>({
+  <span class="hljs-attr">msg</span>: {
+    <span class="hljs-attr">type</span>: <span class="hljs-title class_">String</span>,
+    <span class="hljs-attr">defualt</span>: <span class="hljs-string">&quot;&quot;</span>
+  }
+})
+<span class="hljs-keyword">const</span> msg2 = <span class="hljs-title function_">ref</span>(<span class="hljs-string">&quot;&quot;</span>);
+
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">opParentMethod</span> = (<span class="hljs-params"></span>) =&gt; {
+  <span class="hljs-title function_">emit</span>(<span class="hljs-string">&quot;opParent&quot;</span>, <span class="hljs-string">&quot;我是子组件调用父组件传入的参数&quot;</span>);
+};
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+
+//父组件调用子组件的方法
+const changeMsg2 = (msg) =&gt; {
+  msg2.value = msg
+}
+
+defineExpose({
+  changeMsg2
+})
+</code></pre>
+</div></div><p data-v-md-line="589">这里不能使用this.$emit()直接调用，需要先通过defineEmits() 获取emit对象，然后调用</p>
+<h4 data-v-md-heading="定义父组件-3" data-v-md-line="591">定义父组件</h4>
+<div data-v-md-line="593"><div class="v-md-pre-wrapper v-md-pre-wrapper-html extra-class"><pre class="v-md-hljs-html"><code><span class="hljs-tag">&lt;<span class="hljs-name">template</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Son</span> @<span class="hljs-attr">opParent</span>=<span class="hljs-string">&quot;myParentMethod&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">Son</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>展示子组件传入的方法参数:{{ sonParams }}<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">setup</span>&gt;</span><span class="language-javascript">
+<span class="hljs-keyword">import</span> <span class="hljs-title class_">Son</span> <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;./ParentSon.vue&quot;</span>;
+<span class="hljs-keyword">import</span> { ref } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;vue&quot;</span>;
+
+<span class="hljs-keyword">const</span> sonParams = <span class="hljs-title function_">ref</span>();
+
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">myParentMethod</span> = (<span class="hljs-params">e</span>) =&gt; {
+  sonParams.<span class="hljs-property">value</span> = e;
+};
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</code></pre>
+</div></div><p data-v-md-line="613">运行效果<br>
+<img src="../resource/image/202206/NIjiygEmZERSTcCjuCFyAUTadwDOMf.png" alt="image.png"></p>
+<p data-v-md-line="616">父组件跟vue2.x 没啥区别，定义方法，调用即可。</p>
+<blockquote data-v-md-line="620">
+<p data-v-md-line="620">总结：vue2.x和vue3.x 父子组件调用</p>
+<p data-v-md-line="622">vue2.x 引入子组件，然后定义在components中直接通过 props定义子组件参数，通过this.$emit()调用父组件方法，父组件直接通过this.$refs.ref 调用子组件方法</p>
+<p data-v-md-line="624">vue3.x 引入子组建后，直接使用，子组件参数需要定义在defineProps 中，子组件方法要通过 defineExpose导出父组件才能调用，子组件调用defineEmits()获取emit对象调用父组件  父组件通过定义const xxx=ref() 来定义ref组件的引用，然后通过对象来调用子组件</p>
+</blockquote>
+<h2 data-v-md-heading="watch的使用" data-v-md-line="628">watch的使用</h2>
+<h3 data-v-md-heading="vue2-x使用watch" data-v-md-line="630">vue2.x使用watch</h3>
+<div data-v-md-line="632"><div class="v-md-pre-wrapper v-md-pre-wrapper-html extra-class"><pre class="v-md-hljs-html"><code><span class="hljs-tag">&lt;<span class="hljs-name">template</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>需要监听的值:{{ msg }}<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">button</span> @<span class="hljs-attr">click</span>=<span class="hljs-string">&quot;changeMsg&quot;</span>&gt;</span>修改值<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="language-javascript">
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> {
+  <span class="hljs-title function_">data</span>(<span class="hljs-params"></span>) {
+    <span class="hljs-keyword">return</span> {
+      <span class="hljs-attr">msg</span>: <span class="hljs-string">&quot;123456&quot;</span>,
+    };
+  },
+  <span class="hljs-attr">methods</span>: {
+    <span class="hljs-title function_">changeMsg</span>(<span class="hljs-params"></span>) {
+      <span class="hljs-variable language_">this</span>.<span class="hljs-property">msg</span> = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>().<span class="hljs-title function_">getTime</span>();
+    },
+  },
+  <span class="hljs-attr">watch</span>: {
+    <span class="hljs-attr">msg</span>: {
+      <span class="hljs-attr">immediate</span>: <span class="hljs-literal">true</span>,
+      <span class="hljs-attr">deep</span>: <span class="hljs-literal">false</span>,
+      <span class="hljs-title function_">handler</span>(<span class="hljs-params">newValue, oldValue</span>) {
+        <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;watch,oldValue:&quot;</span> + oldValue + <span class="hljs-string">&quot;,newValue:&quot;</span> + newValue);
+      },
+    },
+  },
+};
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</code></pre>
+</div></div><p data-v-md-line="665">我们点击按钮，控制台可以输出监听值的变化</p>
+<h3 data-v-md-heading="vue3-x使用watch" data-v-md-line="667">vue3.x使用watch</h3>
+<div data-v-md-line="669"><div class="v-md-pre-wrapper v-md-pre-wrapper-html extra-class"><pre class="v-md-hljs-html"><code><span class="hljs-tag">&lt;<span class="hljs-name">template</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>需要监听的值:{{ msg }}<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">button</span> @<span class="hljs-attr">click</span>=<span class="hljs-string">&quot;changeMsg&quot;</span>&gt;</span>修改值<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">setup</span>&gt;</span><span class="language-javascript">
+<span class="hljs-keyword">import</span> { ref, watch } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;vue&quot;</span>;
+<span class="hljs-keyword">const</span> msg = <span class="hljs-title function_">ref</span>(<span class="hljs-string">&quot;123456&quot;</span>);
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">changeMsg</span> = (<span class="hljs-params"></span>) =&gt; {
+  msg.<span class="hljs-property">value</span> = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>().<span class="hljs-title function_">getTime</span>();
+};
+<span class="hljs-comment">//监听单个</span>
+<span class="hljs-title function_">watch</span>(
+  msg,
+  <span class="hljs-function">(<span class="hljs-params">newValue, oldValue</span>) =&gt;</span> {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;监听单个watch,oldValue:&quot;</span> + oldValue + <span class="hljs-string">&quot;,newValue:&quot;</span> + newValue);
+  },
+  { <span class="hljs-attr">immediate</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">deep</span>: <span class="hljs-literal">false</span> }
+);
+<span class="hljs-comment">//监听多个</span>
+<span class="hljs-title function_">watch</span>(
+  [msg, msg],
+  <span class="hljs-function">(<span class="hljs-params">newMsg, oldMsg</span>) =&gt;</span> {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;监听多个watch,newMsg:&quot;</span> + newMsg + <span class="hljs-string">&quot;,oldMsg:&quot;</span> + oldMsg);
+  },
+  { <span class="hljs-attr">immediate</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">deep</span>: <span class="hljs-literal">false</span> }
+);
+<span class="hljs-comment">//此时 newMsg 和oldMsg是数组    </span>
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</code></pre>
+</div></div><p data-v-md-line="703">需要先引入watch，而且监听的值，需要先定义，否则报错</p>
+<p data-v-md-line="705"><img src="../resource/image/202206/TRZfaekgoLdXoWhDtTKpwuHlkWgWWd.png" alt="image.png"></p>
+<p data-v-md-line="707">监听多个，newMsg 和 oldMsg 都为数组</p>
+<h2 data-v-md-heading="生命周期" data-v-md-line="709">生命周期</h2>
+<h3 data-v-md-heading="vue2-x生命周期" data-v-md-line="710">vue2.x生命周期</h3>
+<div data-v-md-line="711"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code>&lt;template&gt;
+  <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+    我是被修改的属性:{{ msg }}
+    <span class="hljs-tag">&lt;<span class="hljs-name">button</span> @<span class="hljs-attr">click</span>=<span class="hljs-string">&quot;updatePage&quot;</span>&gt;</span>我来修改界面<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">button</span> @<span class="hljs-attr">click</span>=<span class="hljs-string">&quot;goHome&quot;</span>&gt;</span>我要离开，触发一下destory<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+&lt;/template&gt;
+
+<span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="language-javascript">
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> {
+  <span class="hljs-title function_">data</span>(<span class="hljs-params"></span>) {
+    <span class="hljs-keyword">return</span> {
+      <span class="hljs-attr">msg</span>: <span class="hljs-string">&quot;&quot;</span>,
+    };
+  },
+  <span class="hljs-attr">methods</span>: {
+    <span class="hljs-title function_">updatePage</span>(<span class="hljs-params"></span>) {
+      <span class="hljs-variable language_">this</span>.<span class="hljs-property">msg</span> = <span class="hljs-string">&quot;我来修改界面&quot;</span>;
+    },
+    <span class="hljs-title function_">goHome</span>(<span class="hljs-params"></span>) {
+      <span class="hljs-variable language_">this</span>.<span class="hljs-property">$router</span>.<span class="hljs-title function_">push</span>(<span class="hljs-string">&quot;/home&quot;</span>);
+    },
+  },
+  <span class="hljs-title function_">beforeCreate</span>(<span class="hljs-params"></span>) {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;我是beforeCreate&quot;</span>);
+  },
+  <span class="hljs-title function_">created</span>(<span class="hljs-params"></span>) {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;我是created&quot;</span>);
+  },
+  <span class="hljs-title function_">beforeMount</span>(<span class="hljs-params"></span>) {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;beforeMount&quot;</span>);
+  },
+  <span class="hljs-title function_">mounted</span>(<span class="hljs-params"></span>) {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;mounted&quot;</span>);
+  },
+  <span class="hljs-title function_">beforeUpdate</span>(<span class="hljs-params"></span>) {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;beforeUpdate&quot;</span>);
+  },
+  <span class="hljs-title function_">updated</span>(<span class="hljs-params"></span>) {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;updated&quot;</span>);
+  },
+  <span class="hljs-title function_">beforeDestroy</span>(<span class="hljs-params"></span>) {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;beforeDestroy&quot;</span>);
+  },
+  <span class="hljs-title function_">destroyed</span>(<span class="hljs-params"></span>) {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;destroyed&quot;</span>);
+  },
+};
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></span>
+
+<span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">style</span> <span class="hljs-attr">lang</span>=<span class="hljs-string">&quot;scss&quot;</span> <span class="hljs-attr">scoped</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">style</span>&gt;</span></span>
+
+</code></pre>
+</div></div><h3 data-v-md-heading="vue3-x生命周期" data-v-md-line="767">vue3.x生命周期</h3>
+<div data-v-md-line="768"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code>&lt;template&gt;
+  <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+    我是被修改的属性:{{ msg }}
+    <span class="hljs-tag">&lt;<span class="hljs-name">button</span> @<span class="hljs-attr">click</span>=<span class="hljs-string">&quot;updatePage&quot;</span>&gt;</span>我来修改界面<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">button</span> @<span class="hljs-attr">click</span>=<span class="hljs-string">&quot;goHome&quot;</span>&gt;</span>我要离开，触发一下destory<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+&lt;/template&gt;
+
+<span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">setup</span>&gt;</span><span class="language-javascript">
+<span class="hljs-keyword">import</span> {
+  onBeforeMount,
+  onBeforeUnmount,
+  onBeforeUpdate,
+  onMounted,
+  onUnmounted,
+  onUpdated,
+} <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;@vue/runtime-core&quot;</span>;
+<span class="hljs-keyword">import</span> { ref } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;vue&quot;</span>;
+<span class="hljs-keyword">import</span> { useRouter } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;vue-router&quot;</span>;
+<span class="hljs-keyword">const</span> router = <span class="hljs-title function_">useRouter</span>();
+
+<span class="hljs-keyword">const</span> msg = <span class="hljs-title function_">ref</span>(<span class="hljs-string">&quot;&quot;</span>);
+
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">updatePage</span> = (<span class="hljs-params"></span>) =&gt; {
+  msg.<span class="hljs-property">value</span> = <span class="hljs-string">&quot;我来修改界面&quot;</span>;
+};
+
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">goHome</span> = (<span class="hljs-params"></span>) =&gt; {
+  router.<span class="hljs-title function_">push</span>(<span class="hljs-string">&quot;/home&quot;</span>);
+};
+
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">init</span> = (<span class="hljs-params"></span>) =&gt; {
+  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;我是页面初始化的方法&quot;</span>);
+};
+<span class="hljs-title function_">init</span>();
+
+<span class="hljs-title function_">onBeforeMount</span>(<span class="hljs-function">() =&gt;</span> {
+  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;beforeMount&quot;</span>);
+});
+<span class="hljs-title function_">onMounted</span>(<span class="hljs-function">() =&gt;</span> {
+  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;mounted&quot;</span>);
+});
+<span class="hljs-title function_">onBeforeUpdate</span>(<span class="hljs-function">() =&gt;</span> {
+  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;onBeforeUpdate&quot;</span>);
+});
+<span class="hljs-title function_">onUpdated</span>(<span class="hljs-function">() =&gt;</span> {
+  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;onUpdated&quot;</span>);
+});
+<span class="hljs-title function_">onBeforeUnmount</span>(<span class="hljs-function">() =&gt;</span> {
+  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;onBeforeUnmount&quot;</span>);
+});
+<span class="hljs-title function_">onUnmounted</span>(<span class="hljs-function">() =&gt;</span> {
+  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;onUnmounted&quot;</span>);
+});
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></span>
+
+<span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">style</span> <span class="hljs-attr">lang</span>=<span class="hljs-string">&quot;scss&quot;</span> <span class="hljs-attr">scoped</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">style</span>&gt;</span></span>
+
+</code></pre>
+</div></div><p data-v-md-line="830">vue3中没有 beforeCreate created  也没有 beforeDestory destroyed 使用 onBeforeUnmount onUnmounted来代替</p>
+<h2 data-v-md-heading="根节点不同" data-v-md-line="832">根节点不同</h2>
+<p data-v-md-line="834">vue2.x 再template中只能又一个根节点 vue3.x可以有多个跟节点</p>
+<h2 data-v-md-heading="总结" data-v-md-line="838">总结</h2>
+<p data-v-md-line="840">以上就是目前我发现的vue2.x和vue3.x在使用上最大的几个变化。通过上面的例子可以看出，在使用一些常用方法的时候，vue2的确方便，直接使用this就可以调用，vue3.x需要引入后再调用，vue3是按需引入的。但是vue3.x是未来的趋势，而且性能方面vue3.x比vue2.x高很多。后续的一些ui框架，组件，工具，肯定会持续维护vue3.x版本，vue2.x基本就停止维护了，比如我们最常用的ui框架 element ui 就是活生生的例子。其实用习惯了也是一样，就跟最开始我觉得jquery也挺好，用习惯了vue，觉得vue还是香，目前我觉得vue2还是很香的，也许用一段时间我觉得vue3.x会比vue2.x香，大家一起学起来吧。</p>
+</div>
+                </div>
+            </div>
+                <div class="container-comment">
+                    <div class="comment-title">评论</div>
+                    <div id="SOHUCS" sid="lnFfwOPfvR"></div>
+                    <script charset="utf-8" type="text/javascript" src="https://cy-cdn.kuaizhan.com/upload/changyan.js"></script>
+                    <script type="text/javascript">
+                        window.changyan.api.config({
+                            appid: "cyvP1EXdR",
+                            conf: '0264664c4b9d1fb578d732b34abf3246'
+                        });
+                    </script>
+                </div>
+        </div>
+        <div class="right">
+            <div class="container" id="right-container">
+                <div class="right-title toc-title">目录结构</div>
+                <div id="toc"></div>
+
+                <div class="right-title category-title">
+                    <span>分类专栏</span>
+                    <a href="../category.html" class="more">更多>></a>
+                </div>
+                    <a href="../category/10000.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/image/202112/EFUgXqXkPTFORpHpeTTnbLTTMVsJgf.png">
+                        </span>
+                        <span class="category-name" title="EasyBlog">EasyBlog</span>
+                        <span class="blog-count">0篇</span>
+                    </a>
+                    <a href="../category/10001.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/image/202201/fBNKwBWNHXNERqYdAupUXAMdHZWLJv.png">
+                        </span>
+                        <span class="category-name" title="Java">Java</span>
+                        <span class="blog-count">5篇</span>
+                    </a>
+                    <a href="../category/10002.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/static/default_img.png">
+                        </span>
+                        <span class="category-name" title="electron">electron</span>
+                        <span class="blog-count">2篇</span>
+                    </a>
+                    <a href="../category/10003.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/static/default_img.png">
+                        </span>
+                        <span class="category-name" title="Vue3">Vue3</span>
+                        <span class="blog-count">4篇</span>
+                    </a>
+            </div>
+        </div>
+    </div>
+</div>
+        <div class="footer">
+            <div>
+                <span>©2021-2022 www.wuhancoder.com All rights reserved. </span>
+                <a target="_blank" href="https://beian.miit.gov.cn/">鄂ICP备13017512号-3</a></div>
+            <div>
+                <img src="../resource/static/beian.png">
+                <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=42011502000890">
+                    鄂公网安备 42011502000890号
+                </a></div>
+        </div>
+</body>
+</html>

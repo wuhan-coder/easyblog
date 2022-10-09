@@ -1,0 +1,1828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>管理端 - 我是程序员</title>
+        <meta name="keywords" content="管理端">
+        <meta name="description" content="管理端接口文档">
+
+    <link rel="stylesheet" href="../resource/static/plugin/highlight/styles/github.min.css">
+    <link rel="stylesheet" href="../resource/static/plugin/viewer/viewer.min.css">
+    <script src="../resource/static/plugin/highlight/highlight.min.js"></script>
+    <script src="../resource/static/plugin/jquery/jquery.min.js"></script>
+    <script src="../resource/static/plugin/viewer/viewer-jquery.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <link rel="stylesheet" href="../resource/static/css/special.detail.css">
+    <script>
+        $(document).ready(function (e) {
+            createToc();
+            $("#content").viewer({
+                navbar: false
+            });
+
+            $("#content a").each(function (index, element) {
+                $(element).attr("target", "_blank");
+            })
+
+            $(".icon-arrow").click(function () {
+                let nextLiDom = $(this).parent().next("div").eq(0)
+                if ($(this).hasClass("arrow-down")) {
+                    $(this).removeClass("arrow-down");
+                    $(this).addClass("arrow-right");
+                    nextLiDom.hide();
+                } else {
+                    $(this).removeClass("arrow-right");
+                    $(this).addClass("arrow-down");
+                    nextLiDom.show();
+                }
+            });
+
+            //目录展开收齐
+            $("#toc-title").click(function () {
+                let spanDom = $(this).find(".icon-arrow")
+                if (spanDom.hasClass("arrow-down")) {
+                    spanDom.removeClass("arrow-down");
+                    spanDom.addClass("arrow-right");
+                    $("#toc").hide();
+                } else {
+                    spanDom.removeClass("arrow-right");
+                    spanDom.addClass("arrow-down");
+                    $("#toc").show();
+                }
+            });
+
+            let currentUrl = document.location.href;
+            currentUrl = currentUrl.substring(currentUrl.lastIndexOf("/") + 1, currentUrl.lastIndexOf("."));
+            $("#" + currentUrl).addClass("active");
+        });
+
+        function createToc() {
+            let hCount = 0;
+            $("#content").children().each(function (index, element) {
+                var tagName = $(this).get(0).tagName;
+                if (tagName.substr(0, 1).toUpperCase() == "H") {
+                    hCount++;
+                    var contentH = $(this).text();//获取内容
+                    var markid = "mark-" + tagName + "-" + index.toString();
+                    $(this).attr("id", markid);//为当前h标签设置id
+                    let spaceNum = "0";
+                    if (tagName === 'H1') {
+                        spaceNum = "0";
+                    } else if (tagName === 'H2') {
+                        spaceNum = "1.5";
+                    } else if (tagName === 'H3') {
+                        spaceNum = "3";
+                    } else if (tagName === 'H4') {
+                        spaceNum = "4.5";
+                    } else if (tagName === 'H5') {
+                        spaceNum = "6";
+                    } else if (tagName === 'H6') {
+                        spaceNum = "7.5";
+                    }
+                    spaceNum += "em";
+                    $("<a href='javascript:scroll(\"" + markid + "\")' style='text-indent:" + spaceNum + "' title=" + contentH + ">" + contentH + "</a>").appendTo($("#toc"));
+                }
+            });
+            if (hCount == 0) {
+                $("<div class='no-data'>暂无目录信息</div>").appendTo($("#toc"));
+            }
+            let url = document.location.href;
+            if (url.indexOf("#") != -1) {
+                let markId = url.substr(url.indexOf("#") + 1);
+                scroll(markId);
+            }
+        }
+
+        $(window).scroll(function () {
+            //console.log($(document).scrollTop());
+            $("#right-container").css("top", $(document).scrollTop() + "px");
+        });
+
+        function scroll(markId) {
+            let url = document.location.href;
+            if (url.indexOf("#") == -1) {
+                document.location.href = url + "#" + markId;
+            } else {
+                document.location.href = url.substring(0, url.indexOf("#") + 1) + markId;
+            }
+            $("html,body").animate({scrollTop: $("#" + markId).offset().top - 80}, 100);
+        }
+    </script>
+</head>
+<body>
+    <div class="top">
+        <div class="top-container">
+            <div class="logo">
+                    <a href="../index.html">我是程序员</a>
+            </div>
+                <a href="../index.html" class="nav ">博客</a>
+                <a href="../category.html" class="nav ">分类专栏</a>
+                <a href="../special.html" class="nav active">专题</a>
+                <a href="../user.html" class="nav ">成员</a>
+                <a href="../comment.html" class="nav ">留言板</a>
+        </div>
+    </div>
+<div class="body-container">
+    <div class="blog-detail">
+        <div class="blog-special-list">
+            <div class="blog-special">
+                <div class="category-image">
+                        <img src="../resource/image/202209/qmHjiTxzjtapHaOojwciCzTlqCPFWs.jpg">
+                </div>
+                <div class="category-info">
+                    <div class="category-title" title="EasyBlog文档">EasyBlog文档</div>
+                    <div class="blog-count">文章数：6</div>
+                </div>
+            </div>
+            <div class="category-desc" title="EasyBlog 相关文档，接口，环境搭建">简介：EasyBlog 相关文档，接口，环境搭建</div>
+            <div class="blog-list">
+        <div>
+            <div class="title" style="padding-left:26px" id="DEdkCxjkqy">
+                <a href="DEdkCxjkqy.html">简介</a>
+            </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:10px" id="gTvGKLsNNZ">
+                    <span class="icon-arrow arrow-down"></span>
+                <a href="gTvGKLsNNZ.html">后端服务部署</a>
+            </div>
+                <div class="sub-title">
+        <div>
+            <div class="title" style="padding-left:42px" id="vbbStsCMXs">
+                <a href="vbbStsCMXs.html">安装后端程序</a>
+            </div>
+        </div>
+                </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:10px" id="azvNIIFQCy">
+                    <span class="icon-arrow arrow-down"></span>
+                <a href="azvNIIFQCy.html">接口文档</a>
+            </div>
+                <div class="sub-title">
+        <div>
+            <div class="title" style="padding-left:42px" id="cqzKWftzyr">
+                <a href="cqzKWftzyr.html">管理端</a>
+            </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:42px" id="wBURpKFtiT">
+                <a href="wBURpKFtiT.html">web端</a>
+            </div>
+        </div>
+                </div>
+        </div>
+            </div>
+
+        </div>
+        <div class="container">
+            <div class="container-content">
+                <div>
+                    <div class="blog-title">管理端</div>
+                    <div class="blog-info">
+                        <div class="time">2022-09-21 09:29:09</div>
+                        <div class="nick-name">作者：<a href="../user.html#100000">多多洛2020</a></div>
+
+                    </div>
+                    <div class="content" id="content"><h1 data-v-md-heading="账号相关" data-v-md-line="1">账号相关</h1>
+<h2 data-v-md-heading="获取验证码" data-v-md-line="3">获取验证码</h2>
+<ul data-v-md-line="5">
+<li>
+<p data-v-md-line="5">接口地址<br>
+api/checkCode</p>
+</li>
+<li>
+<p data-v-md-line="8">请求参数</p>
+<p data-v-md-line="10">无</p>
+</li>
+<li>
+<p data-v-md-line="12">接口返回</p>
+<p data-v-md-line="14">接口返回图片文件流，直接在img 标签src中使用</p>
+</li>
+</ul>
+<h2 data-v-md-heading="登录" data-v-md-line="16">登录</h2>
+<ul data-v-md-line="18">
+<li>
+<p data-v-md-line="18">接口地址<br>
+api/login</p>
+</li>
+<li>
+<p data-v-md-line="20">请求参数</p>
+<table data-v-md-line="21">
+<thead>
+<tr>
+<th>参数名</th>
+<th>说明</th>
+<th>是否必填</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>account</td>
+<td>账号</td>
+<td>是</td>
+</tr>
+<tr>
+<td>password</td>
+<td>密码</td>
+<td>是</td>
+</tr>
+<tr>
+<td>checkCode</td>
+<td>验证码</td>
+<td>是</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p data-v-md-line="27">接口返回</p>
+<div data-v-md-line="28"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+<span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;userId&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">100000</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;nickName&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;多多洛2020&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;avatar&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;avatar/100000.jpg?1643189079666&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;roleType&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">1</span>
+<span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+<span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
+<span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
+<span class="hljs-attr">&quot;info&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;请求成功&quot;</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+</div></div></li>
+</ul>
+<h2 data-v-md-heading="获取用户信息" data-v-md-line="41">获取用户信息</h2>
+<ul data-v-md-line="43">
+<li>接口地址<br>
+api/getUserInfo</li>
+<li>请求参数<br>
+无</li>
+<li>接口返回<div data-v-md-line="48"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;userId&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">100000</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;nickName&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;多多洛2020&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;avatar&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;avatar/100000.jpg?1643189079666&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;phone&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;18666666666&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;profession&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;Java开发&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;introduction&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;简介&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;editorType&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;roleType&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;createTime&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;2021-12-04 20:56:01&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;lastLoginTime&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;2021-12-23 15:17:12&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;roleTypeName&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;管理员&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;editorTypeName&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;Markdown&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;statusName&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;启用&quot;</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;info&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;请求成功&quot;</span>
+  <span class="hljs-punctuation">}</span>
+</code></pre>
+</div></div></li>
+</ul>
+<h2 data-v-md-heading="退出" data-v-md-line="70">退出</h2>
+<ul data-v-md-line="71">
+<li>接口地址<br>
+api/logout</li>
+<li>请求参数<br>
+无</li>
+<li>接口返回<div data-v-md-line="76"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;info&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;请求成功&quot;</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+</div></div></li>
+</ul>
+<h1 data-v-md-heading="分类-专题" data-v-md-line="84">分类/专题</h1>
+<h2 data-v-md-heading="获取博客分类" data-v-md-line="85">获取博客分类</h2>
+<ul data-v-md-line="86">
+<li>接口地址<br>
+/api/category/loadAllCategory4Blog</li>
+<li>请求参数<br>
+无</li>
+<li>接口返回<div data-v-md-line="91"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-punctuation">[</span>
+      <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;categoryId&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">10000</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;cover&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;202112/EFUgXqXkPTFORpHpeTTnbLTTMVsJgf.png&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;categoryName&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;EasyBlog&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;categoryDesc&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;介绍EasyBlog 使用，部署&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;categoryType&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">0</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;userId&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;nickName&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;sort&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;blogCount&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">0</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;firstBlogId&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">null</span></span>
+      <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;info&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;请求成功&quot;</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+</div></div></li>
+</ul>
+<h2 data-v-md-heading="保存分类" data-v-md-line="112">保存分类</h2>
+<ul data-v-md-line="113">
+<li>接口地址<br>
+/api/category/saveCategory4Blog</li>
+<li>请求参数
+<table data-v-md-line="116">
+<thead>
+<tr>
+<th>参数名</th>
+<th>说明</th>
+<th>是否必填</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>categoryId</td>
+<td>分类ID</td>
+<td>修改必传</td>
+</tr>
+<tr>
+<td>categoryName</td>
+<td>名称</td>
+<td>是</td>
+</tr>
+<tr>
+<td>cover</td>
+<td>封面地址</td>
+<td>否</td>
+</tr>
+<tr>
+<td>categoryDesc</td>
+<td>描述</td>
+<td>是</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>接口返回<div data-v-md-line="123"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;info&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;请求成功&quot;</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+</div></div></li>
+</ul>
+<h2 data-v-md-heading="修改分类排序" data-v-md-line="131">修改分类排序</h2>
+<ul data-v-md-line="132">
+<li>接口地址<br>
+/api/category/changeCategorySort4Blog</li>
+<li>请求参数<div data-v-md-line="135"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">[</span>
+  <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;categoryId&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">10000</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;cover&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;202112/EFUgXqXkPTFORpHpeTTnbLTTMVsJgf.png&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;categoryName&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;EasyBlog&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;categoryDesc&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;介绍EasyBlog 使用，部署&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;categoryType&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">0</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;userId&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;nickName&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;sort&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;blogCount&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">0</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;firstBlogId&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">null</span></span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;categoryId&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">10001</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;cover&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;202201/fBNKwBWNHXNERqYdAupUXAMdHZWLJv.png&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;categoryName&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;Java&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;categoryDesc&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;分享一些Java相关的技术&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;categoryType&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">0</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;userId&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;nickName&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;sort&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">2</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;blogCount&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">5</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;firstBlogId&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">null</span></span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">]</span>
+</code></pre>
+</div></div>json格式，完整的分类数据</li>
+</ul>
+<h2 data-v-md-heading="删除分类" data-v-md-line="165">删除分类</h2>
+<ul data-v-md-line="166">
+<li>接口地址<br>
+/api/category/delCategory4Blog</li>
+<li>请求参数
+<table data-v-md-line="169">
+<thead>
+<tr>
+<th>参数名</th>
+<th>说明</th>
+<th>是否必填</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>categoryId</td>
+<td>分类ID</td>
+<td>必传</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>接口返回<div data-v-md-line="173"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;info&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;请求成功&quot;</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+</div></div></li>
+</ul>
+<h2 data-v-md-heading="获取博客分类-1" data-v-md-line="181">获取博客分类</h2>
+<ul data-v-md-line="182">
+<li>接口地址<br>
+/api/category/loadAllCategory4Blog</li>
+<li>请求参数<br>
+无</li>
+<li>接口返回<div data-v-md-line="187"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-punctuation">[</span>
+      <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;categoryId&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">10000</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;cover&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;202112/EFUgXqXkPTFORpHpeTTnbLTTMVsJgf.png&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;categoryName&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;EasyBlog&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;categoryDesc&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;介绍EasyBlog 使用，部署&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;categoryType&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">0</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;userId&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;nickName&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;sort&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;blogCount&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">0</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;firstBlogId&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">null</span></span>
+      <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;info&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;请求成功&quot;</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+</div></div></li>
+</ul>
+<h2 data-v-md-heading="保存专题" data-v-md-line="208">保存专题</h2>
+<ul data-v-md-line="209">
+<li>接口地址<br>
+/api/category/saveCategory4Special</li>
+<li>请求参数
+<table data-v-md-line="212">
+<thead>
+<tr>
+<th>参数名</th>
+<th>说明</th>
+<th>是否必填</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>categoryId</td>
+<td>分类ID</td>
+<td>修改必传</td>
+</tr>
+<tr>
+<td>categoryName</td>
+<td>名称</td>
+<td>是</td>
+</tr>
+<tr>
+<td>cover</td>
+<td>封面地址</td>
+<td>否</td>
+</tr>
+<tr>
+<td>categoryDesc</td>
+<td>描述</td>
+<td>是</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>接口返回<div data-v-md-line="219"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;info&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;请求成功&quot;</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+</div></div></li>
+</ul>
+<h2 data-v-md-heading="删除专题" data-v-md-line="227">删除专题</h2>
+<ul data-v-md-line="228">
+<li>接口地址<br>
+/api/category/delCategory4Special</li>
+<li>请求参数
+<table data-v-md-line="231">
+<thead>
+<tr>
+<th>参数名</th>
+<th>说明</th>
+<th>是否必填</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>categoryId</td>
+<td>分类ID</td>
+<td>必传</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>接口返回<div data-v-md-line="235"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;info&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;请求成功&quot;</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+</div></div></li>
+</ul>
+<h1 data-v-md-heading="博客" data-v-md-line="244">博客</h1>
+<h2 data-v-md-heading="获取列表" data-v-md-line="245">获取列表</h2>
+<ul data-v-md-line="247">
+<li>
+<p data-v-md-line="247">接口地址<br>
+api/blog/loadBlog</p>
+</li>
+<li>
+<p data-v-md-line="249">请求参数</p>
+<table data-v-md-line="250">
+<thead>
+<tr>
+<th>参数名</th>
+<th>说明</th>
+<th>是否必填</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>pageNo</td>
+<td>页码</td>
+<td>否</td>
+</tr>
+<tr>
+<td>pageSize</td>
+<td>每页大小</td>
+<td>否</td>
+</tr>
+<tr>
+<td>titleFuzzy</td>
+<td>标题模糊搜索</td>
+<td>否</td>
+</tr>
+<tr>
+<td>status</td>
+<td>状态 0：草稿  1:已发布</td>
+<td>否</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p data-v-md-line="257">接口返回</p>
+<div data-v-md-line="259"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+<span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+	<span class="hljs-attr">&quot;totalCount&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">12</span><span class="hljs-punctuation">,</span>
+	<span class="hljs-attr">&quot;pageSize&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">15</span><span class="hljs-punctuation">,</span>
+	<span class="hljs-attr">&quot;pageNo&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+	<span class="hljs-attr">&quot;pageTotal&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+	<span class="hljs-attr">&quot;list&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+		<span class="hljs-punctuation">{</span>
+			<span class="hljs-attr">&quot;blogId&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;fHimhBHWFU&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-attr">&quot;pBlogId&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+			<span class="hljs-attr">&quot;title&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;EasyJava 一个java代码生成工具&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-attr">&quot;categoryId&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">10001</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-attr">&quot;categoryName&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Java&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-attr">&quot;cover&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;202209/PlhfPylwBwmcsmQsMzZgRBkGzGZkEE.jpg&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-attr">&quot;summary&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;一款Java代码生成工具，可以生成 基本的 分页查询、单条插入、单条插入或者更新、批量插入、批量插入或者更新、根据主键、唯一索引 单挑查询、修改、删除。用了，你一定会喜欢。用了mybatis-plus，不妨试试这块代码生成工具&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-attr">&quot;content&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+			<span class="hljs-attr">&quot;markdownContent&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+			<span class="hljs-attr">&quot;editorType&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-attr">&quot;tag&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Java代码生成工具&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-attr">&quot;reprintUrl&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-attr">&quot;userId&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">100000</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-attr">&quot;nickName&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;多多洛2020&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-attr">&quot;allowComment&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-attr">&quot;delType&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-attr">&quot;createTime&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;2022-09-10 20:58:03&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-attr">&quot;lastUpdateTime&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;2022-09-25 13:43:07&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-attr">&quot;blogType&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-attr">&quot;sort&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+			<span class="hljs-attr">&quot;statusName&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;已发布&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-attr">&quot;allowCommentTypeName&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;允许&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-attr">&quot;typeName&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+			<span class="hljs-attr">&quot;editorTypeName&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Markdown&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-attr">&quot;children&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span>
+		<span class="hljs-punctuation">}</span>
+	<span class="hljs-punctuation">]</span>
+<span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+<span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
+<span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
+<span class="hljs-attr">&quot;info&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;请求成功&quot;</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+</div></div></li>
+</ul>
+<h2 data-v-md-heading="详情" data-v-md-line="304">详情</h2>
+<ul data-v-md-line="306">
+<li>
+<p data-v-md-line="306">接口地址</p>
+<p data-v-md-line="308">/api/blog/getBlogById</p>
+</li>
+<li>
+<p data-v-md-line="310">请求参数</p>
+</li>
+</ul>
+<table data-v-md-line="312">
+<thead>
+<tr>
+<th>请求参数</th>
+<th>参数说明</th>
+<th>是否必填</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>blogId</td>
+<td>博客ID</td>
+<td>是</td>
+</tr>
+</tbody>
+</table>
+<ul data-v-md-line="316">
+<li>
+<p data-v-md-line="316">接口返回</p>
+<div data-v-md-line="318"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+<span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+	<span class="hljs-attr">&quot;blogId&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;fHimhBHWFU&quot;</span><span class="hljs-punctuation">,</span>
+	<span class="hljs-attr">&quot;pBlogId&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+	<span class="hljs-attr">&quot;title&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;EasyJava 一个java代码生成工具&quot;</span><span class="hljs-punctuation">,</span>
+	<span class="hljs-attr">&quot;categoryId&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">10001</span><span class="hljs-punctuation">,</span>
+	<span class="hljs-attr">&quot;categoryName&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Java&quot;</span><span class="hljs-punctuation">,</span>
+	<span class="hljs-attr">&quot;cover&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;202209/PlhfPylwBwmcsmQsMzZgRBkGzGZkEE.jpg&quot;</span><span class="hljs-punctuation">,</span>
+	<span class="hljs-attr">&quot;summary&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;一款Java代码生成工具，可以生成 基本的 分页查询、单条插入、单条插入或者更新、批量插入、批量插入或者更新、根据主键、唯一索引 单挑查询、修改、删除。用了，你一定会喜欢。用了mybatis-plus，不妨试试这块代码生成工具&quot;</span><span class="hljs-punctuation">,</span>
+	<span class="hljs-attr">&quot;content&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;博客内容&quot;</span><span class="hljs-punctuation">,</span>
+	<span class="hljs-attr">&quot;editorType&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+	<span class="hljs-attr">&quot;tag&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Java代码生成工具&quot;</span><span class="hljs-punctuation">,</span>
+	<span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span>
+	<span class="hljs-attr">&quot;reprintUrl&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;&quot;</span><span class="hljs-punctuation">,</span>
+	<span class="hljs-attr">&quot;userId&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">100000</span><span class="hljs-punctuation">,</span>
+	<span class="hljs-attr">&quot;nickName&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;多多洛2020&quot;</span><span class="hljs-punctuation">,</span>
+	<span class="hljs-attr">&quot;allowComment&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+	<span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+	<span class="hljs-attr">&quot;delType&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+	<span class="hljs-attr">&quot;createTime&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;2022-09-10 20:58:03&quot;</span><span class="hljs-punctuation">,</span>
+	<span class="hljs-attr">&quot;lastUpdateTime&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;2022-09-25 13:43:07&quot;</span><span class="hljs-punctuation">,</span>
+	<span class="hljs-attr">&quot;blogType&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span>
+	<span class="hljs-attr">&quot;sort&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+	<span class="hljs-attr">&quot;statusName&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;已发布&quot;</span><span class="hljs-punctuation">,</span>
+	<span class="hljs-attr">&quot;allowCommentTypeName&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;允许&quot;</span><span class="hljs-punctuation">,</span>
+	<span class="hljs-attr">&quot;typeName&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+	<span class="hljs-attr">&quot;editorTypeName&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Markdown&quot;</span><span class="hljs-punctuation">,</span>
+	<span class="hljs-attr">&quot;children&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span>
+<span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+<span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
+<span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
+<span class="hljs-attr">&quot;info&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;请求成功&quot;</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+</div></div></li>
+</ul>
+<h2 data-v-md-heading="保存博客" data-v-md-line="354">保存博客</h2>
+<ul data-v-md-line="356">
+<li>
+<p data-v-md-line="356">接口地址</p>
+<p data-v-md-line="358">/api/blog/saveBlog</p>
+</li>
+<li>
+<p data-v-md-line="360">请求参数</p>
+<table data-v-md-line="362">
+<thead>
+<tr>
+<th>请求参数</th>
+<th>参数说明</th>
+<th>是否必填</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>blogId</td>
+<td>博客ID，修改传入，新增不传</td>
+<td>否</td>
+</tr>
+<tr>
+<td>title</td>
+<td>标题</td>
+<td>是</td>
+</tr>
+<tr>
+<td>content</td>
+<td>html内容</td>
+<td>是</td>
+</tr>
+<tr>
+<td>markdownContent</td>
+<td>markdown内容，markdown编辑器有</td>
+<td>markdown编辑器必传</td>
+</tr>
+<tr>
+<td>editorType</td>
+<td>编辑器类型 0:富文本 1:markdown编辑器</td>
+<td>是</td>
+</tr>
+<tr>
+<td>categoryId</td>
+<td>分类ID</td>
+<td>是</td>
+</tr>
+<tr>
+<td>cover</td>
+<td>封面</td>
+<td>否</td>
+</tr>
+<tr>
+<td>summary</td>
+<td>简介</td>
+<td>否</td>
+</tr>
+<tr>
+<td>tag</td>
+<td>标签</td>
+<td>否</td>
+</tr>
+<tr>
+<td>type</td>
+<td>类型 0:原创 1:转载</td>
+<td>是</td>
+</tr>
+<tr>
+<td>reprintUrl</td>
+<td>转载地址</td>
+<td>否 转载类型必传</td>
+</tr>
+<tr>
+<td>allowComment</td>
+<td>是否允许评论</td>
+<td>是</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+<h2 data-v-md-heading="自动保存" data-v-md-line="379">自动保存</h2>
+<ul data-v-md-line="381">
+<li>
+<p data-v-md-line="381">接口地址</p>
+<p data-v-md-line="383">api/blog/autoSaveBlog</p>
+</li>
+<li>
+<p data-v-md-line="385">请求参数</p>
+<table data-v-md-line="387">
+<thead>
+<tr>
+<th>说明</th>
+<th>参数说明</th>
+<th>是否必填</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>blogId</td>
+<td>博客ID</td>
+<td>否</td>
+</tr>
+<tr>
+<td>editorType</td>
+<td>编辑器类型 0:富文本 1:markdown编辑器</td>
+<td>否</td>
+</tr>
+<tr>
+<td>title</td>
+<td>标题</td>
+<td>否</td>
+</tr>
+<tr>
+<td>content</td>
+<td>html内容</td>
+<td>否</td>
+</tr>
+<tr>
+<td>markdownContent</td>
+<td>markdown内容，markdown编辑器有</td>
+<td>markdown编辑器必传</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p data-v-md-line="395">接口返回</p>
+<div data-v-md-line="397"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+<span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;博客ID&quot;</span><span class="hljs-punctuation">,</span>
+<span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
+<span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
+<span class="hljs-attr">&quot;info&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;请求成功&quot;</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+</div></div></li>
+</ul>
+<h2 data-v-md-heading="博客移到回收站" data-v-md-line="406">博客移到回收站</h2>
+<ul data-v-md-line="408">
+<li>
+<p data-v-md-line="408">接口地址</p>
+<p data-v-md-line="410">api/blog/recoveryBlog</p>
+</li>
+<li>
+<p data-v-md-line="412">请求参数</p>
+<table data-v-md-line="414">
+<thead>
+<tr>
+<th>请求参数</th>
+<th>参数说明</th>
+<th>是否必填</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>blogId</td>
+<td>博客ID</td>
+<td>是</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p data-v-md-line="418">接口返回</p>
+<div data-v-md-line="420"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+<span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+<span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
+<span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
+<span class="hljs-attr">&quot;info&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;请求成功&quot;</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+</div></div></li>
+</ul>
+<h1 data-v-md-heading="专题文章" data-v-md-line="435">专题文章</h1>
+<h2 data-v-md-heading="获取专题博客列表" data-v-md-line="437">获取专题博客列表</h2>
+<ul data-v-md-line="439">
+<li>
+<p data-v-md-line="439">接口地址</p>
+<p data-v-md-line="441">api/blog/loadBlog4Special</p>
+</li>
+<li>
+<p data-v-md-line="443">请求参数</p>
+<table data-v-md-line="445">
+<thead>
+<tr>
+<th>参数名</th>
+<th>说明</th>
+<th>是否必填</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>pageNo</td>
+<td>页码</td>
+<td>否</td>
+</tr>
+<tr>
+<td>pageSize</td>
+<td>每页大小</td>
+<td>否</td>
+</tr>
+<tr>
+<td>titleFuzzy</td>
+<td>标题模糊搜索</td>
+<td>否</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p data-v-md-line="451">接口返回</p>
+</li>
+</ul>
+<div data-v-md-line="453"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+	<span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+		<span class="hljs-attr">&quot;totalCount&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">12</span><span class="hljs-punctuation">,</span>
+		<span class="hljs-attr">&quot;pageSize&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">15</span><span class="hljs-punctuation">,</span>
+		<span class="hljs-attr">&quot;pageNo&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+		<span class="hljs-attr">&quot;pageTotal&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+		<span class="hljs-attr">&quot;list&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+			<span class="hljs-punctuation">{</span>
+				<span class="hljs-attr">&quot;blogId&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;fHimhBHWFU&quot;</span><span class="hljs-punctuation">,</span>
+				<span class="hljs-attr">&quot;pBlogId&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+				<span class="hljs-attr">&quot;title&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;EasyJava 一个java代码生成工具&quot;</span><span class="hljs-punctuation">,</span>
+				<span class="hljs-attr">&quot;categoryId&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">10001</span><span class="hljs-punctuation">,</span>
+				<span class="hljs-attr">&quot;categoryName&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Java&quot;</span><span class="hljs-punctuation">,</span>
+				<span class="hljs-attr">&quot;cover&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;202209/PlhfPylwBwmcsmQsMzZgRBkGzGZkEE.jpg&quot;</span><span class="hljs-punctuation">,</span>
+				<span class="hljs-attr">&quot;summary&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;一款Java代码生成工具，可以生成 基本的 分页查询、单条插入、单条插入或者更新、批量插入、批量插入或者更新、根据主键、唯一索引 单挑查询、修改、删除。用了，你一定会喜欢。用了mybatis-plus，不妨试试这块代码生成工具&quot;</span><span class="hljs-punctuation">,</span>
+				<span class="hljs-attr">&quot;content&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+				<span class="hljs-attr">&quot;markdownContent&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+				<span class="hljs-attr">&quot;editorType&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+				<span class="hljs-attr">&quot;tag&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Java代码生成工具&quot;</span><span class="hljs-punctuation">,</span>
+				<span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span>
+				<span class="hljs-attr">&quot;reprintUrl&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;&quot;</span><span class="hljs-punctuation">,</span>
+				<span class="hljs-attr">&quot;userId&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">100000</span><span class="hljs-punctuation">,</span>
+				<span class="hljs-attr">&quot;nickName&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;多多洛2020&quot;</span><span class="hljs-punctuation">,</span>
+				<span class="hljs-attr">&quot;allowComment&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+				<span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+				<span class="hljs-attr">&quot;delType&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+				<span class="hljs-attr">&quot;createTime&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;2022-09-10 20:58:03&quot;</span><span class="hljs-punctuation">,</span>
+				<span class="hljs-attr">&quot;lastUpdateTime&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;2022-09-25 13:43:07&quot;</span><span class="hljs-punctuation">,</span>
+				<span class="hljs-attr">&quot;blogType&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span>
+				<span class="hljs-attr">&quot;sort&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+				<span class="hljs-attr">&quot;statusName&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;已发布&quot;</span><span class="hljs-punctuation">,</span>
+				<span class="hljs-attr">&quot;allowCommentTypeName&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;允许&quot;</span><span class="hljs-punctuation">,</span>
+				<span class="hljs-attr">&quot;typeName&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+				<span class="hljs-attr">&quot;editorTypeName&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Markdown&quot;</span><span class="hljs-punctuation">,</span>
+				<span class="hljs-attr">&quot;children&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span>
+			<span class="hljs-punctuation">}</span>
+		<span class="hljs-punctuation">]</span>
+	<span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+	<span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
+	<span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
+	<span class="hljs-attr">&quot;info&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;请求成功&quot;</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+</div></div><h2 data-v-md-heading="获取专题详情" data-v-md-line="498">获取专题详情</h2>
+<ul data-v-md-line="500">
+<li>
+<p data-v-md-line="500">接口地址</p>
+<p data-v-md-line="502">api/blog/getSpecialInfo</p>
+</li>
+<li>
+<p data-v-md-line="504">请求参数</p>
+<table data-v-md-line="506">
+<thead>
+<tr>
+<th>参数名</th>
+<th>说明</th>
+<th>是否必填</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>categoryId</td>
+<td>专题ID</td>
+<td>是</td>
+</tr>
+<tr>
+<td>showType</td>
+<td>0:包含全部,1:包含分类2:只有博客</td>
+<td>是</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+<h2 data-v-md-heading="保存专题-1" data-v-md-line="511">保存专题</h2>
+<ul data-v-md-line="513">
+<li>
+<p data-v-md-line="513">接口地址</p>
+<p data-v-md-line="515">api/blog/saveBlog4Special</p>
+</li>
+<li>
+<p data-v-md-line="517">请求参数</p>
+<table data-v-md-line="519">
+<thead>
+<tr>
+<th>参数名</th>
+<th>参数说明</th>
+<th>是否必填</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>blogId</td>
+<td>博客ID</td>
+<td>否</td>
+</tr>
+<tr>
+<td>editorType</td>
+<td>编辑器类型 0:富文本 1:markdown编辑器</td>
+<td>否</td>
+</tr>
+<tr>
+<td>title</td>
+<td>标题</td>
+<td>否</td>
+</tr>
+<tr>
+<td>content</td>
+<td>html内容</td>
+<td>否</td>
+</tr>
+<tr>
+<td>markdownContent</td>
+<td>markdown内容，markdown编辑器有</td>
+<td>markdown编辑器必传</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p data-v-md-line="527">接口返回</p>
+<div data-v-md-line="529"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;info&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;请求成功&quot;</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+</div></div></li>
+</ul>
+<h2 data-v-md-heading="自动保存专题" data-v-md-line="537">自动保存专题</h2>
+<ul data-v-md-line="538">
+<li>接口地址<br>
+api/blog/autoSaveBlog4Special</li>
+<li>请求参数
+<table data-v-md-line="541">
+<thead>
+<tr>
+<th>参数名</th>
+<th>参数说明</th>
+<th>是否必填</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>blogId</td>
+<td>id</td>
+<td>修改必传</td>
+</tr>
+<tr>
+<td>editorType</td>
+<td>编辑器类型</td>
+<td>是</td>
+</tr>
+<tr>
+<td>title</td>
+<td>标题</td>
+<td>是</td>
+</tr>
+<tr>
+<td>content</td>
+<td>html内容</td>
+<td>是</td>
+</tr>
+<tr>
+<td>markdownContent</td>
+<td>markdown内容</td>
+<td>是</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>返回结果<div data-v-md-line="549"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;info&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;请求成功&quot;</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+</div></div></li>
+</ul>
+<h2 data-v-md-heading="获取详情" data-v-md-line="557">获取详情</h2>
+<p data-v-md-line="558">同博客详情</p>
+<h2 data-v-md-heading="博客排序" data-v-md-line="560">博客排序</h2>
+<ul data-v-md-line="561">
+<li>接口地址<br>
+api/blog/updateSpecialBlogSort</li>
+<li>请求参数
+<table data-v-md-line="564">
+<thead>
+<tr>
+<th>参数名</th>
+<th>参数说明</th>
+<th>是否必填</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>blogId</td>
+<td>博客ID</td>
+<td>是</td>
+</tr>
+<tr>
+<td>pBlogId</td>
+<td>父级ID</td>
+<td>是</td>
+</tr>
+<tr>
+<td>blogIds</td>
+<td>相关的博客ID,根据顺序逗号隔开</td>
+<td>是</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>返回结果<div data-v-md-line="570"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;info&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;请求成功&quot;</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+</div></div></li>
+</ul>
+<h1 data-v-md-heading="个人信息" data-v-md-line="580">个人信息</h1>
+<h2 data-v-md-heading="保存个人信息" data-v-md-line="581">保存个人信息</h2>
+<ul data-v-md-line="583">
+<li>
+<p data-v-md-line="583">接口地址</p>
+<p data-v-md-line="585">api/saveMyInfo</p>
+</li>
+<li>
+<p data-v-md-line="587">请求参数</p>
+</li>
+</ul>
+<table data-v-md-line="589">
+<thead>
+<tr>
+<th>参数名</th>
+<th>说明</th>
+<th>是否必填</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>nickName</td>
+<td>昵称</td>
+<td>是</td>
+</tr>
+<tr>
+<td>avatar</td>
+<td>头像</td>
+<td>是</td>
+</tr>
+<tr>
+<td>phone</td>
+<td>手机号</td>
+<td>是</td>
+</tr>
+<tr>
+<td>editorType</td>
+<td>默认编辑器 0:富文本 1markdown</td>
+<td>是</td>
+</tr>
+<tr>
+<td>profession</td>
+<td>职业</td>
+<td>否</td>
+</tr>
+<tr>
+<td>introduction</td>
+<td>简介</td>
+<td>否</td>
+</tr>
+</tbody>
+</table>
+<ul data-v-md-line="598">
+<li>
+<p data-v-md-line="598">接口返回</p>
+<div data-v-md-line="600"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;info&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;请求成功&quot;</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+</div></div></li>
+</ul>
+<h2 data-v-md-heading="保存头像" data-v-md-line="609">保存头像</h2>
+<ul data-v-md-line="611">
+<li>接口地址</li>
+</ul>
+<p data-v-md-line="613">api/saveAvatar</p>
+<ul data-v-md-line="615">
+<li>接口参数</li>
+</ul>
+<table data-v-md-line="617">
+<thead>
+<tr>
+<th>参数名</th>
+<th>说明</th>
+<th>是否必填</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>avatar</td>
+<td>头像</td>
+<td>是</td>
+</tr>
+</tbody>
+</table>
+<ul data-v-md-line="621">
+<li>
+<p data-v-md-line="621">接口返回</p>
+<div data-v-md-line="623"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;info&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;请求成功&quot;</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+</div></div></li>
+</ul>
+<h2 data-v-md-heading="修改密码" data-v-md-line="634">修改密码</h2>
+<ul data-v-md-line="636">
+<li>
+<p data-v-md-line="636">接口地址</p>
+<p data-v-md-line="638">api/updateMyPassword</p>
+</li>
+<li>
+<p data-v-md-line="640">请求参数</p>
+<table data-v-md-line="641">
+<thead>
+<tr>
+<th>参数名</th>
+<th>说明</th>
+<th>是否必填</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>password</td>
+<td>密码</td>
+<td>是</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p data-v-md-line="645">接口返回</p>
+<div data-v-md-line="647"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;info&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;请求成功&quot;</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+</div></div></li>
+</ul>
+<h1 data-v-md-heading="博客成员" data-v-md-line="655">博客成员</h1>
+<h2 data-v-md-heading="获取所有成员" data-v-md-line="656">获取所有成员</h2>
+<ul data-v-md-line="658">
+<li>
+<p data-v-md-line="658">接口地址</p>
+<p data-v-md-line="660">api/setting/loadUser</p>
+</li>
+<li>
+<p data-v-md-line="662">请求参数</p>
+<table data-v-md-line="663">
+<thead>
+<tr>
+<th>参数名</th>
+<th>说明</th>
+<th>是否必填</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>pageNo</td>
+<td>页码</td>
+<td>否</td>
+</tr>
+<tr>
+<td>pageSize</td>
+<td>每页大小</td>
+<td>否</td>
+</tr>
+<tr>
+<td>phoneFuzzy</td>
+<td>手机号模糊搜索</td>
+<td>否</td>
+</tr>
+<tr>
+<td>nickNameFuzzy</td>
+<td>昵称模糊搜索</td>
+<td>否</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p data-v-md-line="669">接口返回</p>
+<div data-v-md-line="671"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;totalCount&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;pageSize&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">15</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;pageNo&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;pageTotal&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;list&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-punctuation">[</span>
+          <span class="hljs-punctuation">{</span>
+              <span class="hljs-attr">&quot;userId&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">100000</span><span class="hljs-punctuation">,</span>
+              <span class="hljs-attr">&quot;nickName&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;多多洛2020&quot;</span><span class="hljs-punctuation">,</span>
+              <span class="hljs-attr">&quot;avatar&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;avatar/100000.jpg?1643189079666&quot;</span><span class="hljs-punctuation">,</span>
+              <span class="hljs-attr">&quot;phone&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;18666666666&quot;</span><span class="hljs-punctuation">,</span>
+              <span class="hljs-attr">&quot;profession&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;Java开发&quot;</span><span class="hljs-punctuation">,</span>
+              <span class="hljs-attr">&quot;introduction&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;&lt;p&gt;       老程序员一枚，目前就职于武汉某上市互联网公司，主要做Java开发，半拉子前端。之前领导是这么评价我的，在Java组，我前端是最牛逼的，在前端组我Java是最牛逼的。不知道这是夸我还是夸我。&lt;/p&gt;&lt;p&gt;       平时喜欢敲敲代码，喜欢打乒乓球，偶尔游戏（war3，好久没玩了），爱耍抖音（刷完一片空虚，哈哈，有木有同类）。我的座右铭是 搞事情多做要快，姿势要帅。不喜欢加班，也很少加班。&lt;/p&gt;&quot;</span><span class="hljs-punctuation">,</span>
+              <span class="hljs-attr">&quot;editorType&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+              <span class="hljs-attr">&quot;roleType&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+              <span class="hljs-attr">&quot;createTime&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;2021-12-04 20:56:01&quot;</span><span class="hljs-punctuation">,</span>
+              <span class="hljs-attr">&quot;lastLoginTime&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;2021-12-23 15:17:12&quot;</span><span class="hljs-punctuation">,</span>
+              <span class="hljs-attr">&quot;roleTypeName&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;管理员&quot;</span><span class="hljs-punctuation">,</span>
+              <span class="hljs-attr">&quot;editorTypeName&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;Markdown&quot;</span><span class="hljs-punctuation">,</span>
+              <span class="hljs-attr">&quot;statusName&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;启用&quot;</span>
+          <span class="hljs-punctuation">}</span>
+      <span class="hljs-punctuation">]</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;info&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;请求成功&quot;</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+</div></div></li>
+</ul>
+<h2 data-v-md-heading="保存成员" data-v-md-line="702">保存成员</h2>
+<ul data-v-md-line="703">
+<li>
+<p data-v-md-line="703">接口地址<br>
+api/setting/saveTeamUser</p>
+</li>
+<li>
+<p data-v-md-line="705">请求参数</p>
+<table data-v-md-line="706">
+<thead>
+<tr>
+<th>参数名</th>
+<th>参数说明</th>
+<th>是否必填</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>userId</td>
+<td>ID</td>
+<td>修改必传</td>
+</tr>
+<tr>
+<td>nickName</td>
+<td>昵称</td>
+<td>是</td>
+</tr>
+<tr>
+<td>phone</td>
+<td>手机号</td>
+<td>是</td>
+</tr>
+<tr>
+<td>password</td>
+<td>密码</td>
+<td>是</td>
+</tr>
+<tr>
+<td>password</td>
+<td>html内容</td>
+<td>是</td>
+</tr>
+<tr>
+<td>editorType</td>
+<td>默认编辑器</td>
+<td>是</td>
+</tr>
+<tr>
+<td>profession</td>
+<td>职业</td>
+<td>否</td>
+</tr>
+<tr>
+<td>avatar</td>
+<td>头像</td>
+<td>否</td>
+</tr>
+<tr>
+<td>introduction</td>
+<td>简介</td>
+<td>否</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p data-v-md-line="718">接口返回</p>
+<div data-v-md-line="719"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;info&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;请求成功&quot;</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+</div></div></li>
+</ul>
+<h2 data-v-md-heading="删除成员" data-v-md-line="727">删除成员</h2>
+<ul data-v-md-line="728">
+<li>接口地址<br>
+api/setting/delUser</li>
+<li>请求参数
+<table data-v-md-line="731">
+<thead>
+<tr>
+<th>参数名</th>
+<th>参数说明</th>
+<th>是否必填</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>userId</td>
+<td>ID</td>
+<td>是</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>接口返回<div data-v-md-line="735"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;info&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;请求成功&quot;</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+</div></div></li>
+</ul>
+<h2 data-v-md-heading="修改密码-1" data-v-md-line="743">修改密码</h2>
+<ul data-v-md-line="744">
+<li>接口地址<br>
+api/setting/updatePassword</li>
+<li>请求参数
+<table data-v-md-line="747">
+<thead>
+<tr>
+<th>参数名</th>
+<th>参数说明</th>
+<th>是否必填</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>userId</td>
+<td>ID</td>
+<td>是</td>
+</tr>
+<tr>
+<td>password</td>
+<td>密码</td>
+<td>是</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>接口返回<div data-v-md-line="752"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;info&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;请求成功&quot;</span>
+<span class="hljs-punctuation">}</span>
+
+</code></pre>
+</div></div></li>
+</ul>
+<h2 data-v-md-heading="修改状态" data-v-md-line="760">修改状态</h2>
+<ul data-v-md-line="761">
+<li>接口地址<br>
+api/setting/updateStatus</li>
+<li>请求参数
+<table data-v-md-line="764">
+<thead>
+<tr>
+<th>参数名</th>
+<th>参数说明</th>
+<th>是否必填</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>userId</td>
+<td>ID</td>
+<td>是</td>
+</tr>
+<tr>
+<td>status</td>
+<td>状态</td>
+<td>是</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>接口返回<div data-v-md-line="769"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;info&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;请求成功&quot;</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+</div></div></li>
+</ul>
+<h1 data-v-md-heading="系统设置" data-v-md-line="777">系统设置</h1>
+<h2 data-v-md-heading="获取系统设置" data-v-md-line="778">获取系统设置</h2>
+<ul data-v-md-line="779">
+<li>
+<p data-v-md-line="779">接口地址<br>
+api/blog/getSysSetting</p>
+</li>
+<li>
+<p data-v-md-line="781">请求参数<br>
+无</p>
+</li>
+<li>
+<p data-v-md-line="784">接口返回</p>
+<div data-v-md-line="785"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;openCommentType&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;changyanAppId&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;xxx&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;changyanAppKey&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;xxxxxx&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;gitPagesType&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;showIcp&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;icpDomain&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;www.wuhancoder.com&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;icpNo&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;鄂ICP备xxxxx&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;policeProvince&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;鄂&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;policeNo&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;xxxxxxx&quot;</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;info&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;请求成功&quot;</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+</div></div></li>
+</ul>
+<h2 data-v-md-heading="保存系统设置" data-v-md-line="803">保存系统设置</h2>
+<ul data-v-md-line="804">
+<li>接口地址<br>
+api/blog/saveSysSetting</li>
+<li>请求参数
+<table data-v-md-line="807">
+<thead>
+<tr>
+<th>参数名</th>
+<th>说明</th>
+<th>是否必填</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>openCommentType</td>
+<td>开启评论类型0:不开启，1:开启</td>
+<td>是</td>
+</tr>
+<tr>
+<td>changyanAppId</td>
+<td>畅言appId</td>
+<td>是</td>
+</tr>
+<tr>
+<td>changyanAppKey</td>
+<td>畅言appKey</td>
+<td>是</td>
+</tr>
+<tr>
+<td>gitPagesType</td>
+<td>gitPage发布类型0:不发布 1:发布</td>
+<td>是</td>
+</tr>
+<tr>
+<td>showIcp</td>
+<td>是否显示备案信息0:不显示1:显示</td>
+<td>是</td>
+</tr>
+<tr>
+<td>icpDomain</td>
+<td>备案域名</td>
+<td>是</td>
+</tr>
+<tr>
+<td>icpNo</td>
+<td>备案号</td>
+<td>是</td>
+</tr>
+<tr>
+<td>policeProvince</td>
+<td>备案省份</td>
+<td>是</td>
+</tr>
+<tr>
+<td>policeNo</td>
+<td>公安备案号</td>
+<td>是</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>接口返回<div data-v-md-line="819"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;info&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;请求成功&quot;</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+</div></div></li>
+</ul>
+<h2 data-v-md-heading="下载页面zip" data-v-md-line="827">下载页面Zip</h2>
+<ul data-v-md-line="828">
+<li>接口地址<br>
+api/blog/createZip</li>
+<li>请求参数<br>
+无</li>
+<li>接口返回<div data-v-md-line="833"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;xxxxxx.zip&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;info&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;请求成功&quot;</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+</div></div></li>
+</ul>
+<h1 data-v-md-heading="回收站" data-v-md-line="841">回收站</h1>
+<h2 data-v-md-heading="回收站博客列表" data-v-md-line="842">回收站博客列表</h2>
+<ul data-v-md-line="843">
+<li>
+<p data-v-md-line="843">接口列表<br>
+/api/blog/loadRecoveryList</p>
+</li>
+<li>
+<p data-v-md-line="845">请求参数</p>
+<table data-v-md-line="846">
+<thead>
+<tr>
+<th>参数名</th>
+<th>说明</th>
+<th>是否必填</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>pageNo</td>
+<td>页码</td>
+<td>否</td>
+</tr>
+<tr>
+<td>pageSize</td>
+<td>每页大小</td>
+<td>否</td>
+</tr>
+<tr>
+<td>titleFuzzy</td>
+<td>标题模糊搜索</td>
+<td>否</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p data-v-md-line="852">接口返回</p>
+<div data-v-md-line="853"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+  	<span class="hljs-attr">&quot;totalCount&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">12</span><span class="hljs-punctuation">,</span>
+  	<span class="hljs-attr">&quot;pageSize&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">15</span><span class="hljs-punctuation">,</span>
+  	<span class="hljs-attr">&quot;pageNo&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+  	<span class="hljs-attr">&quot;pageTotal&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+  	<span class="hljs-attr">&quot;list&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+  		<span class="hljs-punctuation">{</span>
+  			<span class="hljs-attr">&quot;blogId&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;fHimhBHWFU&quot;</span><span class="hljs-punctuation">,</span>
+  			<span class="hljs-attr">&quot;pBlogId&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+  			<span class="hljs-attr">&quot;title&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;EasyJava 一个java代码生成工具&quot;</span><span class="hljs-punctuation">,</span>
+  			<span class="hljs-attr">&quot;categoryId&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">10001</span><span class="hljs-punctuation">,</span>
+  			<span class="hljs-attr">&quot;categoryName&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Java&quot;</span><span class="hljs-punctuation">,</span>
+  			<span class="hljs-attr">&quot;cover&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;202209/PlhfPylwBwmcsmQsMzZgRBkGzGZkEE.jpg&quot;</span><span class="hljs-punctuation">,</span>
+  			<span class="hljs-attr">&quot;summary&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;一款Java代码生成工具，可以生成 基本的 分页查询、单条插入、单条插入或者更新、批量插入、批量插入或者更新、根据主键、唯一索引 单挑查询、修改、删除。用了，你一定会喜欢。用了mybatis-plus，不妨试试这块代码生成工具&quot;</span><span class="hljs-punctuation">,</span>
+  			<span class="hljs-attr">&quot;content&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+  			<span class="hljs-attr">&quot;markdownContent&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+  			<span class="hljs-attr">&quot;editorType&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+  			<span class="hljs-attr">&quot;tag&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Java代码生成工具&quot;</span><span class="hljs-punctuation">,</span>
+  			<span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span>
+  			<span class="hljs-attr">&quot;reprintUrl&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;&quot;</span><span class="hljs-punctuation">,</span>
+  			<span class="hljs-attr">&quot;userId&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">100000</span><span class="hljs-punctuation">,</span>
+  			<span class="hljs-attr">&quot;nickName&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;多多洛2020&quot;</span><span class="hljs-punctuation">,</span>
+  			<span class="hljs-attr">&quot;allowComment&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+  			<span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+  			<span class="hljs-attr">&quot;delType&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+  			<span class="hljs-attr">&quot;createTime&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;2022-09-10 20:58:03&quot;</span><span class="hljs-punctuation">,</span>
+  			<span class="hljs-attr">&quot;lastUpdateTime&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;2022-09-25 13:43:07&quot;</span><span class="hljs-punctuation">,</span>
+  			<span class="hljs-attr">&quot;blogType&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span>
+  			<span class="hljs-attr">&quot;sort&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+  			<span class="hljs-attr">&quot;statusName&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;已发布&quot;</span><span class="hljs-punctuation">,</span>
+  			<span class="hljs-attr">&quot;allowCommentTypeName&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;允许&quot;</span><span class="hljs-punctuation">,</span>
+  			<span class="hljs-attr">&quot;typeName&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+  			<span class="hljs-attr">&quot;editorTypeName&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Markdown&quot;</span><span class="hljs-punctuation">,</span>
+  			<span class="hljs-attr">&quot;children&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span>
+  		<span class="hljs-punctuation">}</span>
+  	<span class="hljs-punctuation">]</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;info&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;请求成功&quot;</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+</div></div></li>
+</ul>
+<h2 data-v-md-heading="彻底删除" data-v-md-line="897">彻底删除</h2>
+<ul data-v-md-line="898">
+<li>
+<p data-v-md-line="898">接口地址<br>
+api/blog/delBlog</p>
+</li>
+<li>
+<p data-v-md-line="900">请求参数</p>
+<table data-v-md-line="901">
+<thead>
+<tr>
+<th>请求参数</th>
+<th>参数说明</th>
+<th>是否必填</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>blogId</td>
+<td>博客ID</td>
+<td>是</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p data-v-md-line="905">接口返回</p>
+<div data-v-md-line="906"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+<span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+<span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
+<span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
+<span class="hljs-attr">&quot;info&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;请求成功&quot;</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+</div></div></li>
+</ul>
+<h2 data-v-md-heading="恢复博客" data-v-md-line="915">恢复博客</h2>
+<ul data-v-md-line="916">
+<li>
+<p data-v-md-line="916">接口地址<br>
+api/blog/reductionBlog</p>
+</li>
+<li>
+<p data-v-md-line="918">请求参数</p>
+<table data-v-md-line="919">
+<thead>
+<tr>
+<th>请求参数</th>
+<th>参数说明</th>
+<th>是否必填</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>blogId</td>
+<td>博客ID</td>
+<td>是</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p data-v-md-line="923">接口返回</p>
+<div data-v-md-line="924"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;info&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;请求成功&quot;</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+</div></div></li>
+</ul>
+</div>
+                </div>
+            </div>
+                <div class="container-comment">
+                    <div class="comment-title">评论</div>
+                    <div id="SOHUCS" sid="cqzKWftzyr"></div>
+                    <script charset="utf-8" type="text/javascript" src="https://cy-cdn.kuaizhan.com/upload/changyan.js"></script>
+                    <script type="text/javascript">
+                        window.changyan.api.config({
+                            appid: "cyvP1EXdR",
+                            conf: '0264664c4b9d1fb578d732b34abf3246'
+                        });
+                    </script>
+                </div>
+            <div id="right-container">
+                <div class="toc-title" id="toc-title">目录<span class="icon-arrow arrow-down"></span></div>
+                <div id="toc"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+        <div class="footer">
+            <div>
+                <span>©2021-2022 www.wuhancoder.com All rights reserved. </span>
+                <a target="_blank" href="https://beian.miit.gov.cn/">鄂ICP备13017512号-3</a></div>
+            <div>
+                <img src="../resource/static/beian.png">
+                <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=42011502000890">
+                    鄂公网安备 42011502000890号
+                </a></div>
+        </div>
+</body>
+</html>

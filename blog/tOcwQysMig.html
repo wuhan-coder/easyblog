@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>electron 初体验 - 我是程序员</title>
+        <meta name="keywords" content="electron">
+        <meta name="description" content="electron初体验">
+
+    <link rel="stylesheet" href="../resource/static/plugin/highlight/styles/github.min.css">
+    <link rel="stylesheet" href="../resource/static/plugin/viewer/viewer.min.css">
+    <script src="../resource/static/plugin/highlight/highlight.min.js"></script>
+    <script src="../resource/static/plugin/jquery/jquery.min.js"></script>
+    <script src="../resource/static/plugin/viewer/viewer-jquery.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <link rel="stylesheet" href="../resource/static/css/blog.detail.css">
+    <script>
+        $(document).ready(function (e) {
+            createToc();
+            $("#content").viewer({
+                navbar: false
+            });
+
+            $("#content a").each(function (index, element) {
+                $(element).attr("target", "_blank");
+            })
+        });
+
+        function createToc() {
+            let hCount = 0;
+            $("#content").children().each(function (index, element) {
+                var tagName = $(this).get(0).tagName;
+                if (tagName.substr(0, 1).toUpperCase() == "H") {
+                    hCount++;
+                    var contentH = $(this).text();//获取内容
+                    var markid = "mark-" + tagName + "-" + index.toString();
+                    $(this).attr("id", markid);//为当前h标签设置id
+                    let spaceNum = "0";
+                    if (tagName === 'H1') {
+                        spaceNum = "0";
+                    } else if (tagName === 'H2') {
+                        spaceNum = "1.5";
+                    } else if (tagName === 'H3') {
+                        spaceNum = "3";
+                    } else if (tagName === 'H4') {
+                        spaceNum = "4.5";
+                    } else if (tagName === 'H5') {
+                        spaceNum = "6";
+                    } else if (tagName === 'H6') {
+                        spaceNum = "7.5";
+                    }
+                    spaceNum += "em";
+                    $("<a href='javascript:scroll(\"" + markid + "\")' style='text-indent:" + spaceNum + "'>" + contentH + "</a>").appendTo($("#toc"));
+                }
+            });
+            if (hCount == 0) {
+                $("<div class='no-data'>暂无目录信息</div>").appendTo($("#toc"));
+            }
+            let url = document.location.href;
+            if (url.indexOf("#") != -1) {
+                let markId = url.substr(url.indexOf("#") + 1);
+                scroll(markId);
+            }
+        }
+
+        $(window).scroll(function () {
+            //console.log($(document).scrollTop());
+            $("#right-container").css("top", $(document).scrollTop() + "px");
+        });
+
+        function scroll(markId) {
+            let url = document.location.href;
+            if (url.indexOf("#") == -1) {
+                document.location.href = url + "#" + markId;
+            } else {
+                document.location.href = url.substring(0, url.indexOf("#") + 1) + markId;
+            }
+            $("html,body").animate({scrollTop: $("#" + markId).offset().top - 80}, 100);
+        }
+    </script>
+</head>
+<body>
+    <div class="top">
+        <div class="top-container">
+            <div class="logo">
+                    <a href="../index.html">我是程序员</a>
+            </div>
+                <a href="../index.html" class="nav active">博客</a>
+                <a href="../category.html" class="nav ">分类专栏</a>
+                <a href="../special.html" class="nav ">专题</a>
+                <a href="../user.html" class="nav ">成员</a>
+                <a href="../comment.html" class="nav ">留言板</a>
+        </div>
+    </div>
+<div class="body-container">
+    <div class="blog-detail">
+        <div class="container">
+            <div class="container-content">
+                <div>
+                    <div class="blog-title">electron 初体验</div>
+                    <div class="blog-info">
+                        <div class="time">2022-05-21 03:23:14</div>
+                        <div class="nick-name">作者：<a href="../user.html#100000">多多洛2020</a></div>
+                        <div class="category">分类专栏：<a href="../category/10002.html">electron</a></div>
+
+                    </div>
+                    <div class="content" id="content"><h1 data-v-md-heading="一些初始化问题" data-v-md-line="1">一些初始化问题</h1>
+<h2 data-v-md-heading="渲染进程使用node-js-模块" data-v-md-line="2">渲染进程使用node.js 模块</h2>
+<div data-v-md-line="3"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code><span class="hljs-keyword">const</span> mainWindow = <span class="hljs-keyword">new</span> <span class="hljs-title class_">BrowserWindow</span>({
+        <span class="hljs-attr">width</span>: <span class="hljs-number">600</span>,
+        <span class="hljs-attr">height</span>: <span class="hljs-number">400</span>,
+        <span class="hljs-attr">icon</span>: <span class="hljs-string">&#x27;icon.ico&#x27;</span>,
+        <span class="hljs-attr">webPreferences</span>: {
+            <span class="hljs-attr">nodeIntegration</span>: <span class="hljs-literal">true</span>, <span class="hljs-comment">//允许渲染进程使用nodejs</span>
+            <span class="hljs-attr">contextIsolation</span>: <span class="hljs-literal">false</span> <span class="hljs-comment">//允许渲染进程使用nodejs</span>
+        }
+    });
+</code></pre>
+</div></div><h2 data-v-md-heading="中文乱码解决" data-v-md-line="15">中文乱码解决</h2>
+<p data-v-md-line="16">在package.json中的启动脚本中添加 chcp 65001</p>
+<div data-v-md-line="17"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code><span class="hljs-string">&quot;scripts&quot;</span>: {
+    <span class="hljs-string">&quot;start&quot;</span>: <span class="hljs-string">&quot;chcp 65001 &amp;&amp; electron .&quot;</span>,
+    <span class="hljs-string">&quot;test&quot;</span>: <span class="hljs-string">&quot;echo \&quot;Error: no test specified\&quot; &amp;&amp; exit 1&quot;</span>
+  },
+</code></pre>
+</div></div><h2 data-v-md-heading="使用remote" data-v-md-line="24">使用remote</h2>
+<p data-v-md-line="25">remote可以用于主线程，渲染线程通讯，渲染线程创建窗口等操作，使的渲染线程可以调用主线程方法<br>
+高版本的remote被独立成第三方包，使用需要单独引入</p>
+<div data-v-md-line="27"><div class="v-md-pre-wrapper v-md-pre-wrapper-shell extra-class"><pre class="v-md-hljs-shell"><code>npm install --save @electron/remote
+</code></pre>
+</div></div><p data-v-md-line="30">主线程中配置</p>
+<div data-v-md-line="31"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code>
+<span class="hljs-keyword">const</span> remote = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;@electron/remote/main&#x27;</span>);
+remote.<span class="hljs-title function_">initialize</span>()
+
+<span class="hljs-keyword">const</span> mainWindow = <span class="hljs-keyword">new</span> <span class="hljs-title class_">BrowserWindow</span>({
+        <span class="hljs-attr">width</span>: <span class="hljs-number">600</span>,
+        <span class="hljs-attr">height</span>: <span class="hljs-number">400</span>,
+        <span class="hljs-attr">icon</span>: <span class="hljs-string">&#x27;icon.ico&#x27;</span>,
+        <span class="hljs-attr">webPreferences</span>: {
+            <span class="hljs-attr">nodeIntegration</span>: <span class="hljs-literal">true</span>, <span class="hljs-comment">//允许渲染进程使用nodejs</span>
+            <span class="hljs-attr">contextIsolation</span>: <span class="hljs-literal">false</span> <span class="hljs-comment">//允许渲染进程使用nodejs</span>
+        }
+    });
+   remote.<span class="hljs-title function_">enable</span>(mainWindow.<span class="hljs-property">webContents</span>);
+</code></pre>
+</div></div><h1 data-v-md-heading="窗口参数" data-v-md-line="49">窗口参数</h1>
+<h2 data-v-md-heading="获取屏幕大小" data-v-md-line="50">获取屏幕大小</h2>
+<div data-v-md-line="51"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code><span class="hljs-keyword">const</span> {screen} = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;electron&quot;</span>);
+
+<span class="hljs-keyword">let</span> screenWidth = screen.<span class="hljs-title function_">getPrimaryDisplay</span>().<span class="hljs-property">workAreaSize</span>.<span class="hljs-property">width</span>;
+<span class="hljs-keyword">let</span> screenHeight = screen.<span class="hljs-title function_">getPrimaryDisplay</span>().<span class="hljs-property">workAreaSize</span>.<span class="hljs-property">height</span>;
+
+</code></pre>
+</div></div><h2 data-v-md-heading="设置窗口位置" data-v-md-line="58">设置窗口位置</h2>
+<div data-v-md-line="59"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code>
+    <span class="hljs-keyword">const</span> mainWindow = <span class="hljs-keyword">new</span> <span class="hljs-title class_">BrowserWindow</span>({
+        <span class="hljs-attr">width</span>: <span class="hljs-number">600</span>,
+        <span class="hljs-attr">height</span>: <span class="hljs-number">400</span>,
+        <span class="hljs-attr">icon</span>: <span class="hljs-string">&#x27;icon.ico&#x27;</span>,
+        <span class="hljs-attr">webPreferences</span>: {
+            <span class="hljs-attr">nodeIntegration</span>: <span class="hljs-literal">true</span>, <span class="hljs-comment">//允许渲染进程使用nodejs</span>
+            <span class="hljs-attr">contextIsolation</span>: <span class="hljs-literal">false</span> <span class="hljs-comment">//允许渲染进程使用nodejs</span>
+        }
+    });
+   mainWindow.<span class="hljs-title function_">setPostion</span>(x,y)
+
+</code></pre>
+</div></div></div>
+                </div>
+            </div>
+                <div class="container-comment">
+                    <div class="comment-title">评论</div>
+                    <div id="SOHUCS" sid="tOcwQysMig"></div>
+                    <script charset="utf-8" type="text/javascript" src="https://cy-cdn.kuaizhan.com/upload/changyan.js"></script>
+                    <script type="text/javascript">
+                        window.changyan.api.config({
+                            appid: "cyvP1EXdR",
+                            conf: '0264664c4b9d1fb578d732b34abf3246'
+                        });
+                    </script>
+                </div>
+        </div>
+        <div class="right">
+            <div class="container" id="right-container">
+                <div class="right-title toc-title">目录结构</div>
+                <div id="toc"></div>
+
+                <div class="right-title category-title">
+                    <span>分类专栏</span>
+                    <a href="../category.html" class="more">更多>></a>
+                </div>
+                    <a href="../category/10000.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/image/202112/EFUgXqXkPTFORpHpeTTnbLTTMVsJgf.png">
+                        </span>
+                        <span class="category-name" title="EasyBlog">EasyBlog</span>
+                        <span class="blog-count">0篇</span>
+                    </a>
+                    <a href="../category/10001.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/image/202201/fBNKwBWNHXNERqYdAupUXAMdHZWLJv.png">
+                        </span>
+                        <span class="category-name" title="Java">Java</span>
+                        <span class="blog-count">5篇</span>
+                    </a>
+                    <a href="../category/10002.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/static/default_img.png">
+                        </span>
+                        <span class="category-name" title="electron">electron</span>
+                        <span class="blog-count">2篇</span>
+                    </a>
+                    <a href="../category/10003.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/static/default_img.png">
+                        </span>
+                        <span class="category-name" title="Vue3">Vue3</span>
+                        <span class="blog-count">4篇</span>
+                    </a>
+            </div>
+        </div>
+    </div>
+</div>
+        <div class="footer">
+            <div>
+                <span>©2021-2022 www.wuhancoder.com All rights reserved. </span>
+                <a target="_blank" href="https://beian.miit.gov.cn/">鄂ICP备13017512号-3</a></div>
+            <div>
+                <img src="../resource/static/beian.png">
+                <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=42011502000890">
+                    鄂公网安备 42011502000890号
+                </a></div>
+        </div>
+</body>
+</html>
