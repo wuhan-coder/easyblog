@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>安装后端程序 - 我是程序员</title>
-        <meta name="keywords" content="安装后端程序">
-        <meta name="description" content="后端程序地址：V1.0.0-&gt;https://www.123pan.com/s/11qA-edJX提取码0925">
+    <title>前端项目构建 - 我是程序员</title>
+        <meta name="keywords" content="前端项目构建">
+        <meta name="description" content="构建项目npminitvite@latesteasyblog-admin">
 
     <link rel="stylesheet" href="../resource/static/plugin/highlight/styles/github.min.css">
     <link rel="stylesheet" href="../resource/static/plugin/viewer/viewer.min.css">
@@ -183,58 +183,20 @@
         <div class="container">
             <div class="container-content">
                 <div>
-                    <div class="blog-title">安装后端程序</div>
+                    <div class="blog-title">前端项目构建</div>
                     <div class="blog-info">
-                        <div class="time">2022-09-24 07:24:25</div>
+                        <div class="time">2022-10-09 02:58:35</div>
                         <div class="nick-name">作者：<a href="../user.html#100000">多多洛2020</a></div>
                     </div>
-                    <div class="content" id="content"><h1 data-v-md-heading="后端程序下载" data-v-md-line="1">后端程序下载</h1>
-<p data-v-md-line="2">下载地址：<br>
-V1.0.0 -&gt; https://www.123pan.com/s/11qA-edJX  提取码 0925</p>
-<p data-v-md-line="5">解压之后:<br>
-<img src="../resource/image/202209/eztPqkzqMPFhCEPjAMZCopnNOIZwlm.png" alt="图片"><br>
-包含一个配置文件，一个数据库脚本，一个java后端程序的jar包</p>
-<h1 data-v-md-heading="导入数据库脚本" data-v-md-line="9">导入数据库脚本</h1>
-<p data-v-md-line="10">右键 navicat中的 localhost，选择新建数据库<br>
-<img src="../resource/image/202209/NSRyMURRAonXETDRAAlbyXWrpLmIkr.png" alt="图片"></p>
-<p data-v-md-line="13"><img src="../resource/image/202209/TbmUnySstwkArahrJMwdqPRXBBLHdw.png" alt="图片"></p>
-<p data-v-md-line="15">双击 easyblog 打开数据库连接，然后右键<br>
-<img src="../resource/image/202209/zMPCtEjVToyfnCELlwIIBoQyvQDPpV.png" alt="图片"></p>
-<p data-v-md-line="18">选择easyblog.sql文件进行导入<br>
-导入后刷新就会看到表了<br>
-<img src="../resource/image/202209/IgOQsqqHLNpqLDFYzLfMdATvwstTeb.png" alt="图片"></p>
-<h1 data-v-md-heading="运行后端程序" data-v-md-line="22">运行后端程序</h1>
-<p data-v-md-line="23">如果按照视频中的没有修改用户名和数据库的账号密码，端口，那么数据库就不用修改</p>
-<div data-v-md-line="24"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code>#服务端口
-server.port=8081 
-
-#日志配置
-log.path=/webser/web_app/easyblog/
-log.file=easyblog.log
-log.root.level=debug
-#是否是开发/测试环境
-isTest=true
-#文件目录
-file.folder=g:/webser/easyblog/file/
-#生成的静态文件目录,nginx配置跟此目录相匹配
-html.out.folder=g:/webser/easyblog/html/
-#是否开启前段web接口
-web.api.open=true
+                    <div class="content" id="content"><h1 data-v-md-heading="构建项目" data-v-md-line="1">构建项目</h1>
+<div data-v-md-line="2"><div class="v-md-pre-wrapper v-md-pre-wrapper-shell extra-class"><pre class="v-md-hljs-shell"><code>npm init vite@latest easyblog-admin
 </code></pre>
-</div></div><p data-v-md-line="41">修改这里的几个路径就可以了<br>
-要将 application.properties 和easyblog-1.0.0.jar放到一个目录，然后开启doc，执行java -jar easyblog-1.0.0.jar 就可以启动服务了。</p>
-<h1 data-v-md-heading="测试服务是否正常" data-v-md-line="44">测试服务是否正常</h1>
-<p data-v-md-line="45">我们打开浏览器输入 http://localhost:8081/api/view/loadBlogList 如果有数据返回说明后台服务已经完全OK</p>
-<p data-v-md-line="47"><strong><strong>补充</strong></strong>：<br>
-在配置文件中增加 一行<br>
-spring.favicon.enabled=false<br>
-就可以解决启动找不到favicon.icon的报错了</p>
-</div>
+</div></div></div>
                 </div>
             </div>
                 <div class="container-comment">
                     <div class="comment-title">评论</div>
-                    <div id="SOHUCS" sid="vbbStsCMXs"></div>
+                    <div id="SOHUCS" sid="ReLhoidFfc"></div>
                     <script charset="utf-8" type="text/javascript" src="https://cy-cdn.kuaizhan.com/upload/changyan.js"></script>
                     <script type="text/javascript">
                         window.changyan.api.config({
