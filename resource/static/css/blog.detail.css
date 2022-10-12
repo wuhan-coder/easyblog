@@ -154,10 +154,10 @@ body .user-item {
   align-items: center;
 }
 body .user-item .user-icon {
-  width: 80px;
-  height: 80px;
+  width: 60px;
+  height: 60px;
   background: #ddd;
-  border-radius: 40px;
+  border-radius: 30px;
   display: flex;
   align-items: center;
   overflow: hidden;
@@ -197,7 +197,7 @@ body .no-data {
   color: #939393;
   text-align: center;
 }
-body .team-user-title {
+body .team-user-title, body .special-title {
   margin-top: 20px;
 }
 body .footer {
@@ -325,6 +325,30 @@ a {
   word-wrap: break-word;
   white-space: pre-wrap;
 }
+.blog-detail .container .container-content .content table {
+  display: block;
+  width: 100%;
+  overflow: auto;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+.blog-detail .container .container-content .content table tr {
+  background-color: #fff;
+  border-top: 1px solid #c6cbd1;
+}
+.blog-detail .container .container-content .content table tr td,
+.blog-detail .container .container-content .content table tr th {
+  padding: 6px 13px;
+  border: 1px solid #dfe2e5;
+}
+.blog-detail .container .container-content .content table tr:nth-child(2n) {
+  background-color: #f6f8fa;
+}
+.blog-detail .container .container-content .content blockquote {
+  padding: 0 1em;
+  color: #6a737d;
+  border-left: 0.25em solid #dfe2e5;
+}
 .blog-detail .container .container-comment {
   margin-top: 20px;
   background: #fff;
@@ -347,9 +371,6 @@ a {
   padding: 10px;
   background: #fff;
 }
-.blog-detail .right .container .toc-title {
-  width: 100%;
-}
 .blog-detail .right .container #toc {
   width: 100%;
   background: #fff;
@@ -361,15 +382,39 @@ a {
 .blog-detail .right .container #toc .no-data {
   line-height: 40px;
 }
-.blog-detail .right .container #toc a {
-  width: 100%;
-  height: 30px;
-  line-height: 30px;
-  display: inline-block;
-  color: #555666;
+.blog-detail .right .container #toc .title {
+  display: flex;
+  align-items: center;
+  padding: 6px 0px 6px 10px;
+  color: #333;
+  display: block;
+  word-wrap: break-word; /*强制换行*/
+  overflow: hidden; /*超出隐藏*/
+  text-overflow: ellipsis; /*隐藏后添加省略号*/
+  white-space: nowrap;
 }
-.blog-detail .right .container #toc a:hover {
-  color: #fc5531;
+.blog-detail .right .container #toc .title a {
+  color: #333;
+}
+.blog-detail .right .container #toc .title:hover {
+  background: #E6F7FF;
+}
+.blog-detail .right .container #toc .active {
+  border-left: 3px solid #1890ff;
+  background: #E6F7FF;
+}
+.blog-detail .right .container #toc .icon-arrow {
+  cursor: pointer;
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+  margin-right: 5px;
+}
+.blog-detail .right .container #toc .arrow-right {
+  background-image: url("arrow-right.png");
+}
+.blog-detail .right .container #toc .arrow-down {
+  background-image: url("arrow-down.png");
 }
 .blog-detail .right .container .category-title {
   margin-top: 20px;

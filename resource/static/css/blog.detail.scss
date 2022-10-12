@@ -130,34 +130,64 @@
       padding: 10px;
       background: #fff;
 
-      #toc {
-        width: 100%;
-        background: #fff;
-        border-radius: 4px;
-        padding: 0 6px;
-        max-height: 400px;
-        overflow: auto;
-
-        .no-data {
-          line-height: 40px;
-        }
-      }
-
-      #toc a {
-        width: 100%;
-        height: 30px;
-        line-height: 30px;
-        display: inline-block;
-        color: #555666;
-      }
-
-      #toc a:hover {
-        color: #fc5531;
-      }
-
       .category-title {
         margin-top: 20px;
       }
+
     }
+  }
+}
+
+#toc, .toc {
+  width: 100%;
+  background: #fff;
+  border-radius: 4px;
+  max-height: 400px;
+  overflow: auto;
+
+  .no-data {
+    line-height: 40px;
+  }
+
+  .title {
+    display: flex;
+    align-items: center;
+    padding: 6px 0px 6px 10px;
+    color: #333;
+
+
+    a {
+      display: block;
+      color: #333;
+      word-wrap: break-word; /*强制换行*/
+      overflow: hidden; /*超出隐藏*/
+      text-overflow: ellipsis; /*隐藏后添加省略号*/
+      white-space: nowrap;
+    }
+  }
+
+  .title:hover {
+    background: #E6F7FF;
+  }
+
+  .active {
+    border-left: 3px solid #1890ff;
+    background: #E6F7FF;
+  }
+
+  .icon-arrow {
+    cursor: pointer;
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+    margin-right: 5px;
+  }
+
+  .arrow-right {
+    background-image: url("arrow-right.png");
+  }
+
+  .arrow-down {
+    background-image: url("arrow-down.png");
   }
 }

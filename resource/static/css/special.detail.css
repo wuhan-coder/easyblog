@@ -371,29 +371,53 @@ a {
   padding: 10px;
   background: #fff;
 }
-.blog-detail .right .container #toc {
+.blog-detail .right .container .category-title {
+  margin-top: 20px;
+}
+
+#toc, .toc {
   width: 100%;
   background: #fff;
   border-radius: 4px;
-  padding: 0 6px;
   max-height: 400px;
   overflow: auto;
 }
-.blog-detail .right .container #toc .no-data {
+#toc .no-data, .toc .no-data {
   line-height: 40px;
 }
-.blog-detail .right .container #toc a {
-  width: 100%;
-  height: 30px;
-  line-height: 30px;
+#toc .title, .toc .title {
+  display: flex;
+  align-items: center;
+  padding: 6px 0px 6px 10px;
+  color: #333;
+}
+#toc .title a, .toc .title a {
+  display: block;
+  color: #333;
+  word-wrap: break-word; /*强制换行*/
+  overflow: hidden; /*超出隐藏*/
+  text-overflow: ellipsis; /*隐藏后添加省略号*/
+  white-space: nowrap;
+}
+#toc .title:hover, .toc .title:hover {
+  background: #E6F7FF;
+}
+#toc .active, .toc .active {
+  border-left: 3px solid #1890ff;
+  background: #E6F7FF;
+}
+#toc .icon-arrow, .toc .icon-arrow {
+  cursor: pointer;
+  width: 10px;
+  height: 10px;
   display: inline-block;
-  color: #555666;
+  margin-right: 5px;
 }
-.blog-detail .right .container #toc a:hover {
-  color: #fc5531;
+#toc .arrow-right, .toc .arrow-right {
+  background-image: url("arrow-right.png");
 }
-.blog-detail .right .container .category-title {
-  margin-top: 20px;
+#toc .arrow-down, .toc .arrow-down {
+  background-image: url("arrow-down.png");
 }
 
 .blog-special-list {
@@ -455,38 +479,7 @@ a {
 }
 .blog-special-list .blog-list {
   margin-top: 10px;
-}
-.blog-special-list .blog-list .title {
-  display: flex;
-  align-items: center;
-  padding: 6px 0px 6px 10px;
-  color: #333;
-}
-.blog-special-list .blog-list .title a {
-  flex: 1;
-  color: #333;
-  display: block;
-  font-size: 15px;
-}
-.blog-special-list .blog-list .title:hover {
-  background: #E6F7FF;
-}
-.blog-special-list .blog-list .active {
-  border-left: 3px solid #1890ff;
-  background: #E6F7FF;
-}
-.blog-special-list .blog-list .icon-arrow {
-  cursor: pointer;
-  width: 10px;
-  height: 10px;
-  display: inline-block;
-  margin-right: 5px;
-}
-.blog-special-list .blog-list .arrow-right {
-  background-image: url("arrow-right.png");
-}
-.blog-special-list .blog-list .arrow-down {
-  background-image: url("arrow-down.png");
+  max-height: 100%;
 }
 
 .container {
@@ -497,7 +490,7 @@ a {
   position: absolute;
   right: 0px;
   top: 0px;
-  width: 200px;
+  width: 250px;
   background: #fff;
   border: 1px solid #ddd;
   box-shadow: -3px 6px 5px #ddd;
@@ -528,26 +521,11 @@ a {
   width: 100%;
   background: #fff;
   border-radius: 4px;
-  padding: 5px 10px;
   max-height: 500px;
   overflow: auto;
 }
 #right-container #toc .no-data {
   line-height: 40px;
-}
-#right-container #toc a {
-  width: 100%;
-  height: 30px;
-  line-height: 30px;
-  color: #555666;
-  display: block;
-  word-wrap: break-word; /*强制换行*/
-  overflow: hidden; /*超出隐藏*/
-  text-overflow: ellipsis; /*隐藏后添加省略号*/
-  white-space: nowrap;
-}
-#right-container #toc a:hover {
-  color: #fc5531;
 }
 
 /*# sourceMappingURL=special.detail.css.map */

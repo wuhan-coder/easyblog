@@ -56,41 +56,80 @@
             $("#" + currentUrl).addClass("active");
         });
 
-        function createToc() {
-            let hCount = 0;
-            $("#content").children().each(function (index, element) {
-                var tagName = $(this).get(0).tagName;
-                if (tagName.substr(0, 1).toUpperCase() == "H") {
-                    hCount++;
-                    var contentH = $(this).text();//获取内容
-                    var markid = "mark-" + tagName + "-" + index.toString();
-                    $(this).attr("id", markid);//为当前h标签设置id
-                    let spaceNum = "0";
-                    if (tagName === 'H1') {
-                        spaceNum = "0";
-                    } else if (tagName === 'H2') {
-                        spaceNum = "1.5";
-                    } else if (tagName === 'H3') {
-                        spaceNum = "3";
-                    } else if (tagName === 'H4') {
-                        spaceNum = "4.5";
-                    } else if (tagName === 'H5') {
-                        spaceNum = "6";
-                    } else if (tagName === 'H6') {
-                        spaceNum = "7.5";
-                    }
-                    spaceNum += "em";
-                    $("<a href='javascript:scroll(\"" + markid + "\")' style='text-indent:" + spaceNum + "' title=" + contentH + ">" + contentH + "</a>").appendTo($("#toc"));
+        const createToc = () => {
+            const hTagList = ["h1", "h2", "h3", "h4", "h5", "h6", "h7"]
+            const children = document.querySelector("#content").children;
+            const hList = [];
+            for (let i = 0; i < children.length; i++) {
+                const node = children[i];
+                let tagName = node.tagName;
+                tagName = tagName == undefined ? "" : tagName.toLowerCase();
+                if (hTagList.indexOf(tagName) != -1) {
+                    const id = "hash-node-" + i;
+                    node.setAttribute("id", id);
+                    hList.push({
+                        pId: "0",
+                        id: id,
+                        level: Number.parseInt(tagName.substring(1, 2)),
+                        name: node.innerText,
+                    });
+                }
+            }
+            for (let i = 0; i < hList.length; i++) {
+                findParentId(hList, hList[i], i);
+            }
+            const newDataList = convertLine2Tree(hList, "0");
+            if (newDataList.length == 0) {
+                $("<div class='no-data'>暂无目录信息</div>").appendTo($("#toc"));
+                return;
+            }
+            newDataList.forEach(element => {
+                createTree($("#toc"), element);
+            })
+        }
+
+        const createTree = (pNode, data) => {
+            const currentNode = $("<div></div>").appendTo(pNode);
+            let extPadding = 26;
+            if (data.children.length > 0) {
+                extPadding = 10
+            }
+            const paddingLeft = (data.level - 1) * 16 + extPadding;
+            const titleNode = $("<div class='title' style='padding-left:" + paddingLeft + "px'></div>").appendTo(currentNode);
+            if (data.children.length > 0) {
+                $("<span class='icon-arrow arrow-down'></span>").appendTo(titleNode);
+            }
+            $("<a href='#" + data.id + "'  title='" + data.name + "'>" + data.name + "</a>").appendTo(titleNode);
+
+            if (data.children.length > 0) {
+                let subNode = $("<div class='sub-title'></div>").appendTo(currentNode);
+                data.children.forEach(item => {
+                    createTree(subNode, item);
+                })
+            }
+        }
+
+        //查找父级节点
+        const findParentId = (hList, item, index) => {
+            for (let i = index - 1; i >= 0; i--) {
+                const pNode = hList[i];
+                if (pNode.level < item.level) {
+                    item.pId = pNode.id;
+                    break;
+                }
+            }
+        }
+
+        //将数据转换为树形
+        const convertLine2Tree = (hList, pId) => {
+            const children = [];
+            hList.forEach(element => {
+                if (element.pId === pId) {
+                    children.push(element);
+                    element.children = convertLine2Tree(hList, element.id);
                 }
             });
-            if (hCount == 0) {
-                $("<div class='no-data'>暂无目录信息</div>").appendTo($("#toc"));
-            }
-            let url = document.location.href;
-            if (url.indexOf("#") != -1) {
-                let markId = url.substr(url.indexOf("#") + 1);
-                scroll(markId);
-            }
+            return children;
         }
 
         $(window).scroll(function () {
@@ -135,21 +174,21 @@
                 </div>
             </div>
             <div class="category-desc" title="EasyBlog 相关文档，接口，环境搭建">简介：EasyBlog 相关文档，接口，环境搭建</div>
-            <div class="blog-list">
+            <div class="blog-list toc">
         <div>
             <div class="title" style="padding-left:26px" id="DEdkCxjkqy">
-                <a href="DEdkCxjkqy.html">简介</a>
+                <a href="DEdkCxjkqy.html" title="简介">简介</a>
             </div>
         </div>
         <div>
             <div class="title" style="padding-left:10px" id="gTvGKLsNNZ">
                     <span class="icon-arrow arrow-down"></span>
-                <a href="gTvGKLsNNZ.html">后端服务部署</a>
+                <a href="gTvGKLsNNZ.html" title="后端服务部署">后端服务部署</a>
             </div>
                 <div class="sub-title">
         <div>
             <div class="title" style="padding-left:42px" id="vbbStsCMXs">
-                <a href="vbbStsCMXs.html">安装后端程序</a>
+                <a href="vbbStsCMXs.html" title="安装后端程序">安装后端程序</a>
             </div>
         </div>
                 </div>
@@ -157,24 +196,24 @@
         <div>
             <div class="title" style="padding-left:10px" id="azvNIIFQCy">
                     <span class="icon-arrow arrow-down"></span>
-                <a href="azvNIIFQCy.html">接口文档</a>
+                <a href="azvNIIFQCy.html" title="接口文档">接口文档</a>
             </div>
                 <div class="sub-title">
         <div>
             <div class="title" style="padding-left:42px" id="cqzKWftzyr">
-                <a href="cqzKWftzyr.html">管理端</a>
+                <a href="cqzKWftzyr.html" title="管理端">管理端</a>
             </div>
         </div>
         <div>
             <div class="title" style="padding-left:42px" id="wBURpKFtiT">
-                <a href="wBURpKFtiT.html">web端</a>
+                <a href="wBURpKFtiT.html" title="web端">web端</a>
             </div>
         </div>
                 </div>
         </div>
         <div>
             <div class="title" style="padding-left:26px" id="ReLhoidFfc">
-                <a href="ReLhoidFfc.html">前端项目构建</a>
+                <a href="ReLhoidFfc.html" title="前端项目构建">前端项目构建</a>
             </div>
         </div>
             </div>
@@ -206,7 +245,7 @@ EasyBlog可以自己平时写博客，还可以邀请志同道合的朋友，同
                 </div>
             <div id="right-container">
                 <div class="toc-title" id="toc-title">目录<span class="icon-arrow arrow-down"></span></div>
-                <div id="toc"></div>
+                <div id="toc" class="toc"></div>
             </div>
         </div>
     </div>
