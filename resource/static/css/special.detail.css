@@ -398,6 +398,7 @@ a {
   overflow: hidden; /*超出隐藏*/
   text-overflow: ellipsis; /*隐藏后添加省略号*/
   white-space: nowrap;
+  flex: 1;
 }
 #toc .title:hover, .toc .title:hover {
   background: #E6F7FF;
