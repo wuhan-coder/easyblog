@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>如何优雅的写登录 - 我是程序员</title>
+        <meta name="keywords" content="登录,优雅的代码">
+        <meta name="description" content="写代码增加过多if else 深层次的判断会让代码的可读性变差，通过异常来阻断程序，代码是不是简洁很多，看起来逻辑也清晰很多。">
+
+    <link rel="stylesheet" href="../resource/static/plugin/highlight/styles/github.min.css">
+    <link rel="stylesheet" href="../resource/static/plugin/viewer/viewer.min.css">
+    <script src="../resource/static/plugin/highlight/highlight.min.js"></script>
+    <script src="../resource/static/plugin/jquery/jquery.min.js"></script>
+    <script src="../resource/static/plugin/viewer/viewer-jquery.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <link rel="stylesheet" href="../resource/static/css/blog.detail.css">
+    <script>
+        $(document).ready(function (e) {
+            createToc();
+            $("#content").viewer({
+                navbar: false
+            });
+
+            $("#content a").each(function (index, element) {
+                $(element).attr("target", "_blank");
+            })
+
+            $(".icon-arrow").click(function () {
+                let nextLiDom = $(this).parent().next("div").eq(0)
+                if ($(this).hasClass("arrow-down")) {
+                    $(this).removeClass("arrow-down");
+                    $(this).addClass("arrow-right");
+                    nextLiDom.hide();
+                } else {
+                    $(this).removeClass("arrow-right");
+                    $(this).addClass("arrow-down");
+                    nextLiDom.show();
+                }
+            });
+
+            //目录展开收齐
+            $("#toc-title").click(function () {
+                let spanDom = $(this).find(".icon-arrow")
+                if (spanDom.hasClass("arrow-down")) {
+                    spanDom.removeClass("arrow-down");
+                    spanDom.addClass("arrow-right");
+                    $("#toc").hide();
+                } else {
+                    spanDom.removeClass("arrow-right");
+                    spanDom.addClass("arrow-down");
+                    $("#toc").show();
+                }
+            });
+        });
+
+        const createToc = () => {
+            const hTagList = ["h1", "h2", "h3", "h4", "h5", "h6", "h7"]
+            const children = document.querySelector("#content").children;
+            const hList = [];
+            for (let i = 0; i < children.length; i++) {
+                const node = children[i];
+                let tagName = node.tagName;
+                tagName = tagName == undefined ? "" : tagName.toLowerCase();
+                if (hTagList.indexOf(tagName) != -1) {
+                    const id = "hash-node-" + i;
+                    node.setAttribute("id", id);
+                    hList.push({
+                        pId: "0",
+                        id: id,
+                        level: Number.parseInt(tagName.substring(1, 2)),
+                        name: node.innerText,
+                    });
+                }
+            }
+            for (let i = 0; i < hList.length; i++) {
+                findParentId(hList, hList[i], i);
+            }
+            const newDataList = convertLine2Tree(hList, "0");
+            if (newDataList.length == 0) {
+                $("<div class='no-data'>暂无目录信息</div>").appendTo($("#toc"));
+                return;
+            }
+            newDataList.forEach(element => {
+                createTree($("#toc"), element);
+            })
+        }
+
+        const createTree = (pNode, data) => {
+            const currentNode = $("<div></div>").appendTo(pNode);
+            let extPadding = 26;
+            if (data.children.length > 0) {
+                extPadding = 10
+            }
+            const paddingLeft = (data.level - 1) * 16 + extPadding;
+            const titleNode = $("<div class='title' style='padding-left:" + paddingLeft + "px'></div>").appendTo(currentNode);
+            if (data.children.length > 0) {
+                $("<span class='icon-arrow arrow-down'></span>").appendTo(titleNode);
+            }
+            $("<a href='#" + data.id + "' title='" + data.name + "'>" + data.name + "</a>").appendTo(titleNode);
+
+            if (data.children.length > 0) {
+                let subNode = $("<div class='sub-title'></div>").appendTo(currentNode);
+                data.children.forEach(item => {
+                    createTree(subNode, item);
+                })
+            }
+        }
+
+        //查找父级节点
+        const findParentId = (hList, item, index) => {
+            for (let i = index - 1; i >= 0; i--) {
+                const pNode = hList[i];
+                if (pNode.level < item.level) {
+                    item.pId = pNode.id;
+                    break;
+                }
+            }
+        }
+
+        //将数据转换为树形
+        const convertLine2Tree = (hList, pId) => {
+            const children = [];
+            hList.forEach(element => {
+                if (element.pId === pId) {
+                    children.push(element);
+                    element.children = convertLine2Tree(hList, element.id);
+                }
+            });
+            return children;
+        }
+
+        $(window).scroll(function () {
+            //console.log($(document).scrollTop());
+            $("#right-container").css("top", $(document).scrollTop() + "px");
+        });
+
+        function scroll(markId) {
+            let url = document.location.href;
+            if (url.indexOf("#") == -1) {
+                document.location.href = url + "#" + markId;
+            } else {
+                document.location.href = url.substring(0, url.indexOf("#") + 1) + markId;
+            }
+            $("html,body").animate({scrollTop: $("#" + markId).offset().top - 80}, 100);
+        }
+    </script>
+</head>
+<body>
+    <div class="top">
+        <div class="top-container">
+            <div class="logo">
+                    <a href="../index.html">我是程序员</a>
+            </div>
+                <a href="../index.html" class="nav active">博客</a>
+                <a href="../category.html" class="nav ">分类专栏</a>
+                <a href="../special.html" class="nav ">专题</a>
+                <a href="../user.html" class="nav ">成员</a>
+                <a href="../comment.html" class="nav ">留言板</a>
+        </div>
+    </div>
+<div class="body-container">
+    <div class="blog-detail">
+        <div class="container">
+            <div class="container-content">
+                <div>
+                    <div class="blog-title">如何优雅的写登录</div>
+                    <div class="blog-info">
+                        <div class="time">2022-10-21 02:33:03</div>
+                        <div class="nick-name">作者：<a href="../user.html#100000">程序员老罗</a></div>
+                        <div class="category">分类专栏：<a href="../category/10001.html">Java</a></div>
+
+                    </div>
+                    <div class="content" id="content"><h1 data-v-md-heading="普通人的登录" data-v-md-line="1">普通人的登录</h1>
+<h2 data-v-md-heading="userinfo" data-v-md-line="2">UserInfo</h2>
+<div data-v-md-line="3"><div class="v-md-pre-wrapper v-md-pre-wrapper-java extra-class"><pre class="v-md-hljs-java"><code><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">UserInfo</span> {
+    <span class="hljs-keyword">private</span> Integer userId;
+    <span class="hljs-keyword">private</span> String account;
+    <span class="hljs-keyword">private</span> String password;
+    <span class="hljs-keyword">private</span> Integer status;
+
+    <span class="hljs-keyword">public</span> Integer <span class="hljs-title function_">getUserId</span><span class="hljs-params">()</span> {
+        <span class="hljs-keyword">return</span> userId;
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setUserId</span><span class="hljs-params">(Integer userId)</span> {
+        <span class="hljs-built_in">this</span>.userId = userId;
+    }
+
+    <span class="hljs-keyword">public</span> String <span class="hljs-title function_">getAccount</span><span class="hljs-params">()</span> {
+        <span class="hljs-keyword">return</span> account;
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setAccount</span><span class="hljs-params">(String account)</span> {
+        <span class="hljs-built_in">this</span>.account = account;
+    }
+
+    <span class="hljs-keyword">public</span> String <span class="hljs-title function_">getPassword</span><span class="hljs-params">()</span> {
+        <span class="hljs-keyword">return</span> password;
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setPassword</span><span class="hljs-params">(String password)</span> {
+        <span class="hljs-built_in">this</span>.password = password;
+    }
+
+    <span class="hljs-keyword">public</span> Integer <span class="hljs-title function_">getStatus</span><span class="hljs-params">()</span> {
+        <span class="hljs-keyword">return</span> status;
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setStatus</span><span class="hljs-params">(Integer status)</span> {
+        <span class="hljs-built_in">this</span>.status = status;
+    }
+}
+
+</code></pre>
+</div></div><h2 data-v-md-heading="controller" data-v-md-line="46">Controller</h2>
+<div data-v-md-line="47"><div class="v-md-pre-wrapper v-md-pre-wrapper-java extra-class"><pre class="v-md-hljs-java"><code><span class="hljs-keyword">import</span> com.springboot.demo.entity.po.UserInfo;
+<span class="hljs-keyword">import</span> com.springboot.demo.entity.vo.ResultVO;
+<span class="hljs-keyword">import</span> com.springboot.demo.service.UserService;
+<span class="hljs-keyword">import</span> org.springframework.web.bind.annotation.RequestMapping;
+<span class="hljs-keyword">import</span> org.springframework.web.bind.annotation.RestController;
+
+<span class="hljs-keyword">import</span> javax.annotation.Resource;
+<span class="hljs-keyword">import</span> javax.servlet.http.HttpSession;
+<span class="hljs-keyword">import</span> java.util.Map;
+
+<span class="hljs-meta">@RestController</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">BadLoginController</span> {
+
+    <span class="hljs-meta">@Resource</span>
+    <span class="hljs-keyword">private</span> UserService loginService;
+
+    <span class="hljs-meta">@RequestMapping(&quot;badLogin&quot;)</span>
+    <span class="hljs-keyword">public</span> ResultVO <span class="hljs-title function_">badLogin</span><span class="hljs-params">(HttpSession session, String account, String password)</span> {
+        <span class="hljs-type">ResultVO</span> <span class="hljs-variable">resultVO</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ResultVO</span>();
+        Map&lt;String, Object&gt; result = loginService.loginBad(account, password);
+        <span class="hljs-type">Boolean</span> <span class="hljs-variable">success</span> <span class="hljs-operator">=</span> (Boolean) result.get(<span class="hljs-string">&quot;success&quot;</span>);
+        <span class="hljs-keyword">if</span> (success) {
+            resultVO.setCode(<span class="hljs-number">200</span>);
+            resultVO.setInfo(<span class="hljs-string">&quot;登录成功&quot;</span>);
+            resultVO.setStatus(<span class="hljs-string">&quot;success&quot;</span>);
+            resultVO.setData(((UserInfo) result.get(<span class="hljs-string">&quot;userInfo&quot;</span>)).getUserId());
+            session.setAttribute(<span class="hljs-string">&quot;session_info&quot;</span>, result.get(<span class="hljs-string">&quot;userInfo&quot;</span>));
+        } <span class="hljs-keyword">else</span> {
+            resultVO.setCode(<span class="hljs-number">500</span>);
+            resultVO.setInfo((String) result.get(<span class="hljs-string">&quot;info&quot;</span>));
+            resultVO.setStatus(<span class="hljs-string">&quot;error&quot;</span>);
+            resultVO.setData(<span class="hljs-literal">null</span>);
+        }
+        <span class="hljs-keyword">return</span> resultVO;
+    }
+}
+</code></pre>
+</div></div><h2 data-v-md-heading="service" data-v-md-line="86">Service</h2>
+<div data-v-md-line="87"><div class="v-md-pre-wrapper v-md-pre-wrapper-java extra-class"><pre class="v-md-hljs-java"><code><span class="hljs-meta">@Service(&quot;logService&quot;)</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">UserService</span> {
+
+    <span class="hljs-meta">@Resource</span>
+    <span class="hljs-keyword">private</span> UserMapper userMapper;
+
+    <span class="hljs-keyword">public</span> Map&lt;String, Object&gt; <span class="hljs-title function_">loginBad</span><span class="hljs-params">(String account, String password)</span> {
+        Map&lt;String, Object&gt; result = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashMap</span>&lt;&gt;();
+        <span class="hljs-type">UserInfo</span> <span class="hljs-variable">userInfo</span> <span class="hljs-operator">=</span> userMapper.selectByAccount(account);
+        <span class="hljs-keyword">if</span> (userInfo != <span class="hljs-literal">null</span>) {
+            <span class="hljs-keyword">if</span> (userInfo.getPassword().equals(password)) {
+                <span class="hljs-keyword">if</span> (userInfo.getStatus() == <span class="hljs-number">1</span>) {
+                    result.put(<span class="hljs-string">&quot;success&quot;</span>, <span class="hljs-literal">true</span>);
+                    result.put(<span class="hljs-string">&quot;userInfo&quot;</span>, userInfo);
+                } <span class="hljs-keyword">else</span> {
+                    result.put(<span class="hljs-string">&quot;success&quot;</span>, <span class="hljs-literal">false</span>);
+                    result.put(<span class="hljs-string">&quot;info&quot;</span>, <span class="hljs-string">&quot;账号已禁用&quot;</span>);
+                }
+            } <span class="hljs-keyword">else</span> {
+                result.put(<span class="hljs-string">&quot;success&quot;</span>, <span class="hljs-literal">false</span>);
+                result.put(<span class="hljs-string">&quot;info&quot;</span>, <span class="hljs-string">&quot;账号或者密码不正确&quot;</span>);
+            }
+        } <span class="hljs-keyword">else</span> {
+            result.put(<span class="hljs-string">&quot;success&quot;</span>, <span class="hljs-literal">false</span>);
+            result.put(<span class="hljs-string">&quot;info&quot;</span>, <span class="hljs-string">&quot;账号或者密码不正确&quot;</span>);
+        }
+        <span class="hljs-keyword">return</span> result;
+    }
+}
+</code></pre>
+</div></div><h2 data-v-md-heading="模拟mapper" data-v-md-line="118">模拟mapper</h2>
+<p data-v-md-line="119">这里写个模拟的mapper查询数据库</p>
+<div data-v-md-line="120"><div class="v-md-pre-wrapper v-md-pre-wrapper-java extra-class"><pre class="v-md-hljs-java"><code><span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">UserMapper</span> {
+    <span class="hljs-keyword">public</span> UserInfo <span class="hljs-title function_">selectByAccount</span><span class="hljs-params">(String account)</span> {
+        <span class="hljs-keyword">if</span> (account.equals(<span class="hljs-string">&quot;admin&quot;</span>)) {
+            <span class="hljs-type">UserInfo</span> <span class="hljs-variable">userInfo</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">UserInfo</span>();
+            userInfo.setUserId(<span class="hljs-number">10000</span>);
+            userInfo.setAccount(<span class="hljs-string">&quot;admin&quot;</span>);
+            userInfo.setPassword(<span class="hljs-string">&quot;123&quot;</span>);
+            userInfo.setStatus(<span class="hljs-number">1</span>);
+            <span class="hljs-keyword">return</span> userInfo;
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (account.equals(<span class="hljs-string">&quot;root&quot;</span>)) {
+            <span class="hljs-type">UserInfo</span> <span class="hljs-variable">userInfo</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">UserInfo</span>();
+            userInfo.setUserId(<span class="hljs-number">10001</span>);
+            userInfo.setAccount(<span class="hljs-string">&quot;root&quot;</span>);
+            userInfo.setPassword(<span class="hljs-string">&quot;123&quot;</span>);
+            userInfo.setStatus(<span class="hljs-number">0</span>);
+            <span class="hljs-keyword">return</span> userInfo;
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;
+        }
+    }
+}
+</code></pre>
+</div></div><p data-v-md-line="144">看下你们项目的代码是不是很多都是一层套一层的if else<br>
+有人就说了，代码能跑就行那那么多讲究 ^_^</p>
+<h1 data-v-md-heading="高手的登录" data-v-md-line="147">高手的登录</h1>
+<p data-v-md-line="148">先增加几个基础的类</p>
+<h2 data-v-md-heading="resultcodeenum" data-v-md-line="150">ResultCodeEnum</h2>
+<div data-v-md-line="151"><div class="v-md-pre-wrapper v-md-pre-wrapper-java extra-class"><pre class="v-md-hljs-java"><code><span class="hljs-keyword">public</span> <span class="hljs-keyword">enum</span> <span class="hljs-title class_">ResultCodeEnum</span> {
+    CODE_200(<span class="hljs-number">200</span>, <span class="hljs-string">&quot;操作成功&quot;</span>),
+    CODE_404(<span class="hljs-number">404</span>, <span class="hljs-string">&quot;请求地址不存在&quot;</span>),
+    CODE_300(<span class="hljs-number">300</span>, <span class="hljs-string">&quot;请求参数错误&quot;</span>),
+    CODE_1001(<span class="hljs-number">1001</span>, <span class="hljs-string">&quot;账号或者密码错误&quot;</span>),
+    CODE_1002(<span class="hljs-number">1002</span>, <span class="hljs-string">&quot;账号已禁用&quot;</span>);
+
+    <span class="hljs-keyword">private</span> Integer code;
+    <span class="hljs-keyword">private</span> String desc;
+
+    ResultCodeEnum(Integer code, String desc) {
+        <span class="hljs-built_in">this</span>.code = code;
+        <span class="hljs-built_in">this</span>.desc = desc;
+    }
+
+    <span class="hljs-keyword">public</span> Integer <span class="hljs-title function_">getCode</span><span class="hljs-params">()</span> {
+        <span class="hljs-keyword">return</span> code;
+    }
+
+    <span class="hljs-keyword">public</span> String <span class="hljs-title function_">getDesc</span><span class="hljs-params">()</span> {
+        <span class="hljs-keyword">return</span> desc;
+    }
+}
+</code></pre>
+</div></div><h2 data-v-md-heading="resultstatusenum" data-v-md-line="176">ResultStatusEnum</h2>
+<div data-v-md-line="177"><div class="v-md-pre-wrapper v-md-pre-wrapper-java extra-class"><pre class="v-md-hljs-java"><code><span class="hljs-keyword">public</span> <span class="hljs-keyword">enum</span> <span class="hljs-title class_">ResultStatusEnum</span> {
+    SUCCESS(<span class="hljs-string">&quot;success&quot;</span>, <span class="hljs-string">&quot;请求成功&quot;</span>),
+    FAIL(<span class="hljs-string">&quot;fail&quot;</span>, <span class="hljs-string">&quot;请求失败&quot;</span>);
+
+    <span class="hljs-keyword">private</span> String status;
+    <span class="hljs-keyword">private</span> String desc;
+
+    ResultStatusEnum(String code, String desc) {
+        <span class="hljs-built_in">this</span>.status = code;
+        <span class="hljs-built_in">this</span>.desc = desc;
+    }
+
+    <span class="hljs-keyword">public</span> String <span class="hljs-title function_">getStatus</span><span class="hljs-params">()</span> {
+        <span class="hljs-keyword">return</span> status;
+    }
+
+    <span class="hljs-keyword">public</span> String <span class="hljs-title function_">getDesc</span><span class="hljs-params">()</span> {
+        <span class="hljs-keyword">return</span> desc;
+    }
+}
+
+</code></pre>
+</div></div><h2 data-v-md-heading="userinfo-1" data-v-md-line="200">UserInfo</h2>
+<div data-v-md-line="201"><div class="v-md-pre-wrapper v-md-pre-wrapper-java extra-class"><pre class="v-md-hljs-java"><code><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">UserInfo</span> {
+    <span class="hljs-keyword">private</span> Integer userId;
+    <span class="hljs-keyword">private</span> String account;
+    <span class="hljs-keyword">private</span> String password;
+    <span class="hljs-keyword">private</span> Integer status;
+
+    <span class="hljs-keyword">public</span> Integer <span class="hljs-title function_">getUserId</span><span class="hljs-params">()</span> {
+        <span class="hljs-keyword">return</span> userId;
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setUserId</span><span class="hljs-params">(Integer userId)</span> {
+        <span class="hljs-built_in">this</span>.userId = userId;
+    }
+
+    <span class="hljs-keyword">public</span> String <span class="hljs-title function_">getAccount</span><span class="hljs-params">()</span> {
+        <span class="hljs-keyword">return</span> account;
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setAccount</span><span class="hljs-params">(String account)</span> {
+        <span class="hljs-built_in">this</span>.account = account;
+    }
+
+    <span class="hljs-keyword">public</span> String <span class="hljs-title function_">getPassword</span><span class="hljs-params">()</span> {
+        <span class="hljs-keyword">return</span> password;
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setPassword</span><span class="hljs-params">(String password)</span> {
+        <span class="hljs-built_in">this</span>.password = password;
+    }
+
+    <span class="hljs-keyword">public</span> Integer <span class="hljs-title function_">getStatus</span><span class="hljs-params">()</span> {
+        <span class="hljs-keyword">return</span> status;
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setStatus</span><span class="hljs-params">(Integer status)</span> {
+        <span class="hljs-built_in">this</span>.status = status;
+    }
+}
+
+</code></pre>
+</div></div><h2 data-v-md-heading="resultvo" data-v-md-line="243">ResultVO</h2>
+<div data-v-md-line="244"><div class="v-md-pre-wrapper v-md-pre-wrapper-java extra-class"><pre class="v-md-hljs-java"><code><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ResultVO</span>&lt;T&gt; {
+    <span class="hljs-keyword">private</span> Integer code;
+    <span class="hljs-keyword">private</span> String status;
+    <span class="hljs-keyword">private</span> String info;
+    <span class="hljs-keyword">private</span> T data;
+
+    <span class="hljs-keyword">public</span> Integer <span class="hljs-title function_">getCode</span><span class="hljs-params">()</span> {
+        <span class="hljs-keyword">return</span> code;
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setCode</span><span class="hljs-params">(Integer code)</span> {
+        <span class="hljs-built_in">this</span>.code = code;
+    }
+
+    <span class="hljs-keyword">public</span> String <span class="hljs-title function_">getStatus</span><span class="hljs-params">()</span> {
+        <span class="hljs-keyword">return</span> status;
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setStatus</span><span class="hljs-params">(String status)</span> {
+        <span class="hljs-built_in">this</span>.status = status;
+    }
+
+    <span class="hljs-keyword">public</span> String <span class="hljs-title function_">getInfo</span><span class="hljs-params">()</span> {
+        <span class="hljs-keyword">return</span> info;
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setInfo</span><span class="hljs-params">(String info)</span> {
+        <span class="hljs-built_in">this</span>.info = info;
+    }
+
+    <span class="hljs-keyword">public</span> T <span class="hljs-title function_">getData</span><span class="hljs-params">()</span> {
+        <span class="hljs-keyword">return</span> data;
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setData</span><span class="hljs-params">(T data)</span> {
+        <span class="hljs-built_in">this</span>.data = data;
+    }
+}
+
+</code></pre>
+</div></div><h2 data-v-md-heading="businessexception" data-v-md-line="286">BusinessException</h2>
+<div data-v-md-line="287"><div class="v-md-pre-wrapper v-md-pre-wrapper-java extra-class"><pre class="v-md-hljs-java"><code><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">BusinessException</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">RuntimeException</span> {
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">long</span> <span class="hljs-variable">serialVersionUID</span> <span class="hljs-operator">=</span> <span class="hljs-number">2874310081615076500L</span>;
+
+    <span class="hljs-keyword">private</span> Integer code;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">BusinessException</span><span class="hljs-params">(String message, Throwable e)</span> {
+        <span class="hljs-built_in">super</span>(message, e);
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">BusinessException</span><span class="hljs-params">(String message)</span> {
+        <span class="hljs-built_in">super</span>(message);
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">BusinessException</span><span class="hljs-params">(String message, Integer code)</span> {
+        <span class="hljs-built_in">super</span>(message);
+        <span class="hljs-built_in">this</span>.code = code;
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">BusinessException</span><span class="hljs-params">(ResultCodeEnum resultCode)</span> {
+        <span class="hljs-built_in">super</span>(resultCode.getDesc());
+        <span class="hljs-built_in">this</span>.code = resultCode.getCode();
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">BusinessException</span><span class="hljs-params">(Throwable e)</span> {
+        <span class="hljs-built_in">super</span>(e);
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-keyword">public</span> Throwable <span class="hljs-title function_">fillInStackTrace</span><span class="hljs-params">()</span> {
+        <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>;
+    }
+
+    <span class="hljs-keyword">public</span> Integer <span class="hljs-title function_">getCode</span><span class="hljs-params">()</span> {
+        <span class="hljs-keyword">return</span> code;
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setCode</span><span class="hljs-params">(Integer code)</span> {
+        <span class="hljs-built_in">this</span>.code = code;
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-type">long</span> <span class="hljs-title function_">getSerialVersionUID</span><span class="hljs-params">()</span> {
+        <span class="hljs-keyword">return</span> serialVersionUID;
+    }
+}
+
+</code></pre>
+</div></div><p data-v-md-line="336">增加一个全局异常拦截</p>
+<h2 data-v-md-heading="aglobalexeptioncontroller" data-v-md-line="337">AGlobalExeptionController</h2>
+<div data-v-md-line="339"><div class="v-md-pre-wrapper v-md-pre-wrapper-java extra-class"><pre class="v-md-hljs-java"><code><span class="hljs-meta">@RestControllerAdvice</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">AGlobalExeptionController</span> {
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">Logger</span> <span class="hljs-variable">logger</span> <span class="hljs-operator">=</span> LoggerFactory.getLogger(AGlobalExeptionController.class);
+
+    <span class="hljs-meta">@ExceptionHandler(value = Exception.class)</span>
+    Object <span class="hljs-title function_">handleException</span><span class="hljs-params">(Exception e, HttpServletRequest request)</span> {
+        <span class="hljs-type">ResultVO</span> <span class="hljs-variable">resultVO</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ResultVO</span>();
+        resultVO.setStatus(ResultStatusEnum.FAIL.getStatus());
+        <span class="hljs-keyword">if</span> (e <span class="hljs-keyword">instanceof</span> NoHandlerFoundException) {
+            logger.error(<span class="hljs-string">&quot;请求错误，请求地址{}, 不存在&quot;</span>, request.getRequestURL());
+            resultVO.setCode(ResultCodeEnum.CODE_404.getCode());
+            resultVO.setInfo(ResultCodeEnum.CODE_404.getDesc());
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (e <span class="hljs-keyword">instanceof</span> BusinessException) {
+            logger.error(<span class="hljs-string">&quot;业务异常&quot;</span>, e);
+            <span class="hljs-type">BusinessException</span> <span class="hljs-variable">biz</span> <span class="hljs-operator">=</span> (BusinessException) e;
+            resultVO.setCode(biz.getCode());
+            resultVO.setInfo(biz.getMessage());
+        } <span class="hljs-keyword">else</span> {
+            logger.error(<span class="hljs-string">&quot;请求参数错误，请求地址{}, msg {}&quot;</span>, request.getRequestURL(), e);
+            resultVO.setCode(ResultCodeEnum.CODE_300.getCode());
+            resultVO.setInfo(ResultCodeEnum.CODE_300.getDesc());
+        }
+        <span class="hljs-keyword">return</span> resultVO;
+    }
+}
+
+</code></pre>
+</div></div><p data-v-md-line="367">增加一个基础的controller，所有controller都集成这个类</p>
+<h2 data-v-md-heading="abasecontroller" data-v-md-line="368">ABasecontroller</h2>
+<div data-v-md-line="369"><div class="v-md-pre-wrapper v-md-pre-wrapper-java extra-class"><pre class="v-md-hljs-java"><code><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ABaseController</span> {
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">String</span> <span class="hljs-variable">SESSION_kEY</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;session_key&quot;</span>;
+
+    <span class="hljs-keyword">protected</span> &lt;T&gt; ResultVO <span class="hljs-title function_">getSuccessResultVO</span><span class="hljs-params">(T t)</span> {
+        ResultVO&lt;T&gt; resultVO = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ResultVO</span>&lt;&gt;();
+        resultVO.setCode(ResultCodeEnum.CODE_200.getCode());
+        resultVO.setInfo(ResultCodeEnum.CODE_200.getDesc());
+        resultVO.setStatus(ResultStatusEnum.SUCCESS.getStatus());
+        resultVO.setData(t);
+        <span class="hljs-keyword">return</span> resultVO;
+    }
+
+    <span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setSessionInfo</span><span class="hljs-params">(HttpSession session, UserInfo userInfo)</span> {
+        session.setAttribute(SESSION_kEY, userInfo);
+    }
+
+    <span class="hljs-keyword">protected</span> UserInfo <span class="hljs-title function_">getSessionInfo</span><span class="hljs-params">(HttpSession session)</span> {
+        <span class="hljs-keyword">return</span> (UserInfo) session.getAttribute(SESSION_kEY);
+    }
+}
+
+</code></pre>
+</div></div><h2 data-v-md-heading="controller-1" data-v-md-line="394">Controller</h2>
+<div data-v-md-line="395"><div class="v-md-pre-wrapper v-md-pre-wrapper-java extra-class"><pre class="v-md-hljs-java"><code><span class="hljs-meta">@RestController</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ExcellentController</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">ABaseController</span> {
+    <span class="hljs-meta">@Resource</span>
+    <span class="hljs-keyword">private</span> UserService loginService;
+
+    <span class="hljs-meta">@RequestMapping(&quot;excellentLogin&quot;)</span>
+    <span class="hljs-keyword">public</span> ResultVO <span class="hljs-title function_">excellentLogin</span><span class="hljs-params">(HttpSession session, String account, String password)</span> {
+        <span class="hljs-type">UserInfo</span> <span class="hljs-variable">userInfo</span> <span class="hljs-operator">=</span> loginService.loginExcellent(account, password);
+        setSessionInfo(session, userInfo);
+        <span class="hljs-keyword">return</span> getSuccessResultVO(userInfo.getUserId());
+    }
+}
+</code></pre>
+</div></div><h2 data-v-md-heading="userservice" data-v-md-line="409">UserService</h2>
+<div data-v-md-line="410"><div class="v-md-pre-wrapper v-md-pre-wrapper-java extra-class"><pre class="v-md-hljs-java"><code><span class="hljs-meta">@Service(&quot;logService&quot;)</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">UserService</span> {
+
+    <span class="hljs-meta">@Resource</span>
+    <span class="hljs-keyword">private</span> UserMapper userMapper;
+
+    <span class="hljs-keyword">public</span> UserInfo <span class="hljs-title function_">loginExcellent</span><span class="hljs-params">(String account, String password)</span> {
+        <span class="hljs-type">UserInfo</span> <span class="hljs-variable">userInfo</span> <span class="hljs-operator">=</span> userMapper.selectByAccount(account);
+        <span class="hljs-keyword">if</span> (userInfo == <span class="hljs-literal">null</span> || !userInfo.getPassword().equals(password)) {
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BusinessException</span>(ResultCodeEnum.CODE_1001);
+        }
+
+        <span class="hljs-keyword">if</span> (userInfo.getStatus() != <span class="hljs-number">1</span>) {
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BusinessException</span>(ResultCodeEnum.CODE_1002);
+        }
+        <span class="hljs-keyword">return</span> userInfo;
+    }
+}
+
+</code></pre>
+</div></div><p data-v-md-line="431">在写业务代码的时候，通过异常来阻断程序，代码是不是简洁很多，看起来逻辑也清晰很多。</p>
+</div>
+                </div>
+            </div>
+                <div class="container-comment">
+                    <div class="comment-title">评论</div>
+                    <div id="SOHUCS" sid="QdnRixxBvf"></div>
+                    <script charset="utf-8" type="text/javascript" src="https://cy-cdn.kuaizhan.com/upload/changyan.js"></script>
+                    <script type="text/javascript">
+                        window.changyan.api.config({
+                            appid: "cyvP1EXdR",
+                            conf: '0264664c4b9d1fb578d732b34abf3246'
+                        });
+                    </script>
+                </div>
+        </div>
+        <div class="right">
+            <div class="container" id="right-container">
+                <div class="right-title toc-title">目录结构</div>
+                <div id="toc"></div>
+
+                <div class="right-title category-title">
+                    <span>分类专栏</span>
+                    <a href="../category.html" class="more">更多>></a>
+                </div>
+                    <a href="../category/10000.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/image/202112/EFUgXqXkPTFORpHpeTTnbLTTMVsJgf.png">
+                        </span>
+                        <span class="category-name" title="EasyBlog">EasyBlog</span>
+                        <span class="blog-count">0篇</span>
+                    </a>
+                    <a href="../category/10001.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/image/202210/kIPHrBlMBEwhLHsMAYliJIynVhjOBt.png">
+                        </span>
+                        <span class="category-name" title="Java">Java</span>
+                        <span class="blog-count">6篇</span>
+                    </a>
+                    <a href="../category/10002.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/image/202210/KLVzFxgplZnrPWnIOtSrqrnHmIJiJy.png">
+                        </span>
+                        <span class="category-name" title="electron">electron</span>
+                        <span class="blog-count">2篇</span>
+                    </a>
+                    <a href="../category/10003.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/image/202210/VnyCajSlCNLCbrCxSNAGDIUNIelrUS.png">
+                        </span>
+                        <span class="category-name" title="Vue3">Vue3</span>
+                        <span class="blog-count">3篇</span>
+                    </a>
+                    <a href="../category/10005.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/image/202210/LpocFdzOXwynTWDrmiAUkxSIESWYus.png">
+                        </span>
+                        <span class="category-name" title="编程小技巧">编程小技巧</span>
+                        <span class="blog-count">3篇</span>
+                    </a>
+            </div>
+        </div>
+    </div>
+</div>
+        <div class="footer">
+            <div>
+                <span>©2021-2022 www.wuhancoder.com All rights reserved. </span>
+                <a target="_blank" href="https://beian.miit.gov.cn/">鄂ICP备13017512号-3</a></div>
+            <div>
+                <img src="../resource/static/beian.png">
+                <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=42011502000890">
+                    鄂公网安备 42011502000890号
+                </a></div>
+        </div>
+    <script>
+        var _hmt = _hmt || [];
+        (function () {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?63b3f00d92dbfecbe9376c26282c2599";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+</body>
+</html>
