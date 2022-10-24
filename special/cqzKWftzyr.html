@@ -1268,6 +1268,11 @@ api/blog/getSpecialInfo</p>
 <td>否</td>
 </tr>
 <tr>
+<td>categoryId</td>
+<td>专题ID</td>
+<td>是</td>
+</tr>
+<tr>
 <td>editorType</td>
 <td>编辑器类型 0:富文本 1:markdown编辑器</td>
 <td>否</td>
@@ -1291,8 +1296,8 @@ api/blog/getSpecialInfo</p>
 </table>
 </li>
 <li>
-<p data-v-md-line="698">接口返回</p>
-<div data-v-md-line="700"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+<p data-v-md-line="699">接口返回</p>
+<div data-v-md-line="701"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
@@ -1301,12 +1306,12 @@ api/blog/getSpecialInfo</p>
 </code></pre>
 </div></div></li>
 </ul>
-<h2 data-v-md-heading="自动保存专题" data-v-md-line="708">自动保存专题</h2>
-<ul data-v-md-line="709">
+<h2 data-v-md-heading="自动保存专题" data-v-md-line="709">自动保存专题</h2>
+<ul data-v-md-line="710">
 <li>接口地址<br>
 api/blog/autoSaveBlog4Special</li>
 <li>请求参数
-<table data-v-md-line="712">
+<table data-v-md-line="713">
 <thead>
 <tr>
 <th>参数名</th>
@@ -1319,6 +1324,11 @@ api/blog/autoSaveBlog4Special</li>
 <td>blogId</td>
 <td>id</td>
 <td>修改必传</td>
+</tr>
+<tr>
+<td>categoryId</td>
+<td>专题ID</td>
+<td>是</td>
 </tr>
 <tr>
 <td>editorType</td>
@@ -1343,7 +1353,7 @@ api/blog/autoSaveBlog4Special</li>
 </tbody>
 </table>
 </li>
-<li>返回结果<div data-v-md-line="720"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+<li>返回结果<div data-v-md-line="722"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
@@ -1352,14 +1362,14 @@ api/blog/autoSaveBlog4Special</li>
 </code></pre>
 </div></div></li>
 </ul>
-<h2 data-v-md-heading="获取专题博客详情" data-v-md-line="728">获取专题博客详情</h2>
-<p data-v-md-line="729">同博客详情</p>
-<h2 data-v-md-heading="专题博客排序" data-v-md-line="731">专题博客排序</h2>
-<ul data-v-md-line="732">
+<h2 data-v-md-heading="获取专题博客详情" data-v-md-line="730">获取专题博客详情</h2>
+<p data-v-md-line="731">同博客详情</p>
+<h2 data-v-md-heading="专题博客排序" data-v-md-line="733">专题博客排序</h2>
+<ul data-v-md-line="734">
 <li>接口地址<br>
 api/blog/updateSpecialBlogSort</li>
 <li>请求参数
-<table data-v-md-line="735">
+<table data-v-md-line="737">
 <thead>
 <tr>
 <th>参数名</th>
@@ -1386,7 +1396,7 @@ api/blog/updateSpecialBlogSort</li>
 </tbody>
 </table>
 </li>
-<li>返回结果<div data-v-md-line="741"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+<li>返回结果<div data-v-md-line="743"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
@@ -1395,18 +1405,18 @@ api/blog/updateSpecialBlogSort</li>
 </code></pre>
 </div></div></li>
 </ul>
-<h1 data-v-md-heading="个人信息" data-v-md-line="751">个人信息</h1>
-<h2 data-v-md-heading="保存个人信息" data-v-md-line="752">保存个人信息</h2>
-<ul data-v-md-line="754">
+<h1 data-v-md-heading="个人信息" data-v-md-line="753">个人信息</h1>
+<h2 data-v-md-heading="保存个人信息" data-v-md-line="754">保存个人信息</h2>
+<ul data-v-md-line="756">
 <li>
-<p data-v-md-line="754">接口地址</p>
-<p data-v-md-line="756">api/saveMyInfo</p>
+<p data-v-md-line="756">接口地址</p>
+<p data-v-md-line="758">api/saveMyInfo</p>
 </li>
 <li>
-<p data-v-md-line="758">请求参数</p>
+<p data-v-md-line="760">请求参数</p>
 </li>
 </ul>
-<table data-v-md-line="760">
+<table data-v-md-line="762">
 <thead>
 <tr>
 <th>参数名</th>
@@ -1447,10 +1457,10 @@ api/blog/updateSpecialBlogSort</li>
 </tr>
 </tbody>
 </table>
-<ul data-v-md-line="769">
+<ul data-v-md-line="771">
 <li>
-<p data-v-md-line="769">接口返回</p>
-<div data-v-md-line="771"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+<p data-v-md-line="771">接口返回</p>
+<div data-v-md-line="773"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
@@ -1459,15 +1469,15 @@ api/blog/updateSpecialBlogSort</li>
 </code></pre>
 </div></div></li>
 </ul>
-<h2 data-v-md-heading="保存头像" data-v-md-line="780">保存头像</h2>
-<ul data-v-md-line="782">
+<h2 data-v-md-heading="保存头像" data-v-md-line="782">保存头像</h2>
+<ul data-v-md-line="784">
 <li>接口地址</li>
 </ul>
-<p data-v-md-line="784">api/saveAvatar</p>
-<ul data-v-md-line="786">
+<p data-v-md-line="786">api/saveAvatar</p>
+<ul data-v-md-line="788">
 <li>接口参数</li>
 </ul>
-<table data-v-md-line="788">
+<table data-v-md-line="790">
 <thead>
 <tr>
 <th>参数名</th>
@@ -1483,10 +1493,10 @@ api/blog/updateSpecialBlogSort</li>
 </tr>
 </tbody>
 </table>
-<ul data-v-md-line="792">
+<ul data-v-md-line="794">
 <li>
-<p data-v-md-line="792">接口返回</p>
-<div data-v-md-line="794"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+<p data-v-md-line="794">接口返回</p>
+<div data-v-md-line="796"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
@@ -1495,15 +1505,15 @@ api/blog/updateSpecialBlogSort</li>
 </code></pre>
 </div></div></li>
 </ul>
-<h2 data-v-md-heading="修改密码" data-v-md-line="805">修改密码</h2>
-<ul data-v-md-line="807">
+<h2 data-v-md-heading="修改密码" data-v-md-line="807">修改密码</h2>
+<ul data-v-md-line="809">
 <li>
-<p data-v-md-line="807">接口地址</p>
-<p data-v-md-line="809">api/updateMyPassword</p>
+<p data-v-md-line="809">接口地址</p>
+<p data-v-md-line="811">api/updateMyPassword</p>
 </li>
 <li>
-<p data-v-md-line="811">请求参数</p>
-<table data-v-md-line="812">
+<p data-v-md-line="813">请求参数</p>
+<table data-v-md-line="814">
 <thead>
 <tr>
 <th>参数名</th>
@@ -1521,8 +1531,8 @@ api/blog/updateSpecialBlogSort</li>
 </table>
 </li>
 <li>
-<p data-v-md-line="816">接口返回</p>
-<div data-v-md-line="818"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+<p data-v-md-line="818">接口返回</p>
+<div data-v-md-line="820"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
@@ -1531,16 +1541,16 @@ api/blog/updateSpecialBlogSort</li>
 </code></pre>
 </div></div></li>
 </ul>
-<h1 data-v-md-heading="博客成员" data-v-md-line="826">博客成员</h1>
-<h2 data-v-md-heading="获取所有成员" data-v-md-line="827">获取所有成员</h2>
-<ul data-v-md-line="829">
+<h1 data-v-md-heading="博客成员" data-v-md-line="828">博客成员</h1>
+<h2 data-v-md-heading="获取所有成员" data-v-md-line="829">获取所有成员</h2>
+<ul data-v-md-line="831">
 <li>
-<p data-v-md-line="829">接口地址</p>
-<p data-v-md-line="831">api/setting/loadUser</p>
+<p data-v-md-line="831">接口地址</p>
+<p data-v-md-line="833">api/setting/loadUser</p>
 </li>
 <li>
-<p data-v-md-line="833">请求参数</p>
-<table data-v-md-line="834">
+<p data-v-md-line="835">请求参数</p>
+<table data-v-md-line="836">
 <thead>
 <tr>
 <th>参数名</th>
@@ -1573,8 +1583,8 @@ api/blog/updateSpecialBlogSort</li>
 </table>
 </li>
 <li>
-<p data-v-md-line="840">接口返回</p>
-<div data-v-md-line="842"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+<p data-v-md-line="842">接口返回</p>
+<div data-v-md-line="844"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-punctuation">{</span>
       <span class="hljs-attr">&quot;totalCount&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
       <span class="hljs-attr">&quot;pageSize&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">15</span><span class="hljs-punctuation">,</span>
@@ -1605,15 +1615,15 @@ api/blog/updateSpecialBlogSort</li>
 </code></pre>
 </div></div></li>
 </ul>
-<h2 data-v-md-heading="保存成员" data-v-md-line="873">保存成员</h2>
-<ul data-v-md-line="874">
+<h2 data-v-md-heading="保存成员" data-v-md-line="875">保存成员</h2>
+<ul data-v-md-line="876">
 <li>
-<p data-v-md-line="874">接口地址<br>
+<p data-v-md-line="876">接口地址<br>
 api/setting/saveTeamUser</p>
 </li>
 <li>
-<p data-v-md-line="876">请求参数</p>
-<table data-v-md-line="877">
+<p data-v-md-line="878">请求参数</p>
+<table data-v-md-line="879">
 <thead>
 <tr>
 <th>参数名</th>
@@ -1671,8 +1681,8 @@ api/setting/saveTeamUser</p>
 </table>
 </li>
 <li>
-<p data-v-md-line="889">接口返回</p>
-<div data-v-md-line="890"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+<p data-v-md-line="891">接口返回</p>
+<div data-v-md-line="892"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
@@ -1681,12 +1691,12 @@ api/setting/saveTeamUser</p>
 </code></pre>
 </div></div></li>
 </ul>
-<h2 data-v-md-heading="删除成员" data-v-md-line="898">删除成员</h2>
-<ul data-v-md-line="899">
+<h2 data-v-md-heading="删除成员" data-v-md-line="900">删除成员</h2>
+<ul data-v-md-line="901">
 <li>接口地址<br>
 api/setting/delUser</li>
 <li>请求参数
-<table data-v-md-line="902">
+<table data-v-md-line="904">
 <thead>
 <tr>
 <th>参数名</th>
@@ -1703,7 +1713,7 @@ api/setting/delUser</li>
 </tbody>
 </table>
 </li>
-<li>接口返回<div data-v-md-line="906"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+<li>接口返回<div data-v-md-line="908"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
@@ -1712,12 +1722,12 @@ api/setting/delUser</li>
 </code></pre>
 </div></div></li>
 </ul>
-<h2 data-v-md-heading="修改密码-1" data-v-md-line="914">修改密码</h2>
-<ul data-v-md-line="915">
+<h2 data-v-md-heading="修改密码-1" data-v-md-line="916">修改密码</h2>
+<ul data-v-md-line="917">
 <li>接口地址<br>
 api/setting/updatePassword</li>
 <li>请求参数
-<table data-v-md-line="918">
+<table data-v-md-line="920">
 <thead>
 <tr>
 <th>参数名</th>
@@ -1739,7 +1749,7 @@ api/setting/updatePassword</li>
 </tbody>
 </table>
 </li>
-<li>接口返回<div data-v-md-line="923"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+<li>接口返回<div data-v-md-line="925"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
@@ -1749,12 +1759,12 @@ api/setting/updatePassword</li>
 </code></pre>
 </div></div></li>
 </ul>
-<h2 data-v-md-heading="修改状态" data-v-md-line="931">修改状态</h2>
-<ul data-v-md-line="932">
+<h2 data-v-md-heading="修改状态" data-v-md-line="933">修改状态</h2>
+<ul data-v-md-line="934">
 <li>接口地址<br>
 api/setting/updateStatus</li>
 <li>请求参数
-<table data-v-md-line="935">
+<table data-v-md-line="937">
 <thead>
 <tr>
 <th>参数名</th>
@@ -1776,7 +1786,7 @@ api/setting/updateStatus</li>
 </tbody>
 </table>
 </li>
-<li>接口返回<div data-v-md-line="940"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+<li>接口返回<div data-v-md-line="942"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
@@ -1785,20 +1795,20 @@ api/setting/updateStatus</li>
 </code></pre>
 </div></div></li>
 </ul>
-<h1 data-v-md-heading="系统设置" data-v-md-line="948">系统设置</h1>
-<h2 data-v-md-heading="获取系统设置" data-v-md-line="949">获取系统设置</h2>
-<ul data-v-md-line="950">
+<h1 data-v-md-heading="系统设置" data-v-md-line="950">系统设置</h1>
+<h2 data-v-md-heading="获取系统设置" data-v-md-line="951">获取系统设置</h2>
+<ul data-v-md-line="952">
 <li>
-<p data-v-md-line="950">接口地址<br>
+<p data-v-md-line="952">接口地址<br>
 api/blog/getSysSetting</p>
 </li>
 <li>
-<p data-v-md-line="952">请求参数<br>
+<p data-v-md-line="954">请求参数<br>
 无</p>
 </li>
 <li>
-<p data-v-md-line="955">接口返回</p>
-<div data-v-md-line="956"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+<p data-v-md-line="957">接口返回</p>
+<div data-v-md-line="958"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-punctuation">{</span>
       <span class="hljs-attr">&quot;openCommentType&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
       <span class="hljs-attr">&quot;changyanAppId&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;xxx&quot;</span><span class="hljs-punctuation">,</span>
@@ -1817,12 +1827,12 @@ api/blog/getSysSetting</p>
 </code></pre>
 </div></div></li>
 </ul>
-<h2 data-v-md-heading="保存系统设置" data-v-md-line="974">保存系统设置</h2>
-<ul data-v-md-line="975">
+<h2 data-v-md-heading="保存系统设置" data-v-md-line="976">保存系统设置</h2>
+<ul data-v-md-line="977">
 <li>接口地址<br>
 api/blog/saveSysSetting</li>
 <li>请求参数
-<table data-v-md-line="978">
+<table data-v-md-line="980">
 <thead>
 <tr>
 <th>参数名</th>
@@ -1879,7 +1889,7 @@ api/blog/saveSysSetting</li>
 </tbody>
 </table>
 </li>
-<li>接口返回<div data-v-md-line="990"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+<li>接口返回<div data-v-md-line="992"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
@@ -1888,13 +1898,13 @@ api/blog/saveSysSetting</li>
 </code></pre>
 </div></div></li>
 </ul>
-<h2 data-v-md-heading="下载页面zip" data-v-md-line="998">下载页面Zip</h2>
-<ul data-v-md-line="999">
+<h2 data-v-md-heading="下载页面zip" data-v-md-line="1000">下载页面Zip</h2>
+<ul data-v-md-line="1001">
 <li>接口地址<br>
 api/blog/createZip</li>
 <li>请求参数<br>
 无</li>
-<li>接口返回<div data-v-md-line="1004"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+<li>接口返回<div data-v-md-line="1006"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;xxxxxx.zip&quot;</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
@@ -1903,16 +1913,16 @@ api/blog/createZip</li>
 </code></pre>
 </div></div></li>
 </ul>
-<h1 data-v-md-heading="回收站" data-v-md-line="1012">回收站</h1>
-<h2 data-v-md-heading="回收站博客列表" data-v-md-line="1013">回收站博客列表</h2>
-<ul data-v-md-line="1014">
+<h1 data-v-md-heading="回收站" data-v-md-line="1014">回收站</h1>
+<h2 data-v-md-heading="回收站博客列表" data-v-md-line="1015">回收站博客列表</h2>
+<ul data-v-md-line="1016">
 <li>
-<p data-v-md-line="1014">接口列表<br>
+<p data-v-md-line="1016">接口列表<br>
 /api/blog/loadRecoveryList</p>
 </li>
 <li>
-<p data-v-md-line="1016">请求参数</p>
-<table data-v-md-line="1017">
+<p data-v-md-line="1018">请求参数</p>
+<table data-v-md-line="1019">
 <thead>
 <tr>
 <th>参数名</th>
@@ -1940,8 +1950,8 @@ api/blog/createZip</li>
 </table>
 </li>
 <li>
-<p data-v-md-line="1023">接口返回</p>
-<div data-v-md-line="1024"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+<p data-v-md-line="1025">接口返回</p>
+<div data-v-md-line="1026"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
   	<span class="hljs-attr">&quot;totalCount&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">12</span><span class="hljs-punctuation">,</span>
   	<span class="hljs-attr">&quot;pageSize&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">15</span><span class="hljs-punctuation">,</span>
@@ -1986,15 +1996,15 @@ api/blog/createZip</li>
 </code></pre>
 </div></div></li>
 </ul>
-<h2 data-v-md-heading="彻底删除" data-v-md-line="1068">彻底删除</h2>
-<ul data-v-md-line="1069">
+<h2 data-v-md-heading="彻底删除" data-v-md-line="1070">彻底删除</h2>
+<ul data-v-md-line="1071">
 <li>
-<p data-v-md-line="1069">接口地址<br>
+<p data-v-md-line="1071">接口地址<br>
 api/blog/delBlog</p>
 </li>
 <li>
-<p data-v-md-line="1071">请求参数</p>
-<table data-v-md-line="1072">
+<p data-v-md-line="1073">请求参数</p>
+<table data-v-md-line="1074">
 <thead>
 <tr>
 <th>请求参数</th>
@@ -2012,8 +2022,8 @@ api/blog/delBlog</p>
 </table>
 </li>
 <li>
-<p data-v-md-line="1076">接口返回</p>
-<div data-v-md-line="1077"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+<p data-v-md-line="1078">接口返回</p>
+<div data-v-md-line="1079"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
 <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
 <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
 <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
@@ -2022,15 +2032,15 @@ api/blog/delBlog</p>
 </code></pre>
 </div></div></li>
 </ul>
-<h2 data-v-md-heading="恢复博客" data-v-md-line="1086">恢复博客</h2>
-<ul data-v-md-line="1087">
+<h2 data-v-md-heading="恢复博客" data-v-md-line="1088">恢复博客</h2>
+<ul data-v-md-line="1089">
 <li>
-<p data-v-md-line="1087">接口地址<br>
+<p data-v-md-line="1089">接口地址<br>
 api/blog/reductionBlog</p>
 </li>
 <li>
-<p data-v-md-line="1089">请求参数</p>
-<table data-v-md-line="1090">
+<p data-v-md-line="1091">请求参数</p>
+<table data-v-md-line="1092">
 <thead>
 <tr>
 <th>请求参数</th>
@@ -2048,8 +2058,8 @@ api/blog/reductionBlog</p>
 </table>
 </li>
 <li>
-<p data-v-md-line="1094">接口返回</p>
-<div data-v-md-line="1095"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+<p data-v-md-line="1096">接口返回</p>
+<div data-v-md-line="1097"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
