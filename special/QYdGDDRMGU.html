@@ -228,11 +228,6 @@
             </div>
         </div>
         <div>
-            <div class="title" style="padding-left:42px" id="QYdGDDRMGU">
-                <a href="QYdGDDRMGU.html" title="博客分类">博客分类</a>
-            </div>
-        </div>
-        <div>
             <div class="title" style="padding-left:26px" id="uWueRbkwnp">
                     <span class="icon-arrow arrow-down"></span>
                 <a href="uWueRbkwnp.html" title="博客管理">博客管理</a>
@@ -304,6 +299,11 @@
         <div>
             <div class="title" style="padding-left:42px" id="wRTzeGZyls">
                 <a href="wRTzeGZyls.html" title="回收站">回收站</a>
+            </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:42px" id="QYdGDDRMGU">
+                <a href="QYdGDDRMGU.html" title="博客分类">博客分类</a>
             </div>
         </div>
                 </div>
@@ -715,7 +715,172 @@
 }
 </span><span class="hljs-tag">&lt;/<span class="hljs-name">style</span>&gt;</span>
 </code></pre>
-</div></div><p data-v-md-line="405"><strong>记得在main.js中引入全局组件</strong></p>
+</div></div><h3 data-v-md-heading="封装table" data-v-md-line="405">封装Table</h3>
+<div data-v-md-line="406"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code>&lt;template&gt;
+  <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">el-table</span> <span class="hljs-attr">ref</span>=<span class="hljs-string">&quot;dataTable&quot;</span>
+              <span class="hljs-attr">:data</span>=<span class="hljs-string">&quot;dataSource.list || []&quot;</span>
+              <span class="hljs-attr">:height</span>=<span class="hljs-string">&quot;tableHeight&quot;</span>
+              <span class="hljs-attr">:stripe</span>=<span class="hljs-string">&quot;options.stripe&quot;</span>
+              <span class="hljs-attr">:border</span>=<span class="hljs-string">&quot;options.border&quot;</span>
+              <span class="hljs-attr">header-row-class-name</span>=<span class="hljs-string">&quot;table-header-row&quot;</span>
+              <span class="hljs-attr">highlight-current-row</span>
+              @<span class="hljs-attr">row-click</span>=<span class="hljs-string">&quot;handleRowClick&quot;</span>
+              @<span class="hljs-attr">selection-change</span>=<span class="hljs-string">&quot;handleSelectionChange&quot;</span>&gt;</span>
+      <span class="hljs-comment">&lt;!--selection选择框--&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">el-table-column</span> <span class="hljs-attr">v-if</span>=<span class="hljs-string">&quot;options.selectType &amp;&amp; options.selectType == &#x27;checkbox&#x27;&quot;</span>
+                       <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;selection&quot;</span>
+                       <span class="hljs-attr">width</span>=<span class="hljs-string">&quot;50&quot;</span>
+                       <span class="hljs-attr">align</span>=<span class="hljs-string">&quot;center&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">el-table-column</span>&gt;</span>
+      <span class="hljs-comment">&lt;!--序号--&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">el-table-column</span> <span class="hljs-attr">v-if</span>=<span class="hljs-string">&quot;options.showIndex&quot;</span>
+                       <span class="hljs-attr">label</span>=<span class="hljs-string">&quot;序号&quot;</span>
+                       <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;index&quot;</span>
+                       <span class="hljs-attr">width</span>=<span class="hljs-string">&quot;60&quot;</span>
+                       <span class="hljs-attr">align</span>=<span class="hljs-string">&quot;center&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">el-table-column</span>&gt;</span>
+      <span class="hljs-comment">&lt;!--数据列--&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">template</span> <span class="hljs-attr">v-for</span>=<span class="hljs-string">&quot;(column, index) in columns&quot;</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">template</span> <span class="hljs-attr">v-if</span>=<span class="hljs-string">&quot;column.scopedSlots&quot;</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">el-table-column</span> <span class="hljs-attr">:key</span>=<span class="hljs-string">&quot;index&quot;</span>
+                           <span class="hljs-attr">:prop</span>=<span class="hljs-string">&quot;column.prop&quot;</span>
+                           <span class="hljs-attr">:label</span>=<span class="hljs-string">&quot;column.label&quot;</span>
+                           <span class="hljs-attr">:align</span>=<span class="hljs-string">&quot;column.align || &#x27;left&#x27;&quot;</span>
+                           <span class="hljs-attr">:width</span>=<span class="hljs-string">&quot;column.width&quot;</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">template</span> #<span class="hljs-attr">default</span>=<span class="hljs-string">&quot;scope&quot;</span>&gt;</span>
+              <span class="hljs-tag">&lt;<span class="hljs-name">slot</span> <span class="hljs-attr">:name</span>=<span class="hljs-string">&quot;column.scopedSlots&quot;</span>
+                    <span class="hljs-attr">:index</span>=<span class="hljs-string">&quot;scope.$index&quot;</span>
+                    <span class="hljs-attr">:row</span>=<span class="hljs-string">&quot;scope.row&quot;</span>&gt;</span>
+              <span class="hljs-tag">&lt;/<span class="hljs-name">slot</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+          <span class="hljs-tag">&lt;/<span class="hljs-name">el-table-column</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">template</span> <span class="hljs-attr">v-else</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">el-table-column</span> <span class="hljs-attr">:key</span>=<span class="hljs-string">&quot;index&quot;</span>
+                           <span class="hljs-attr">:prop</span>=<span class="hljs-string">&quot;column.prop&quot;</span>
+                           <span class="hljs-attr">:label</span>=<span class="hljs-string">&quot;column.label&quot;</span>
+                           <span class="hljs-attr">:align</span>=<span class="hljs-string">&quot;column.align || &#x27;left&#x27;&quot;</span>
+                           <span class="hljs-attr">:width</span>=<span class="hljs-string">&quot;column.width&quot;</span>
+                           <span class="hljs-attr">:fixed</span>=<span class="hljs-string">&quot;column.fixed&quot;</span>&gt;</span>
+          <span class="hljs-tag">&lt;/<span class="hljs-name">el-table-column</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">el-table</span>&gt;</span>
+    <span class="hljs-comment">&lt;!-- 分页 --&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;pagination&quot;</span>
+         <span class="hljs-attr">v-if</span>=<span class="hljs-string">&quot;showPagination&quot;</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">el-pagination</span> <span class="hljs-attr">v-if</span>=<span class="hljs-string">&quot;dataSource.totalCount&quot;</span>
+                     <span class="hljs-attr">background</span>
+                     <span class="hljs-attr">:total</span>=<span class="hljs-string">&quot;dataSource.totalCount&quot;</span>
+                     <span class="hljs-attr">:page-sizes</span>=<span class="hljs-string">&quot;[15, 30, 50, 100]&quot;</span>
+                     <span class="hljs-attr">:page-size</span>=<span class="hljs-string">&quot;dataSource.pageSize&quot;</span>
+                     <span class="hljs-attr">:current-page.sync</span>=<span class="hljs-string">&quot;dataSource.pageNo&quot;</span>
+                     <span class="hljs-attr">layout</span>=<span class="hljs-string">&quot;total, sizes, prev, pager, next, jumper&quot;</span>
+                     @<span class="hljs-attr">size-change</span>=<span class="hljs-string">&quot;handlePageSizeChange&quot;</span>
+                     @<span class="hljs-attr">current-change</span>=<span class="hljs-string">&quot;handlePageNoChange&quot;</span>
+                     <span class="hljs-attr">style</span>=<span class="hljs-string">&quot;text-align: right&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">el-pagination</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+&lt;/template&gt;
+<span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">setup</span>&gt;</span><span class="language-javascript">
+<span class="hljs-keyword">import</span> { ref } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;vue&quot;</span>;
+
+<span class="hljs-keyword">const</span> emit = <span class="hljs-title function_">defineEmits</span>([<span class="hljs-string">&quot;rowSelected&quot;</span>, <span class="hljs-string">&quot;rowClick&quot;</span>]);
+<span class="hljs-keyword">const</span> props = <span class="hljs-title function_">defineProps</span>({
+  <span class="hljs-attr">dataSource</span>: <span class="hljs-title class_">Object</span>,
+  <span class="hljs-attr">showPagination</span>: {
+    <span class="hljs-attr">type</span>: <span class="hljs-title class_">Boolean</span>,
+    <span class="hljs-attr">default</span>: <span class="hljs-literal">true</span>,
+  },
+  <span class="hljs-attr">options</span>: {
+    <span class="hljs-attr">type</span>: <span class="hljs-title class_">Object</span>,
+    <span class="hljs-attr">default</span>: {
+      <span class="hljs-attr">extHeight</span>: <span class="hljs-number">0</span>,
+      <span class="hljs-attr">showIndex</span>: <span class="hljs-literal">false</span>,
+    },
+  },
+  <span class="hljs-attr">columns</span>: <span class="hljs-title class_">Array</span>,
+  <span class="hljs-attr">fetch</span>: <span class="hljs-title class_">Function</span>, <span class="hljs-comment">// 获取数据的函数</span>
+  <span class="hljs-attr">initFetch</span>: {
+    <span class="hljs-attr">type</span>: <span class="hljs-title class_">Boolean</span>,
+    <span class="hljs-attr">default</span>: <span class="hljs-literal">true</span>,
+  },
+});
+
+<span class="hljs-keyword">const</span> radioSelectRowIndex = <span class="hljs-title function_">ref</span>(<span class="hljs-literal">null</span>);
+
+<span class="hljs-comment">//顶部 60 , 内容区域距离顶部 20， 内容上下内间距 15*2  分页区域高度 46</span>
+<span class="hljs-keyword">const</span> topHeight = <span class="hljs-number">60</span> + <span class="hljs-number">20</span> + <span class="hljs-number">30</span> + <span class="hljs-number">46</span>;
+
+<span class="hljs-keyword">const</span> tableHeight = <span class="hljs-title function_">ref</span>(
+  props.<span class="hljs-property">options</span>.<span class="hljs-property">tableHeight</span>
+    ? props.<span class="hljs-property">options</span>.<span class="hljs-property">tableHeight</span>
+    : <span class="hljs-variable language_">window</span>.<span class="hljs-property">innerHeight</span> - topHeight - props.<span class="hljs-property">options</span>.<span class="hljs-property">extHeight</span>
+);
+
+<span class="hljs-keyword">const</span> dataTable = <span class="hljs-title function_">ref</span>();
+
+<span class="hljs-comment">//行点击</span>
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">handleRowClick</span> = (<span class="hljs-params">row</span>) =&gt; {
+  <span class="hljs-title function_">emit</span>(<span class="hljs-string">&quot;rowClick&quot;</span>, row);
+};
+
+<span class="hljs-comment">//多选</span>
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">handleSelectionChange</span> = (<span class="hljs-params">row</span>) =&gt; {
+  <span class="hljs-title function_">emit</span>(<span class="hljs-string">&quot;rowSelected&quot;</span>, row);
+};
+
+<span class="hljs-comment">//切换每页大小</span>
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">handlePageSizeChange</span> = (<span class="hljs-params">size</span>) =&gt; {
+  props.<span class="hljs-property">dataSource</span>.<span class="hljs-property">pageSize</span> = size;
+  props.<span class="hljs-property">dataSource</span>.<span class="hljs-property">pageNo</span> = <span class="hljs-number">1</span>;
+  props.<span class="hljs-title function_">fetch</span>();
+};
+<span class="hljs-comment">// 切换页码</span>
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">handlePageNoChange</span> = (<span class="hljs-params">pageNo</span>) =&gt; {
+  props.<span class="hljs-property">dataSource</span>.<span class="hljs-property">pageNo</span> = pageNo;
+  props.<span class="hljs-title function_">fetch</span>();
+};
+<span class="hljs-comment">//设置行选中</span>
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">setCurrentRow</span> = (<span class="hljs-params">rowKey, rowValue</span>) =&gt; {
+  <span class="hljs-keyword">let</span> row = props.<span class="hljs-property">dataSource</span>.<span class="hljs-property">list</span>.<span class="hljs-title function_">find</span>(<span class="hljs-function">(<span class="hljs-params">item</span>) =&gt;</span> {
+    <span class="hljs-keyword">return</span> item[rowKey] === rowValue;
+  });
+  dataTable.<span class="hljs-property">value</span>.<span class="hljs-title function_">setCurrentRow</span>(row);
+};
+<span class="hljs-comment">//将子组件暴露出去，否则父组件无法调用</span>
+<span class="hljs-title function_">defineExpose</span>({
+  setCurrentRow,
+});
+
+<span class="hljs-comment">//初始化</span>
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">init</span> = (<span class="hljs-params"></span>) =&gt; {
+  <span class="hljs-keyword">if</span> (props.<span class="hljs-property">initFetch</span> &amp;&amp; props.<span class="hljs-property">fetch</span>) {
+    props.<span class="hljs-title function_">fetch</span>();
+  }
+};
+<span class="hljs-title function_">init</span>();
+
+
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></span>
+<span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">style</span> <span class="hljs-attr">lang</span>=<span class="hljs-string">&quot;scss&quot;</span>&gt;</span><span class="language-css">
+<span class="hljs-selector-class">.pagination</span> {
+  <span class="hljs-attribute">padding-top</span>: <span class="hljs-number">10px</span>;
+}
+<span class="hljs-selector-class">.el-pagination</span> {
+  <span class="hljs-attribute">justify-content</span>: right;
+}
+
+<span class="hljs-selector-class">.el-table__body</span> <span class="hljs-selector-tag">tr</span><span class="hljs-selector-class">.current-row</span> &gt; <span class="hljs-selector-tag">td</span><span class="hljs-selector-class">.el-table__cell</span> {
+  <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#e6f0f9</span>;
+}
+
+<span class="hljs-selector-class">.el-table__body</span> <span class="hljs-selector-tag">tr</span><span class="hljs-selector-pseudo">:hover</span> &gt; <span class="hljs-selector-tag">td</span><span class="hljs-selector-class">.el-table__cell</span> {
+  <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#e6f0f9</span> <span class="hljs-meta">!important</span>;
+}
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">style</span>&gt;</span></span>
+
+</code></pre>
+</div></div><p data-v-md-line="572"><strong>记得在main.js中引入全局组件</strong></p>
 </div>
                 </div>
             </div>
