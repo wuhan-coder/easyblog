@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>如何度过你的大学，如何自学编程 - 我是程序员</title>
+        <meta name="keywords" content="自学java,大学">
+        <meta name="description" content="写在最前自我介绍我出生武汉周边的农村，高中时对计算机一无所知，高考考了当时的一个二本学校，现在已经是一本了。现在已经是一个写了上10年的老鸟，在武汉的一个互联公司写代码。萌生自学编程的想法高考后，由于只够二本，担心热门专业竞争太激烈，于是报考了一个冷门专业，上大学后开始接触电脑，大一每天正常上课，有时间就会去学校图书馆上网，当然主要是聊天，看网页，觉得电脑这个东西太神奇了。查阅了一些书籍了解到，我们聊天，看的网页都是通过编程来实现的，于是萌生了想学编程的想法，查阅了一些资料发现学好编程，以后可以找到一份不错的个工作。于是我开始萌生自学编程的想法，再加上对报考的专业毫无兴趣，从大二开始正式自学编">
+
+    <link rel="stylesheet" href="../resource/static/plugin/highlight/styles/github.min.css">
+    <link rel="stylesheet" href="../resource/static/plugin/viewer/viewer.min.css">
+    <script src="../resource/static/plugin/highlight/highlight.min.js"></script>
+    <script src="../resource/static/plugin/jquery/jquery.min.js"></script>
+    <script src="../resource/static/plugin/viewer/viewer-jquery.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <link rel="stylesheet" href="../resource/static/css/blog.detail.css">
+    <script>
+        $(document).ready(function (e) {
+            createToc();
+            $("#content").viewer({
+                navbar: false
+            });
+
+            $("#content a").each(function (index, element) {
+                $(element).attr("target", "_blank");
+            })
+
+            $(".icon-arrow").click(function () {
+                let nextLiDom = $(this).parent().next("div").eq(0)
+                if ($(this).hasClass("arrow-down")) {
+                    $(this).removeClass("arrow-down");
+                    $(this).addClass("arrow-right");
+                    nextLiDom.hide();
+                } else {
+                    $(this).removeClass("arrow-right");
+                    $(this).addClass("arrow-down");
+                    nextLiDom.show();
+                }
+            });
+
+            //目录展开收齐
+            $("#toc-title").click(function () {
+                let spanDom = $(this).find(".icon-arrow")
+                if (spanDom.hasClass("arrow-down")) {
+                    spanDom.removeClass("arrow-down");
+                    spanDom.addClass("arrow-right");
+                    $("#toc").hide();
+                } else {
+                    spanDom.removeClass("arrow-right");
+                    spanDom.addClass("arrow-down");
+                    $("#toc").show();
+                }
+            });
+        });
+
+        const createToc = () => {
+            const hTagList = ["h1", "h2", "h3", "h4", "h5", "h6", "h7"]
+            const children = document.querySelector("#content").children;
+            const hList = [];
+            for (let i = 0; i < children.length; i++) {
+                const node = children[i];
+                let tagName = node.tagName;
+                tagName = tagName == undefined ? "" : tagName.toLowerCase();
+                if (hTagList.indexOf(tagName) != -1) {
+                    const id = "hash-node-" + i;
+                    node.setAttribute("id", id);
+                    hList.push({
+                        pId: "0",
+                        id: id,
+                        level: Number.parseInt(tagName.substring(1, 2)),
+                        name: node.innerText,
+                    });
+                }
+            }
+            for (let i = 0; i < hList.length; i++) {
+                findParentId(hList, hList[i], i);
+            }
+            const newDataList = convertLine2Tree(hList, "0");
+            if (newDataList.length == 0) {
+                $("<div class='no-data'>暂无目录信息</div>").appendTo($("#toc"));
+                return;
+            }
+            newDataList.forEach(element => {
+                createTree($("#toc"), element);
+            })
+        }
+
+        const createTree = (pNode, data) => {
+            const currentNode = $("<div></div>").appendTo(pNode);
+            let extPadding = 26;
+            if (data.children.length > 0) {
+                extPadding = 10
+            }
+            const paddingLeft = (data.level - 1) * 16 + extPadding;
+            const titleNode = $("<div class='title' style='padding-left:" + paddingLeft + "px'></div>").appendTo(currentNode);
+            if (data.children.length > 0) {
+                $("<span class='icon-arrow arrow-down'></span>").appendTo(titleNode);
+            }
+            $("<a href='#" + data.id + "' title='" + data.name + "'>" + data.name + "</a>").appendTo(titleNode);
+
+            if (data.children.length > 0) {
+                let subNode = $("<div class='sub-title'></div>").appendTo(currentNode);
+                data.children.forEach(item => {
+                    createTree(subNode, item);
+                })
+            }
+        }
+
+        //查找父级节点
+        const findParentId = (hList, item, index) => {
+            for (let i = index - 1; i >= 0; i--) {
+                const pNode = hList[i];
+                if (pNode.level < item.level) {
+                    item.pId = pNode.id;
+                    break;
+                }
+            }
+        }
+
+        //将数据转换为树形
+        const convertLine2Tree = (hList, pId) => {
+            const children = [];
+            hList.forEach(element => {
+                if (element.pId === pId) {
+                    children.push(element);
+                    element.children = convertLine2Tree(hList, element.id);
+                }
+            });
+            return children;
+        }
+
+        $(window).scroll(function () {
+            //console.log($(document).scrollTop());
+            $("#right-container").css("top", $(document).scrollTop() + "px");
+        });
+
+        function scroll(markId) {
+            let url = document.location.href;
+            if (url.indexOf("#") == -1) {
+                document.location.href = url + "#" + markId;
+            } else {
+                document.location.href = url.substring(0, url.indexOf("#") + 1) + markId;
+            }
+            $("html,body").animate({scrollTop: $("#" + markId).offset().top - 80}, 100);
+        }
+    </script>
+</head>
+<body>
+    <div class="top">
+        <div class="top-container">
+            <div class="logo">
+                    <a href="../index.html">我是程序员</a>
+            </div>
+                <a href="../index.html" class="nav active">博客</a>
+                <a href="../category.html" class="nav ">分类专栏</a>
+                <a href="../special.html" class="nav ">专题</a>
+                <a href="../user.html" class="nav ">成员</a>
+                <a href="../comment.html" class="nav ">留言板</a>
+        </div>
+    </div>
+<div class="body-container">
+    <div class="blog-detail">
+        <div class="container">
+            <div class="container-content">
+                <div>
+                    <div class="blog-title">如何度过你的大学，如何自学编程</div>
+                    <div class="blog-info">
+                        <div class="time">2022-10-25 05:25:33</div>
+                        <div class="nick-name">作者：<a href="../user.html#100000">程序员老罗</a></div>
+                        <div class="category">分类专栏：<a href="../category/10001.html">Java</a></div>
+
+                    </div>
+                    <div class="content" id="content"><h1 data-v-md-heading="写在最前" data-v-md-line="1">写在最前</h1>
+<h2 data-v-md-heading="自我介绍" data-v-md-line="2">自我介绍</h2>
+<p data-v-md-line="3">我出生武汉周边的农村，高中时对计算机一无所知，高考考了当时的一个二本学校，现在已经是一本了。现在已经是一个写了上10年的老鸟，在武汉的一个互联公司写代码。</p>
+<h2 data-v-md-heading="萌生自学编程的想法" data-v-md-line="5">萌生自学编程的想法</h2>
+<p data-v-md-line="6">高考后，由于只够二本，担心热门专业竞争太激烈，于是报考了一个冷门专业，上大学后开始接触电脑，大一每天正常上课，有时间就会去学校图书馆上网，当然主要是聊天，看网页，觉得电脑这个东西太神奇了。查阅了一些书籍了解到，我们聊天，看的网页都是通过编程来实现的，于是萌生了想学编程的想法，查阅了一些资料发现学好编程，以后可以找到一份不错的个工作。于是我开始萌生自学编程的想法，再加上对报考的专业毫无兴趣，从大二开始正式自学编程，经过相关资料查阅，最终选择学习java。</p>
+<h2 data-v-md-heading="一定要乘早选择自己的方向" data-v-md-line="8">一定要乘早选择自己的方向</h2>
+<p data-v-md-line="9">好多同学到了大四要找工作的时候才发现自己学的专业不是自己喜欢，这个时候就比较晚了。大学一定要培养自己的兴趣，自己到底喜欢什么，越早确定方向越好。如果不是富二代，家里没矿，一定要掌握一门扎实的技能，否则步入社会后会很难。不要看到宿舍里很多同学天天游戏，有很多同学进大学只是混个文凭，家里工作早找好了，毕业后直接上班，所以如果不是这种情况，千万要有自己的想法，不要看到别人玩游戏，自己也跟着玩，最后毕业后，啥也不会，找工作也很难，到时候后悔就来不及了。曾在微博上看到这样一段话感觉说的很有道理 “杜月笙曾对一个朋友说：你原是条鲤鱼，修行500年跳了龙门变成龙了，而我原来只是条泥鳅，先修炼1000年变成了鲤鱼 ，然后再修炼500年才跳过了龙门。倘若我俩一起失败，你还是条鲤鱼，而我可就变成泥鳅！你说我做事情怎么能不谨慎?—— 没有背景的人更要加倍努力” 大学不是用来挥霍的，好好把握吧，特别是那些想学java的同学，乘早做准备吧，现在网上的资料大把，制定一个详细的计划，好好坚持学习，我想毕业的时候一定会有所成就。</p>
+<h1 data-v-md-heading="自学编程" data-v-md-line="11">自学编程</h1>
+<h2 data-v-md-heading="到底要不要培训" data-v-md-line="12">到底要不要培训</h2>
+<p data-v-md-line="13">这个问题估计很多人会问，也有去培训的想法，我的观点是自学。当然这个要根据自己实际情况来看，也不是说培训就一定没用。如果你还在大一，大二，大三，甚至刚入大四，自学都来得及。为啥我建议自学，说几点我的观点：<br>
+1、自学能力是编程必备的一个能力，也是极其重要的一个能力。<br>
+2、编程技术更新迭代太快，不可能过一段时间就去培训一次吧，所以自学必不可少。<br>
+3、很多公司宁愿找自学的，也不愿意招培训的。<br>
+4、自学成本低，一台电脑就可以了，培训现在至少都是2W起步吧。2W毕业之后还不知道要多久才能存这么多钱呢。父母花钱送你上大学，还要再花钱培训，这样真的不好。</p>
+<h2 data-v-md-heading="如何自学" data-v-md-line="19">如何自学</h2>
+<p data-v-md-line="20">既然决定要自学编程就一定要耐得住寂寞，如果做不到就很难坚持。要能承受孤独，孤独会让你成长。我大学的时候我们专业两个班，我们班没人自学编程，隔壁班有个同学跟我一起学了一段时间，后来放弃了（前不久还跟我聊天，特别后悔当初没有跟我一起坚持下来）。大学一定不能挂科，你的毕业证，学位证很重要！我当时每次上课都是坐最后一排，别的同学都是带专业课本，我总会多带一本大学java教材，自己独自再后面看，最开始老师会说，后来我跟老师讲明情况，老师也没管的那么严格了。跟班上的同学搞好关系，特别是女同学，我们班上当时女生多，也都比较善良，考试的时候多亏她们帮忙大学才没挂科。所以专业课的知识一定还是要学，保证能不挂科就行。专业要学，编程也要学，这就决定你要比别人付出更多。</p>
+<h2 data-v-md-heading="自学资料" data-v-md-line="22">自学资料</h2>
+<p data-v-md-line="23">我当年自学的时候，网上资料不是很多，基本是看 马士兵，李兴华老师的视频学习的。现在的视频铺天盖地，其实B站上就有很多比较不错的免费视频，我们要找那些，播放量比较高，老师讲的比较细致，说话清晰的视频，选择一套就行，不要太多。今天学这个，明天又换一个，最后就是学不下去了。有的同学就是整天到处找视频，网上有的视频基本都下了。那电脑里面硬盘里满满的都是视频教程，这得多牛逼啊，把这些老师的视频看完了我就成大牛了。其实我当初学习就看一个老师的视频，反复的看反复的推敲。有的人看看这个老师的，再看看那个老师的，最后一对比，啊这个老师讲的真垃圾，啊那个老师讲的好啊，真幽默。其实等你们工作2年后你再去看那些老师的视频，你会发现他们讲的都很好，非常棒，没几把刷子也不敢录视频，也不会往网上发。给大家说个故事，射雕英雄传 大家应该都看过，江南七怪教郭静武功，教了那么多年，郭静的武功平平，真的是郭静的悟性差吗？那后来洪七公教他武功，为什么武功进步神速。原因很简单，江南七怪每个人的武功都不一样，每个人都教郭静，武功套路，招数都不一样，郭静怎么能学好。而学洪七公的，是一个人教，所以进步神速。我们学java也一样，选定好一个老师的视频，就从一而终的学下去，按照老师说的认真的去做，我想你会成为最终的那个郭静。</p>
+<h2 data-v-md-heading="循序渐进很重要" data-v-md-line="25">循序渐进很重要</h2>
+<p data-v-md-line="26">java学习是个漫长的过程，老老实实的花个至少半年的时间来学javase基础部分吧，想3个月就学完java的，然后就开始做项目的，我劝你还是别学了，真的是浪费时间。学完一个知识点后，多练练，多敲敲代码，找点练习题做做，加强锻炼。一定要做到一步一个脚印，不然到最后你会发现，你学了后面的忘记了前面的，最终啥也不会。自学是艰苦的，孤独的，枯燥的，切忌浮躁！很多人看视频，就真的只是看，基本都是一看就会，一敲就废。先跟着老师一起敲，然后完全自己敲一遍，再根据自己的理解，稍作改变，再敲，再运行试试。说个很简单的事情哈，一问类首字母要怎么样，闭着眼都知道要大写，你们看看你们写的类确定每次都首字母大写了？</p>
+<h2 data-v-md-heading="我们要善于解决问题" data-v-md-line="28">我们要善于解决问题</h2>
+<p data-v-md-line="29">经常看到群（之前的群，由于后来工作忙，没有管理，就把群解散了）里有人问一些很低级的问题，我是看了也懒得说，有的人说我这代码啊，就是按照老师讲的敲的，但是就是报错。我就问你，你真的认真敲了吗，遇到错误仔细检查自己的代码，一个字母一个字母的检查。在学习中遇到问题，最好的解决办法不是问别人，而是上网找解决方法，实在找不到可以请教别人，这样你会印象深刻，一遇到问题就问人，这不是一个好的程序员该有的作风。还有，有的人呢问问题也不注意方式，只想着自己怎么方便就怎么弄，一般都是直接一个截图丢出来，这种方式，你为别人想过没有，很有可能你的代码别人要拿去运行的，你这一个破截图，别人怎么运行，别人还要对着你的破图敲一遍？一般这种估计别人就不愿意看了。再有的就是，把代码用很大的字体发出来，你这么发，你自己看的方便么？在问别人的时候，要先想想怎么让别人看的舒服，对你的代码即使有错误，但是至少别人能看清楚，能看的舒服，这样才会有心思去看你的代码，帮你解决。别人帮你解决问题，最终问题解决了，你是不是应该回应一声，也算是对别人的答谢吧。有的人问完问题人就不见了，我想这样的人下次别人也不愿意看你的问题了。</p>
+<h2 data-v-md-heading="建议学前端" data-v-md-line="31">建议学前端</h2>
+<p data-v-md-line="32">很多人觉得我一个写java的，没有必要学前端，不是这样的，其实我们统称为BS开发，是少不了接触前端的。有很多公司，没有专门的前端，如果你会前端，就更加有优势。而且你会前端，你就知道前端是怎么运作的，也可以很好的跟前端同学配置，可以大大提高跟前端联调的时间。如果我们会前端就可以独立做项目，自己想捣鼓个什么小玩意，小网站，会前端，优势巨大。</p>
+<h1 data-v-md-heading="自己写项目" data-v-md-line="34">自己写项目</h1>
+<p data-v-md-line="35">等我们都学的差不多了，就可以试着自己做个小项目了，比如自己做个小论坛，写个博客系统，不要看这些不起眼的小系统，跟大型系统包含的东西是大同小异的，麻雀虽小五脏俱全。在做这些系统的时候，你会发现自己不足的地方，及时查漏补缺。我们做的东西还可以发布到网上，现在有很多云主机针对学生的，一个月就10块钱，我们买个主机，买个域名，就可以将自己的小项目发布到互联网上，供大家使用了。最关键的一点是，以后找工作的时候，可以直接在简历上丢上自己的网址，面试者直接通过网站就可以了解，你到底能不能做项目。可以很大程度上提高面试机会。</p>
+<h1 data-v-md-heading="写在最后" data-v-md-line="37">写在最后</h1>
+<p data-v-md-line="38">最后希望大家在自学道路上能够坚持下来，给大学交一份完美的答卷，不给大学留任何遗憾。记住，自学是寂寞的，孤独的。自学一定要多动手，多敲，敲多了自然就理解了，任何一件事情，你再这个事情上花费了上万个小时，你就是这方面的专家。最后留下我的微信小号jackma_2021（头像是个藤鼠） 可以加我微信聊聊。</p>
+</div>
+                </div>
+            </div>
+                <div class="container-comment">
+                    <div class="comment-title">评论</div>
+                    <div id="SOHUCS" sid="KpvVKikoSD"></div>
+                    <script charset="utf-8" type="text/javascript" src="https://cy-cdn.kuaizhan.com/upload/changyan.js"></script>
+                    <script type="text/javascript">
+                        window.changyan.api.config({
+                            appid: "cyvP1EXdR",
+                            conf: '0264664c4b9d1fb578d732b34abf3246'
+                        });
+                    </script>
+                </div>
+        </div>
+        <div class="right">
+            <div class="container" id="right-container">
+                <div class="right-title toc-title">目录结构</div>
+                <div id="toc"></div>
+
+                <div class="right-title category-title">
+                    <span>分类专栏</span>
+                    <a href="../category.html" class="more">更多>></a>
+                </div>
+                    <a href="../category/10000.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/image/202112/EFUgXqXkPTFORpHpeTTnbLTTMVsJgf.png">
+                        </span>
+                        <span class="category-name" title="EasyBlog">EasyBlog</span>
+                        <span class="blog-count">0篇</span>
+                    </a>
+                    <a href="../category/10001.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/image/202210/kIPHrBlMBEwhLHsMAYliJIynVhjOBt.png">
+                        </span>
+                        <span class="category-name" title="Java">Java</span>
+                        <span class="blog-count">7篇</span>
+                    </a>
+                    <a href="../category/10002.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/image/202210/KLVzFxgplZnrPWnIOtSrqrnHmIJiJy.png">
+                        </span>
+                        <span class="category-name" title="electron">electron</span>
+                        <span class="blog-count">2篇</span>
+                    </a>
+                    <a href="../category/10003.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/image/202210/VnyCajSlCNLCbrCxSNAGDIUNIelrUS.png">
+                        </span>
+                        <span class="category-name" title="Vue3">Vue3</span>
+                        <span class="blog-count">3篇</span>
+                    </a>
+                    <a href="../category/10005.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/image/202210/LpocFdzOXwynTWDrmiAUkxSIESWYus.png">
+                        </span>
+                        <span class="category-name" title="编程小技巧">编程小技巧</span>
+                        <span class="blog-count">3篇</span>
+                    </a>
+            </div>
+        </div>
+    </div>
+</div>
+        <div class="footer">
+            <div>
+                <span>©2021-2022 www.wuhancoder.com All rights reserved. </span>
+                <a target="_blank" href="https://beian.miit.gov.cn/">鄂ICP备13017512号-3</a></div>
+            <div>
+                <img src="../resource/static/beian.png">
+                <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=42011502000890">
+                    鄂公网安备 42011502000890号
+                </a></div>
+        </div>
+    <script>
+        var _hmt = _hmt || [];
+        (function () {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?63b3f00d92dbfecbe9376c26282c2599";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+</body>
+</html>
