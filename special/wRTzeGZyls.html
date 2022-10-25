@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>EasyBlog文档 - 回收站 - 我是程序员</title>
+        <meta name="keywords" content="回收站">
+        <meta name="description" content="这一节主要是回收站，已经删除的文章会在这里，可以恢复，也可以彻底删除主要代码RecoveryList.vuetemplate&lt;template&gt;&lt;divclass=&quot;body&quot;&gt;&lt;divclass=&quot;top-panel&quot;&gt;&lt;el-form@submit.native.prevent:model=&quot;searchForm&quot;class=&quot;search-form&quot;labelAlign=&quot;left&quot;&gt;&lt;el-row:gutter=&quot;5&quo">
+
+    <link rel="stylesheet" href="../resource/static/plugin/highlight/styles/github.min.css">
+    <link rel="stylesheet" href="../resource/static/plugin/viewer/viewer.min.css">
+    <script src="../resource/static/plugin/highlight/highlight.min.js"></script>
+    <script src="../resource/static/plugin/jquery/jquery.min.js"></script>
+    <script src="../resource/static/plugin/viewer/viewer-jquery.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <link rel="stylesheet" href="../resource/static/css/special.detail.css">
+    <script>
+        $(document).ready(function (e) {
+            createToc();
+            $("#content").viewer({
+                navbar: false
+            });
+
+            $("#content a").each(function (index, element) {
+                $(element).attr("target", "_blank");
+            })
+
+            $(".icon-arrow").click(function () {
+                let nextLiDom = $(this).parent().next("div").eq(0)
+                if ($(this).hasClass("arrow-down")) {
+                    $(this).removeClass("arrow-down");
+                    $(this).addClass("arrow-right");
+                    nextLiDom.hide();
+                } else {
+                    $(this).removeClass("arrow-right");
+                    $(this).addClass("arrow-down");
+                    nextLiDom.show();
+                }
+            });
+
+            //目录展开收齐
+            $("#toc-title").click(function () {
+                let spanDom = $(this).find(".icon-arrow")
+                if (spanDom.hasClass("arrow-down")) {
+                    spanDom.removeClass("arrow-down");
+                    spanDom.addClass("arrow-right");
+                    $("#toc").hide();
+                } else {
+                    spanDom.removeClass("arrow-right");
+                    spanDom.addClass("arrow-down");
+                    $("#toc").show();
+                }
+            });
+
+            let currentUrl = document.location.href;
+            currentUrl = currentUrl.substring(currentUrl.lastIndexOf("/") + 1, currentUrl.lastIndexOf("."));
+            $("#" + currentUrl).addClass("active");
+        });
+
+        const createToc = () => {
+            const hTagList = ["h1", "h2", "h3", "h4", "h5", "h6", "h7"]
+            const children = document.querySelector("#content").children;
+            const hList = [];
+            for (let i = 0; i < children.length; i++) {
+                const node = children[i];
+                let tagName = node.tagName;
+                tagName = tagName == undefined ? "" : tagName.toLowerCase();
+                if (hTagList.indexOf(tagName) != -1) {
+                    const id = "hash-node-" + i;
+                    node.setAttribute("id", id);
+                    hList.push({
+                        pId: "0",
+                        id: id,
+                        level: Number.parseInt(tagName.substring(1, 2)),
+                        name: node.innerText,
+                    });
+                }
+            }
+            for (let i = 0; i < hList.length; i++) {
+                findParentId(hList, hList[i], i);
+            }
+            const newDataList = convertLine2Tree(hList, "0");
+            if (newDataList.length == 0) {
+                $("<div class='no-data'>暂无目录信息</div>").appendTo($("#toc"));
+                return;
+            }
+            newDataList.forEach(element => {
+                createTree($("#toc"), element);
+            })
+        }
+
+        const createTree = (pNode, data) => {
+            const currentNode = $("<div></div>").appendTo(pNode);
+            let extPadding = 26;
+            if (data.children.length > 0) {
+                extPadding = 10
+            }
+            const paddingLeft = (data.level - 1) * 16 + extPadding;
+            const titleNode = $("<div class='title' style='padding-left:" + paddingLeft + "px'></div>").appendTo(currentNode);
+            if (data.children.length > 0) {
+                $("<span class='icon-arrow arrow-down'></span>").appendTo(titleNode);
+            }
+            $("<a href='#" + data.id + "'  title='" + data.name + "'>" + data.name + "</a>").appendTo(titleNode);
+
+            if (data.children.length > 0) {
+                let subNode = $("<div class='sub-title'></div>").appendTo(currentNode);
+                data.children.forEach(item => {
+                    createTree(subNode, item);
+                })
+            }
+        }
+
+        //查找父级节点
+        const findParentId = (hList, item, index) => {
+            for (let i = index - 1; i >= 0; i--) {
+                const pNode = hList[i];
+                if (pNode.level < item.level) {
+                    item.pId = pNode.id;
+                    break;
+                }
+            }
+        }
+
+        //将数据转换为树形
+        const convertLine2Tree = (hList, pId) => {
+            const children = [];
+            hList.forEach(element => {
+                if (element.pId === pId) {
+                    children.push(element);
+                    element.children = convertLine2Tree(hList, element.id);
+                }
+            });
+            return children;
+        }
+
+        $(window).scroll(function () {
+            //console.log($(document).scrollTop());
+            $("#right-container").css("top", $(document).scrollTop() + "px");
+        });
+
+        function scroll(markId) {
+            let url = document.location.href;
+            if (url.indexOf("#") == -1) {
+                document.location.href = url + "#" + markId;
+            } else {
+                document.location.href = url.substring(0, url.indexOf("#") + 1) + markId;
+            }
+            $("html,body").animate({scrollTop: $("#" + markId).offset().top - 80}, 100);
+        }
+    </script>
+</head>
+<body>
+    <div class="top">
+        <div class="top-container">
+            <div class="logo">
+                    <a href="../index.html">我是程序员</a>
+            </div>
+                <a href="../index.html" class="nav ">博客</a>
+                <a href="../category.html" class="nav ">分类专栏</a>
+                <a href="../special.html" class="nav active">专题</a>
+                <a href="../user.html" class="nav ">成员</a>
+                <a href="../comment.html" class="nav ">留言板</a>
+        </div>
+    </div>
+<div class="body-container">
+    <div class="blog-detail">
+        <div class="blog-special-list">
+            <div class="blog-special">
+                <div class="category-image">
+                        <img src="../resource/image/202209/qmHjiTxzjtapHaOojwciCzTlqCPFWs.jpg">
+                </div>
+                <div class="category-info">
+                    <div class="category-title" title="EasyBlog文档">EasyBlog文档</div>
+                    <div class="blog-count">文章数：23</div>
+                </div>
+            </div>
+            <div class="category-desc" title="EasyBlog 相关文档，接口，环境搭建">简介：EasyBlog 相关文档，接口，环境搭建</div>
+            <div class="blog-list toc">
+        <div>
+            <div class="title" style="padding-left:10px" id="gTvGKLsNNZ">
+                    <span class="icon-arrow arrow-down"></span>
+                <a href="gTvGKLsNNZ.html" title="后端服务部署">后端服务部署</a>
+            </div>
+                <div class="sub-title">
+        <div>
+            <div class="title" style="padding-left:42px" id="vbbStsCMXs">
+                <a href="vbbStsCMXs.html" title="安装后端程序">安装后端程序</a>
+            </div>
+        </div>
+                </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:10px" id="azvNIIFQCy">
+                    <span class="icon-arrow arrow-down"></span>
+                <a href="azvNIIFQCy.html" title="接口文档">接口文档</a>
+            </div>
+                <div class="sub-title">
+        <div>
+            <div class="title" style="padding-left:42px" id="cqzKWftzyr">
+                <a href="cqzKWftzyr.html" title="管理端">管理端</a>
+            </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:42px" id="wBURpKFtiT">
+                <a href="wBURpKFtiT.html" title="web端">web端</a>
+            </div>
+        </div>
+                </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:26px" id="DEdkCxjkqy">
+                <a href="DEdkCxjkqy.html" title="简介">简介</a>
+            </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:10px" id="rTZtGSfpKO">
+                    <span class="icon-arrow arrow-down"></span>
+                <a href="rTZtGSfpKO.html" title="管理端">管理端</a>
+            </div>
+                <div class="sub-title">
+        <div>
+            <div class="title" style="padding-left:42px" id="ReLhoidFfc">
+                <a href="ReLhoidFfc.html" title="前端项目构建">前端项目构建</a>
+            </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:42px" id="yZiEkYlOaT">
+                <a href="yZiEkYlOaT.html" title="登录">登录</a>
+            </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:42px" id="QYdGDDRMGU">
+                <a href="QYdGDDRMGU.html" title="博客分类">博客分类</a>
+            </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:26px" id="uWueRbkwnp">
+                    <span class="icon-arrow arrow-down"></span>
+                <a href="uWueRbkwnp.html" title="博客管理">博客管理</a>
+            </div>
+                <div class="sub-title">
+        <div>
+            <div class="title" style="padding-left:58px" id="IgizsOFvBL">
+                <a href="IgizsOFvBL.html" title="博客列表">博客列表</a>
+            </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:58px" id="bFvFteyYlx">
+                <a href="bFvFteyYlx.html" title="新增、修改博客">新增、修改博客</a>
+            </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:58px" id="bLIAnUNUdx">
+                <a href="bLIAnUNUdx.html" title="博客详情">博客详情</a>
+            </div>
+        </div>
+                </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:26px" id="LdgbxmwFeg">
+                    <span class="icon-arrow arrow-down"></span>
+                <a href="LdgbxmwFeg.html" title="专题管理">专题管理</a>
+            </div>
+                <div class="sub-title">
+        <div>
+            <div class="title" style="padding-left:58px" id="BkQtkMEqYv">
+                <a href="BkQtkMEqYv.html" title="专题列表">专题列表</a>
+            </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:58px" id="hwjDGsEGxu">
+                <a href="hwjDGsEGxu.html" title="专题文章管理">专题文章管理</a>
+            </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:58px" id="zkAAjqsOgD">
+                <a href="zkAAjqsOgD.html" title="专题文章详情">专题文章详情</a>
+            </div>
+        </div>
+                </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:26px" id="rbnEacItvQ">
+                    <span class="icon-arrow arrow-down"></span>
+                <a href="rbnEacItvQ.html" title="设置">设置</a>
+            </div>
+                <div class="sub-title">
+        <div>
+            <div class="title" style="padding-left:58px" id="VHuGhkzHgc">
+                <a href="VHuGhkzHgc.html" title="个人信息设置">个人信息设置</a>
+            </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:58px" id="viNtWrqfmA">
+                <a href="viNtWrqfmA.html" title="博客成员">博客成员</a>
+            </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:58px" id="DPaRkrTvOD">
+                <a href="DPaRkrTvOD.html" title="系统设置">系统设置</a>
+            </div>
+        </div>
+                </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:42px" id="wRTzeGZyls">
+                <a href="wRTzeGZyls.html" title="回收站">回收站</a>
+            </div>
+        </div>
+                </div>
+        </div>
+            </div>
+
+        </div>
+        <div class="container">
+            <div class="container-content">
+                <div>
+                    <div class="blog-title">回收站</div>
+                    <div class="blog-info">
+                        <div class="time">2022-10-25 04:19:08</div>
+                        <div class="nick-name">作者：<a href="../user.html#100000">程序员老罗</a></div>
+                    </div>
+                    <div class="content" id="content"><p data-v-md-line="1">这一节主要是回收站，已经删除的文章会在这里，可以恢复，也可以彻底删除</p>
+<h1 data-v-md-heading="主要代码" data-v-md-line="2">主要代码</h1>
+<p data-v-md-line="3">RecoveryList.vue</p>
+<h2 data-v-md-heading="template" data-v-md-line="4">template</h2>
+<div data-v-md-line="5"><div class="v-md-pre-wrapper v-md-pre-wrapper-html extra-class"><pre class="v-md-hljs-html"><code><span class="hljs-tag">&lt;<span class="hljs-name">template</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;body&quot;</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;top-panel&quot;</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">el-form</span> @<span class="hljs-attr">submit.native.prevent</span>
+               <span class="hljs-attr">:model</span>=<span class="hljs-string">&quot;searchForm&quot;</span>
+               <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;search-form&quot;</span>
+               <span class="hljs-attr">labelAlign</span>=<span class="hljs-string">&quot;left&quot;</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">el-row</span> <span class="hljs-attr">:gutter</span>=<span class="hljs-string">&quot;5&quot;</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">el-col</span> <span class="hljs-attr">:span</span>=<span class="hljs-string">&quot;5&quot;</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">el-form-item</span> <span class="hljs-attr">label</span>=<span class="hljs-string">&quot;标题&quot;</span>&gt;</span>
+              <span class="hljs-tag">&lt;<span class="hljs-name">el-input</span> <span class="hljs-attr">v-model</span>=<span class="hljs-string">&quot;searchForm.titleFuzzy&quot;</span>
+                        <span class="hljs-attr">placeholder</span>=<span class="hljs-string">&quot;支持模糊搜索&quot;</span>
+                        @<span class="hljs-attr">keyup.enter.native</span>=<span class="hljs-string">&quot;loadDataList&quot;</span>
+                        <span class="hljs-attr">allowClear</span> /&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">el-form-item</span>&gt;</span>
+          <span class="hljs-tag">&lt;/<span class="hljs-name">el-col</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">el-col</span> <span class="hljs-attr">:span</span>=<span class="hljs-string">&quot;5&quot;</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">el-form-item</span>&gt;</span>
+              <span class="hljs-tag">&lt;<span class="hljs-name">el-button</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;danger&quot;</span>
+                         @<span class="hljs-attr">click</span>=<span class="hljs-string">&quot;loadDataList()&quot;</span>&gt;</span>搜索<span class="hljs-tag">&lt;/<span class="hljs-name">el-button</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">el-form-item</span>&gt;</span>
+          <span class="hljs-tag">&lt;/<span class="hljs-name">el-col</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">el-row</span>&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-name">el-form</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Table</span> <span class="hljs-attr">:columns</span>=<span class="hljs-string">&quot;columns&quot;</span>
+           <span class="hljs-attr">:fetch</span>=<span class="hljs-string">&quot;loadDataList&quot;</span>
+           <span class="hljs-attr">:dataSource</span>=<span class="hljs-string">&quot;tableData&quot;</span>
+           <span class="hljs-attr">:options</span>=<span class="hljs-string">&quot;tableOptions&quot;</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">template</span> #<span class="hljs-attr">cover</span>=<span class="hljs-string">&quot;{ index, row }&quot;</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">cover</span> <span class="hljs-attr">:cover</span>=<span class="hljs-string">&quot;row.cover&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">cover</span>&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+
+      <span class="hljs-tag">&lt;<span class="hljs-name">template</span> #<span class="hljs-attr">blogInfo</span>=<span class="hljs-string">&quot;{ index, row }&quot;</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>标题：{{ row.title }}<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>文章类型：{{ row.blogType==0?&#x27;博客&#x27;:&#x27;专题&#x27; }}
+          <span class="hljs-tag">&lt;<span class="hljs-name">el-divider</span> <span class="hljs-attr">direction</span>=<span class="hljs-string">&quot;vertical&quot;</span> /&gt;</span> <span class="hljs-tag">&lt;<span class="hljs-name">span</span>&gt;</span>{{row.blogType==0?&#x27;分类&#x27;:&#x27;专题&#x27;}}<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>：{{ row.categoryName||&#x27;--&#x27; }}
+        <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>作者：{{ row.nickName }}<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+      <span class="hljs-comment">&lt;!-- 操作 --&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">template</span> #<span class="hljs-attr">status</span>=<span class="hljs-string">&quot;{ index, row }&quot;</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">v-if</span>=<span class="hljs-string">&quot;row.status == 1&quot;</span>
+              <span class="hljs-attr">:style</span>=<span class="hljs-string">&quot;{ color: &#x27;green&#x27; }&quot;</span>&gt;</span>{{
+          row.statusName
+        }}<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">v-else</span>
+              <span class="hljs-attr">:style</span>=<span class="hljs-string">&quot;{ color: &#x27;red&#x27; }&quot;</span>&gt;</span>{{ row.statusName }}<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+
+      <span class="hljs-tag">&lt;<span class="hljs-name">template</span> #<span class="hljs-attr">timeInfo</span>=<span class="hljs-string">&quot;{ index, row }&quot;</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>创建时间：{{ row.createTime }}<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>更新时间：{{ row.lastUpdateTime }}<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+
+      <span class="hljs-tag">&lt;<span class="hljs-name">template</span> #<span class="hljs-attr">operation</span>=<span class="hljs-string">&quot;{ index, row }&quot;</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">template</span> <span class="hljs-attr">v-if</span>=<span class="hljs-string">&quot;row.userId == userInfo.userId || userInfo.roleType == 1&quot;</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;a-link&quot;</span>
+             <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;javascript:void(0)&quot;</span>
+             @<span class="hljs-attr">click</span>=<span class="hljs-string">&quot;reductionBlog(row)&quot;</span>
+             <span class="hljs-attr">v-if</span>=<span class="hljs-string">&quot;userInfo.userId==row.userId&quot;</span>&gt;</span>还原<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">v-else</span>&gt;</span>--<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">el-divider</span> <span class="hljs-attr">direction</span>=<span class="hljs-string">&quot;vertical&quot;</span> /&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;a-link&quot;</span>
+             <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;javascript:void(0)&quot;</span>
+             @<span class="hljs-attr">click</span>=<span class="hljs-string">&quot;delBlog(row)&quot;</span>
+             <span class="hljs-attr">v-if</span>=<span class="hljs-string">&quot;userInfo.userId==row.userId&quot;</span>&gt;</span>删除<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">v-else</span>&gt;</span>--<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">v-else</span>&gt;</span>--<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">Table</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+
+</code></pre>
+</div></div><h2 data-v-md-heading="js" data-v-md-line="82">js</h2>
+<div data-v-md-line="83"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code>&lt;script setup&gt;
+<span class="hljs-keyword">import</span> { ref, reactive, getCurrentInstance } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;vue&quot;</span>;
+<span class="hljs-keyword">import</span> { useRouter } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;vue-router&quot;</span>;
+<span class="hljs-keyword">const</span> router = <span class="hljs-title function_">useRouter</span>();
+<span class="hljs-keyword">const</span> { proxy } = <span class="hljs-title function_">getCurrentInstance</span>();
+
+<span class="hljs-keyword">const</span> api = {
+  <span class="hljs-attr">loadDataList</span>: <span class="hljs-string">&quot;/blog/loadRecoveryList&quot;</span>,
+  <span class="hljs-attr">delBlog</span>: <span class="hljs-string">&quot;/blog/delBlog&quot;</span>,
+  <span class="hljs-attr">reductionBlog</span>: <span class="hljs-string">&quot;/blog/reductionBlog&quot;</span>,
+};
+
+<span class="hljs-keyword">const</span> userInfo = <span class="hljs-title function_">ref</span>(proxy.<span class="hljs-property">VueCookies</span>.<span class="hljs-title function_">get</span>(<span class="hljs-string">&quot;userInfo&quot;</span>) || {});
+
+<span class="hljs-keyword">const</span> tableData = <span class="hljs-title function_">reactive</span>({});
+<span class="hljs-keyword">const</span> tableOptions = <span class="hljs-title function_">reactive</span>({
+  <span class="hljs-attr">extHeight</span>: <span class="hljs-number">40</span>,
+});
+
+<span class="hljs-keyword">const</span> columns = [
+  {
+    <span class="hljs-attr">label</span>: <span class="hljs-string">&quot;封面&quot;</span>,
+    <span class="hljs-attr">prop</span>: <span class="hljs-string">&quot;cover&quot;</span>,
+    <span class="hljs-attr">width</span>: <span class="hljs-number">80</span>,
+    <span class="hljs-attr">scopedSlots</span>: <span class="hljs-string">&quot;cover&quot;</span>,
+  },
+  {
+    <span class="hljs-attr">label</span>: <span class="hljs-string">&quot;文章信息&quot;</span>,
+    <span class="hljs-attr">prop</span>: <span class="hljs-string">&quot;title&quot;</span>,
+    <span class="hljs-attr">scopedSlots</span>: <span class="hljs-string">&quot;blogInfo&quot;</span>,
+  },
+  {
+    <span class="hljs-attr">label</span>: <span class="hljs-string">&quot;编辑器&quot;</span>,
+    <span class="hljs-attr">prop</span>: <span class="hljs-string">&quot;editorTypeName&quot;</span>,
+    <span class="hljs-attr">width</span>: <span class="hljs-number">100</span>,
+  },
+  {
+    <span class="hljs-attr">label</span>: <span class="hljs-string">&quot;评论&quot;</span>,
+    <span class="hljs-attr">prop</span>: <span class="hljs-string">&quot;allowCommentTypeName&quot;</span>,
+    <span class="hljs-attr">width</span>: <span class="hljs-number">80</span>,
+  },
+  {
+    <span class="hljs-attr">label</span>: <span class="hljs-string">&quot;时间&quot;</span>,
+    <span class="hljs-attr">prop</span>: <span class="hljs-string">&quot;createTime&quot;</span>,
+    <span class="hljs-attr">scopedSlots</span>: <span class="hljs-string">&quot;timeInfo&quot;</span>,
+    <span class="hljs-attr">width</span>: <span class="hljs-number">260</span>,
+  },
+  {
+    <span class="hljs-attr">label</span>: <span class="hljs-string">&quot;操作&quot;</span>,
+    <span class="hljs-attr">prop</span>: <span class="hljs-string">&quot;operation&quot;</span>,
+    <span class="hljs-attr">width</span>: <span class="hljs-number">150</span>,
+    <span class="hljs-attr">scopedSlots</span>: <span class="hljs-string">&quot;operation&quot;</span>,
+  },
+];
+<span class="hljs-keyword">const</span> searchForm = <span class="hljs-title function_">reactive</span>({});
+
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">loadDataList</span> = <span class="hljs-keyword">async</span> (<span class="hljs-params"></span>) =&gt; {
+  <span class="hljs-keyword">let</span> params = {
+    <span class="hljs-attr">pageNo</span>: tableData.<span class="hljs-property">pageNo</span>,
+    <span class="hljs-attr">pageSize</span>: tableData.<span class="hljs-property">pageSize</span>,
+  };
+  <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">assign</span>(params, searchForm);
+
+  <span class="hljs-keyword">let</span> result = <span class="hljs-keyword">await</span> proxy.<span class="hljs-title class_">Request</span>({
+    <span class="hljs-attr">url</span>: api.<span class="hljs-property">loadDataList</span>,
+    <span class="hljs-attr">params</span>: params,
+  });
+  <span class="hljs-keyword">if</span> (!result) {
+    <span class="hljs-keyword">return</span>;
+  }
+  <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">assign</span>(tableData, result.<span class="hljs-property">data</span>);
+};
+<span class="hljs-comment">//删除</span>
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">delBlog</span> = (<span class="hljs-params">data</span>) =&gt; {
+  proxy.<span class="hljs-title class_">Confirm</span>(<span class="hljs-string">`确认要删除【<span class="hljs-subst">${data.title}</span>】吗，删除后无法找回？`</span>, <span class="hljs-keyword">async</span> () =&gt; {
+    <span class="hljs-keyword">let</span> result = <span class="hljs-keyword">await</span> proxy.<span class="hljs-title class_">Request</span>({
+      <span class="hljs-attr">url</span>: api.<span class="hljs-property">delBlog</span>,
+      <span class="hljs-attr">params</span>: {
+        <span class="hljs-attr">blogId</span>: data.<span class="hljs-property">blogId</span>,
+      },
+    });
+    <span class="hljs-keyword">if</span> (!result) {
+      <span class="hljs-keyword">return</span>;
+    }
+    proxy.<span class="hljs-property">Message</span>.<span class="hljs-title function_">success</span>(<span class="hljs-string">&quot;删除成功&quot;</span>);
+    <span class="hljs-title function_">loadDataList</span>();
+  });
+};
+
+<span class="hljs-comment">//恢复博客</span>
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">reductionBlog</span> = (<span class="hljs-params">data</span>) =&gt; {
+  proxy.<span class="hljs-title class_">Confirm</span>(
+    <span class="hljs-string">`确认要恢复【<span class="hljs-subst">${data.title}</span>】吗？恢复后博客为草稿状态。`</span>,
+    <span class="hljs-keyword">async</span> () =&gt; {
+      <span class="hljs-keyword">let</span> result = <span class="hljs-keyword">await</span> proxy.<span class="hljs-title class_">Request</span>({
+        <span class="hljs-attr">url</span>: api.<span class="hljs-property">reductionBlog</span>,
+        <span class="hljs-attr">params</span>: {
+          <span class="hljs-attr">blogId</span>: data.<span class="hljs-property">blogId</span>,
+        },
+      });
+      <span class="hljs-keyword">if</span> (!result) {
+        <span class="hljs-keyword">return</span>;
+      }
+      proxy.<span class="hljs-property">Message</span>.<span class="hljs-title function_">success</span>(<span class="hljs-string">&quot;恢复成功&quot;</span>);
+      <span class="hljs-title function_">loadDataList</span>();
+    }
+  );
+};
+&lt;/script&gt;
+
+</code></pre>
+</div></div></div>
+                </div>
+            </div>
+                <div class="container-comment">
+                    <div class="comment-title">评论</div>
+                    <div id="SOHUCS" sid="wRTzeGZyls"></div>
+                    <script charset="utf-8" type="text/javascript" src="https://cy-cdn.kuaizhan.com/upload/changyan.js"></script>
+                    <script type="text/javascript">
+                        window.changyan.api.config({
+                            appid: "cyvP1EXdR",
+                            conf: '0264664c4b9d1fb578d732b34abf3246'
+                        });
+                    </script>
+                </div>
+            <div id="right-container">
+                <div class="toc-title" id="toc-title">目录<span class="icon-arrow arrow-down"></span></div>
+                <div id="toc" class="toc"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+        <div class="footer">
+            <div>
+                <span>©2021-2022 www.wuhancoder.com All rights reserved. </span>
+                <a target="_blank" href="https://beian.miit.gov.cn/">鄂ICP备13017512号-3</a></div>
+            <div>
+                <img src="../resource/static/beian.png">
+                <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=42011502000890">
+                    鄂公网安备 42011502000890号
+                </a></div>
+        </div>
+    <script>
+        var _hmt = _hmt || [];
+        (function () {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?63b3f00d92dbfecbe9376c26282c2599";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+</body>
+</html>

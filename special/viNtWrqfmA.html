@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>EasyBlog文档 - 博客成员 - 我是程序员</title>
+        <meta name="keywords" content="博客成员">
+        <meta name="description" content="这一节主要是博客成员，增加账号一起来维护这个博客系统主要代码TeamUser.vuetemplate&lt;template&gt;&lt;div&gt;&lt;el-form:model=&quot;searchFormData&quot;&gt;&lt;el-row&gt;&lt;el-col:span=&quot;4&quot;&gt;&lt;el-form-itemlabel=&quot;昵称&quot;prop=&quot;nickName&quot;label-width=&quot;50px&quot;&gt;&lt;el-inputplaceholder=&quot;请输入昵称">
+
+    <link rel="stylesheet" href="../resource/static/plugin/highlight/styles/github.min.css">
+    <link rel="stylesheet" href="../resource/static/plugin/viewer/viewer.min.css">
+    <script src="../resource/static/plugin/highlight/highlight.min.js"></script>
+    <script src="../resource/static/plugin/jquery/jquery.min.js"></script>
+    <script src="../resource/static/plugin/viewer/viewer-jquery.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <link rel="stylesheet" href="../resource/static/css/special.detail.css">
+    <script>
+        $(document).ready(function (e) {
+            createToc();
+            $("#content").viewer({
+                navbar: false
+            });
+
+            $("#content a").each(function (index, element) {
+                $(element).attr("target", "_blank");
+            })
+
+            $(".icon-arrow").click(function () {
+                let nextLiDom = $(this).parent().next("div").eq(0)
+                if ($(this).hasClass("arrow-down")) {
+                    $(this).removeClass("arrow-down");
+                    $(this).addClass("arrow-right");
+                    nextLiDom.hide();
+                } else {
+                    $(this).removeClass("arrow-right");
+                    $(this).addClass("arrow-down");
+                    nextLiDom.show();
+                }
+            });
+
+            //目录展开收齐
+            $("#toc-title").click(function () {
+                let spanDom = $(this).find(".icon-arrow")
+                if (spanDom.hasClass("arrow-down")) {
+                    spanDom.removeClass("arrow-down");
+                    spanDom.addClass("arrow-right");
+                    $("#toc").hide();
+                } else {
+                    spanDom.removeClass("arrow-right");
+                    spanDom.addClass("arrow-down");
+                    $("#toc").show();
+                }
+            });
+
+            let currentUrl = document.location.href;
+            currentUrl = currentUrl.substring(currentUrl.lastIndexOf("/") + 1, currentUrl.lastIndexOf("."));
+            $("#" + currentUrl).addClass("active");
+        });
+
+        const createToc = () => {
+            const hTagList = ["h1", "h2", "h3", "h4", "h5", "h6", "h7"]
+            const children = document.querySelector("#content").children;
+            const hList = [];
+            for (let i = 0; i < children.length; i++) {
+                const node = children[i];
+                let tagName = node.tagName;
+                tagName = tagName == undefined ? "" : tagName.toLowerCase();
+                if (hTagList.indexOf(tagName) != -1) {
+                    const id = "hash-node-" + i;
+                    node.setAttribute("id", id);
+                    hList.push({
+                        pId: "0",
+                        id: id,
+                        level: Number.parseInt(tagName.substring(1, 2)),
+                        name: node.innerText,
+                    });
+                }
+            }
+            for (let i = 0; i < hList.length; i++) {
+                findParentId(hList, hList[i], i);
+            }
+            const newDataList = convertLine2Tree(hList, "0");
+            if (newDataList.length == 0) {
+                $("<div class='no-data'>暂无目录信息</div>").appendTo($("#toc"));
+                return;
+            }
+            newDataList.forEach(element => {
+                createTree($("#toc"), element);
+            })
+        }
+
+        const createTree = (pNode, data) => {
+            const currentNode = $("<div></div>").appendTo(pNode);
+            let extPadding = 26;
+            if (data.children.length > 0) {
+                extPadding = 10
+            }
+            const paddingLeft = (data.level - 1) * 16 + extPadding;
+            const titleNode = $("<div class='title' style='padding-left:" + paddingLeft + "px'></div>").appendTo(currentNode);
+            if (data.children.length > 0) {
+                $("<span class='icon-arrow arrow-down'></span>").appendTo(titleNode);
+            }
+            $("<a href='#" + data.id + "'  title='" + data.name + "'>" + data.name + "</a>").appendTo(titleNode);
+
+            if (data.children.length > 0) {
+                let subNode = $("<div class='sub-title'></div>").appendTo(currentNode);
+                data.children.forEach(item => {
+                    createTree(subNode, item);
+                })
+            }
+        }
+
+        //查找父级节点
+        const findParentId = (hList, item, index) => {
+            for (let i = index - 1; i >= 0; i--) {
+                const pNode = hList[i];
+                if (pNode.level < item.level) {
+                    item.pId = pNode.id;
+                    break;
+                }
+            }
+        }
+
+        //将数据转换为树形
+        const convertLine2Tree = (hList, pId) => {
+            const children = [];
+            hList.forEach(element => {
+                if (element.pId === pId) {
+                    children.push(element);
+                    element.children = convertLine2Tree(hList, element.id);
+                }
+            });
+            return children;
+        }
+
+        $(window).scroll(function () {
+            //console.log($(document).scrollTop());
+            $("#right-container").css("top", $(document).scrollTop() + "px");
+        });
+
+        function scroll(markId) {
+            let url = document.location.href;
+            if (url.indexOf("#") == -1) {
+                document.location.href = url + "#" + markId;
+            } else {
+                document.location.href = url.substring(0, url.indexOf("#") + 1) + markId;
+            }
+            $("html,body").animate({scrollTop: $("#" + markId).offset().top - 80}, 100);
+        }
+    </script>
+</head>
+<body>
+    <div class="top">
+        <div class="top-container">
+            <div class="logo">
+                    <a href="../index.html">我是程序员</a>
+            </div>
+                <a href="../index.html" class="nav ">博客</a>
+                <a href="../category.html" class="nav ">分类专栏</a>
+                <a href="../special.html" class="nav active">专题</a>
+                <a href="../user.html" class="nav ">成员</a>
+                <a href="../comment.html" class="nav ">留言板</a>
+        </div>
+    </div>
+<div class="body-container">
+    <div class="blog-detail">
+        <div class="blog-special-list">
+            <div class="blog-special">
+                <div class="category-image">
+                        <img src="../resource/image/202209/qmHjiTxzjtapHaOojwciCzTlqCPFWs.jpg">
+                </div>
+                <div class="category-info">
+                    <div class="category-title" title="EasyBlog文档">EasyBlog文档</div>
+                    <div class="blog-count">文章数：23</div>
+                </div>
+            </div>
+            <div class="category-desc" title="EasyBlog 相关文档，接口，环境搭建">简介：EasyBlog 相关文档，接口，环境搭建</div>
+            <div class="blog-list toc">
+        <div>
+            <div class="title" style="padding-left:10px" id="gTvGKLsNNZ">
+                    <span class="icon-arrow arrow-down"></span>
+                <a href="gTvGKLsNNZ.html" title="后端服务部署">后端服务部署</a>
+            </div>
+                <div class="sub-title">
+        <div>
+            <div class="title" style="padding-left:42px" id="vbbStsCMXs">
+                <a href="vbbStsCMXs.html" title="安装后端程序">安装后端程序</a>
+            </div>
+        </div>
+                </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:10px" id="azvNIIFQCy">
+                    <span class="icon-arrow arrow-down"></span>
+                <a href="azvNIIFQCy.html" title="接口文档">接口文档</a>
+            </div>
+                <div class="sub-title">
+        <div>
+            <div class="title" style="padding-left:42px" id="cqzKWftzyr">
+                <a href="cqzKWftzyr.html" title="管理端">管理端</a>
+            </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:42px" id="wBURpKFtiT">
+                <a href="wBURpKFtiT.html" title="web端">web端</a>
+            </div>
+        </div>
+                </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:26px" id="DEdkCxjkqy">
+                <a href="DEdkCxjkqy.html" title="简介">简介</a>
+            </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:10px" id="rTZtGSfpKO">
+                    <span class="icon-arrow arrow-down"></span>
+                <a href="rTZtGSfpKO.html" title="管理端">管理端</a>
+            </div>
+                <div class="sub-title">
+        <div>
+            <div class="title" style="padding-left:42px" id="ReLhoidFfc">
+                <a href="ReLhoidFfc.html" title="前端项目构建">前端项目构建</a>
+            </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:42px" id="yZiEkYlOaT">
+                <a href="yZiEkYlOaT.html" title="登录">登录</a>
+            </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:42px" id="QYdGDDRMGU">
+                <a href="QYdGDDRMGU.html" title="博客分类">博客分类</a>
+            </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:26px" id="uWueRbkwnp">
+                    <span class="icon-arrow arrow-down"></span>
+                <a href="uWueRbkwnp.html" title="博客管理">博客管理</a>
+            </div>
+                <div class="sub-title">
+        <div>
+            <div class="title" style="padding-left:58px" id="IgizsOFvBL">
+                <a href="IgizsOFvBL.html" title="博客列表">博客列表</a>
+            </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:58px" id="bFvFteyYlx">
+                <a href="bFvFteyYlx.html" title="新增、修改博客">新增、修改博客</a>
+            </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:58px" id="bLIAnUNUdx">
+                <a href="bLIAnUNUdx.html" title="博客详情">博客详情</a>
+            </div>
+        </div>
+                </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:26px" id="LdgbxmwFeg">
+                    <span class="icon-arrow arrow-down"></span>
+                <a href="LdgbxmwFeg.html" title="专题管理">专题管理</a>
+            </div>
+                <div class="sub-title">
+        <div>
+            <div class="title" style="padding-left:58px" id="BkQtkMEqYv">
+                <a href="BkQtkMEqYv.html" title="专题列表">专题列表</a>
+            </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:58px" id="hwjDGsEGxu">
+                <a href="hwjDGsEGxu.html" title="专题文章管理">专题文章管理</a>
+            </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:58px" id="zkAAjqsOgD">
+                <a href="zkAAjqsOgD.html" title="专题文章详情">专题文章详情</a>
+            </div>
+        </div>
+                </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:26px" id="rbnEacItvQ">
+                    <span class="icon-arrow arrow-down"></span>
+                <a href="rbnEacItvQ.html" title="设置">设置</a>
+            </div>
+                <div class="sub-title">
+        <div>
+            <div class="title" style="padding-left:58px" id="VHuGhkzHgc">
+                <a href="VHuGhkzHgc.html" title="个人信息设置">个人信息设置</a>
+            </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:58px" id="viNtWrqfmA">
+                <a href="viNtWrqfmA.html" title="博客成员">博客成员</a>
+            </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:58px" id="DPaRkrTvOD">
+                <a href="DPaRkrTvOD.html" title="系统设置">系统设置</a>
+            </div>
+        </div>
+                </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:42px" id="wRTzeGZyls">
+                <a href="wRTzeGZyls.html" title="回收站">回收站</a>
+            </div>
+        </div>
+                </div>
+        </div>
+            </div>
+
+        </div>
+        <div class="container">
+            <div class="container-content">
+                <div>
+                    <div class="blog-title">博客成员</div>
+                    <div class="blog-info">
+                        <div class="time">2022-10-25 04:15:33</div>
+                        <div class="nick-name">作者：<a href="../user.html#100000">程序员老罗</a></div>
+                    </div>
+                    <div class="content" id="content"><p data-v-md-line="1">这一节主要是博客成员，增加账号一起来维护这个博客系统</p>
+<h1 data-v-md-heading="主要代码" data-v-md-line="2">主要代码</h1>
+<p data-v-md-line="3">TeamUser.vue</p>
+<h2 data-v-md-heading="template" data-v-md-line="4">template</h2>
+<div data-v-md-line="5"><div class="v-md-pre-wrapper v-md-pre-wrapper-html extra-class"><pre class="v-md-hljs-html"><code><span class="hljs-tag">&lt;<span class="hljs-name">template</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">el-form</span> <span class="hljs-attr">:model</span>=<span class="hljs-string">&quot;searchFormData&quot;</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">el-row</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">el-col</span> <span class="hljs-attr">:span</span>=<span class="hljs-string">&quot;4&quot;</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">el-form-item</span> <span class="hljs-attr">label</span>=<span class="hljs-string">&quot;昵称&quot;</span>
+                        <span class="hljs-attr">prop</span>=<span class="hljs-string">&quot;nickName&quot;</span>
+                        <span class="hljs-attr">label-width</span>=<span class="hljs-string">&quot;50px&quot;</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">el-input</span> <span class="hljs-attr">placeholder</span>=<span class="hljs-string">&quot;请输入昵称&quot;</span>
+                      <span class="hljs-attr">v-model</span>=<span class="hljs-string">&quot;searchFormData.nickNameFuzzy&quot;</span>
+                      <span class="hljs-attr">clearable</span>
+                      @<span class="hljs-attr">keyup.enter.native</span>=<span class="hljs-string">&quot;loadDataList&quot;</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">el-input</span>&gt;</span>
+          <span class="hljs-tag">&lt;/<span class="hljs-name">el-form-item</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">el-col</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">el-col</span> <span class="hljs-attr">:span</span>=<span class="hljs-string">&quot;4&quot;</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">el-form-item</span> <span class="hljs-attr">label</span>=<span class="hljs-string">&quot;手机号&quot;</span>
+                        <span class="hljs-attr">prop</span>=<span class="hljs-string">&quot;phone&quot;</span>
+                        <span class="hljs-attr">label-width</span>=<span class="hljs-string">&quot;80px&quot;</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">el-input</span> <span class="hljs-attr">placeholder</span>=<span class="hljs-string">&quot;请输入手机号&quot;</span>
+                      <span class="hljs-attr">v-model</span>=<span class="hljs-string">&quot;searchFormData.phoneFuzzy&quot;</span>
+                      <span class="hljs-attr">clearable</span>
+                      @<span class="hljs-attr">keyup.enter.native</span>=<span class="hljs-string">&quot;loadDataList&quot;</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">el-input</span>&gt;</span>
+          <span class="hljs-tag">&lt;/<span class="hljs-name">el-form-item</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">el-col</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">el-col</span> <span class="hljs-attr">:span</span>=<span class="hljs-string">&quot;5&quot;</span>
+                <span class="hljs-attr">:style</span>=<span class="hljs-string">&quot;{&#x27;padding-left&#x27;:&#x27;10px&#x27;}&quot;</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">el-button</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;danger&quot;</span>
+                     @<span class="hljs-attr">click</span>=<span class="hljs-string">&quot;loadDataList&quot;</span>&gt;</span>搜索<span class="hljs-tag">&lt;/<span class="hljs-name">el-button</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">el-button</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;danger&quot;</span>
+                     @<span class="hljs-attr">click</span>=<span class="hljs-string">&quot;showEdit(&#x27;add&#x27;)&quot;</span>
+                     <span class="hljs-attr">v-if</span>=<span class="hljs-string">&quot;userInfo.roleType==1&quot;</span>&gt;</span>新增成员<span class="hljs-tag">&lt;/<span class="hljs-name">el-button</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">el-col</span>&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-name">el-row</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">el-form</span>&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">Table</span> <span class="hljs-attr">:columns</span>=<span class="hljs-string">&quot;columns&quot;</span>
+           <span class="hljs-attr">:showPagination</span>=<span class="hljs-string">&quot;true&quot;</span>
+           <span class="hljs-attr">:dataSource</span>=<span class="hljs-string">&quot;tableData&quot;</span>
+           <span class="hljs-attr">:fetch</span>=<span class="hljs-string">&quot;loadDataList&quot;</span>
+           <span class="hljs-attr">:options</span>=<span class="hljs-string">&quot;tableOptions&quot;</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">template</span> #<span class="hljs-attr">avatar</span>=<span class="hljs-string">&quot;{ index, row }&quot;</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">Cover</span> <span class="hljs-attr">:cover</span>=<span class="hljs-string">&quot;row.avatar&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">Cover</span>&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+
+      <span class="hljs-tag">&lt;<span class="hljs-name">template</span> #<span class="hljs-attr">userInfo</span>=<span class="hljs-string">&quot;{ index, row }&quot;</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>昵<span class="hljs-symbol">&amp;nbsp;</span><span class="hljs-symbol">&amp;nbsp;</span><span class="hljs-symbol">&amp;nbsp;</span><span class="hljs-symbol">&amp;nbsp;</span>称：{{ row.nickName }}<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>手机号：{{ row.phone }}<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>职<span class="hljs-symbol">&amp;nbsp;</span><span class="hljs-symbol">&amp;nbsp;</span><span class="hljs-symbol">&amp;nbsp;</span><span class="hljs-symbol">&amp;nbsp;</span>业：{{ row.profession }}<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+
+      <span class="hljs-tag">&lt;<span class="hljs-name">template</span> #<span class="hljs-attr">roleInfo</span>=<span class="hljs-string">&quot;{ index, row }&quot;</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>{{ row.roleTypeName }}<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+
+      <span class="hljs-tag">&lt;<span class="hljs-name">template</span> #<span class="hljs-attr">statusInfo</span>=<span class="hljs-string">&quot;{ index, row }&quot;</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">:style</span>=<span class="hljs-string">&quot;{ color: row.status == 1 ? &#x27;green&#x27; : &#x27;red&#x27; }&quot;</span>&gt;</span>{{
+            row.statusName
+          }}<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+
+      <span class="hljs-tag">&lt;<span class="hljs-name">template</span> #<span class="hljs-attr">timeInfo</span>=<span class="hljs-string">&quot;{ index, row }&quot;</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>创建时间：{{ row.createTime }}<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>最后登录时间：{{ row.lastLoginTime }}<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+
+      <span class="hljs-tag">&lt;<span class="hljs-name">template</span> #<span class="hljs-attr">operation</span>=<span class="hljs-string">&quot;{ index, row }&quot;</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">v-if</span>=<span class="hljs-string">&quot;userInfo.roleType == 1&quot;</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;javascript:void(0)&quot;</span>
+             @<span class="hljs-attr">click</span>=<span class="hljs-string">&quot;showEdit(&#x27;edit&#x27;, row)&quot;</span>
+             <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;a-link&quot;</span>&gt;</span>修改<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">el-divider</span> <span class="hljs-attr">direction</span>=<span class="hljs-string">&quot;vertical&quot;</span> /&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;javascript:void(0)&quot;</span>
+             <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;a-link&quot;</span>
+             @<span class="hljs-attr">click</span>=<span class="hljs-string">&quot;changeAccountStatus(row)&quot;</span>&gt;</span>
+            {{ row.status == 0 ? &quot;启用&quot; : &quot;禁用&quot; }}
+          <span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">el-divider</span> <span class="hljs-attr">direction</span>=<span class="hljs-string">&quot;vertical&quot;</span> /&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;javascript:void(0)&quot;</span>
+             <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;a-link&quot;</span>
+             @<span class="hljs-attr">click</span>=<span class="hljs-string">&quot;showUpdatePassword(row.userId)&quot;</span>&gt;</span>修改密码<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">el-divider</span> <span class="hljs-attr">direction</span>=<span class="hljs-string">&quot;vertical&quot;</span> /&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;javascript:void(0)&quot;</span>
+             <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;a-link&quot;</span>
+             @<span class="hljs-attr">click</span>=<span class="hljs-string">&quot;delUser(row)&quot;</span>&gt;</span>删除<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">v-else</span>&gt;</span>--<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">Table</span>&gt;</span>
+
+    <span class="hljs-comment">&lt;!--新增成员弹窗--&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Dialog</span> <span class="hljs-attr">:show</span>=<span class="hljs-string">&quot;editDialogInfo.show&quot;</span>
+            <span class="hljs-attr">:title</span>=<span class="hljs-string">&quot;editDialogInfo.title&quot;</span>
+            <span class="hljs-attr">:buttons</span>=<span class="hljs-string">&quot;editDialogInfo.buttons&quot;</span>
+            <span class="hljs-attr">:width</span>=<span class="hljs-string">&quot;&#x27;50%&#x27;&quot;</span>
+            @<span class="hljs-attr">close</span>=<span class="hljs-string">&quot;editDialogInfo.show = false&quot;</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">el-form</span> <span class="hljs-attr">ref</span>=<span class="hljs-string">&quot;editFormRef&quot;</span>
+               <span class="hljs-attr">:model</span>=<span class="hljs-string">&quot;formData&quot;</span>
+               <span class="hljs-attr">:rules</span>=<span class="hljs-string">&quot;rules&quot;</span>
+               <span class="hljs-attr">label-width</span>=<span class="hljs-string">&quot;110px&quot;</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">el-row</span> <span class="hljs-attr">:gutter</span>=<span class="hljs-string">&quot;10&quot;</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">el-col</span> <span class="hljs-attr">:span</span>=<span class="hljs-string">&quot;12&quot;</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">el-form-item</span> <span class="hljs-attr">label</span>=<span class="hljs-string">&quot;昵称&quot;</span>
+                          <span class="hljs-attr">prop</span>=<span class="hljs-string">&quot;nickName&quot;</span>&gt;</span>
+              <span class="hljs-tag">&lt;<span class="hljs-name">el-input</span> <span class="hljs-attr">:maxLength</span>=<span class="hljs-string">&quot;30&quot;</span>
+                        <span class="hljs-attr">v-model</span>=<span class="hljs-string">&quot;formData.nickName&quot;</span> /&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">el-form-item</span>&gt;</span>
+          <span class="hljs-tag">&lt;/<span class="hljs-name">el-col</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">el-col</span> <span class="hljs-attr">:span</span>=<span class="hljs-string">&quot;12&quot;</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">el-form-item</span> <span class="hljs-attr">label</span>=<span class="hljs-string">&quot;手机号&quot;</span>
+                          <span class="hljs-attr">prop</span>=<span class="hljs-string">&quot;phone&quot;</span>&gt;</span>
+              <span class="hljs-tag">&lt;<span class="hljs-name">el-input</span> <span class="hljs-attr">:maxLength</span>=<span class="hljs-string">&quot;11&quot;</span>
+                        <span class="hljs-attr">v-model</span>=<span class="hljs-string">&quot;formData.phone&quot;</span> /&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">el-form-item</span>&gt;</span>
+          <span class="hljs-tag">&lt;/<span class="hljs-name">el-col</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">el-row</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">el-row</span> <span class="hljs-attr">:gutter</span>=<span class="hljs-string">&quot;10&quot;</span>
+                <span class="hljs-attr">v-if</span>=<span class="hljs-string">&quot;formData.userId == null&quot;</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">el-col</span> <span class="hljs-attr">:span</span>=<span class="hljs-string">&quot;12&quot;</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">el-form-item</span> <span class="hljs-attr">label</span>=<span class="hljs-string">&quot;密码&quot;</span>
+                          <span class="hljs-attr">prop</span>=<span class="hljs-string">&quot;password&quot;</span>&gt;</span>
+              <span class="hljs-tag">&lt;<span class="hljs-name">el-input</span> <span class="hljs-attr">v-model</span>=<span class="hljs-string">&quot;formData.password&quot;</span>
+                        <span class="hljs-attr">:maxLength</span>=<span class="hljs-string">&quot;20&quot;</span>
+                        <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;password&quot;</span> /&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">el-form-item</span>&gt;</span>
+          <span class="hljs-tag">&lt;/<span class="hljs-name">el-col</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">el-col</span> <span class="hljs-attr">:span</span>=<span class="hljs-string">&quot;12&quot;</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">el-form-item</span> <span class="hljs-attr">label</span>=<span class="hljs-string">&quot;再次输入密码&quot;</span>
+                          <span class="hljs-attr">prop</span>=<span class="hljs-string">&quot;rePassword&quot;</span>&gt;</span>
+              <span class="hljs-tag">&lt;<span class="hljs-name">el-input</span> <span class="hljs-attr">v-model</span>=<span class="hljs-string">&quot;formData.rePassword&quot;</span>
+                        <span class="hljs-attr">:maxLength</span>=<span class="hljs-string">&quot;20&quot;</span>
+                        <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;password&quot;</span> /&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">el-form-item</span>&gt;</span>
+          <span class="hljs-tag">&lt;/<span class="hljs-name">el-col</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">el-row</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">el-row</span> <span class="hljs-attr">:gutter</span>=<span class="hljs-string">&quot;10&quot;</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">el-col</span> <span class="hljs-attr">:span</span>=<span class="hljs-string">&quot;12&quot;</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">el-form-item</span> <span class="hljs-attr">label</span>=<span class="hljs-string">&quot;默认编辑器&quot;</span>
+                          <span class="hljs-attr">prop</span>=<span class="hljs-string">&quot;editorType&quot;</span>&gt;</span>
+              <span class="hljs-tag">&lt;<span class="hljs-name">el-radio-group</span> <span class="hljs-attr">v-model</span>=<span class="hljs-string">&quot;formData.editorType&quot;</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">el-radio</span> <span class="hljs-attr">:label</span>=<span class="hljs-string">&quot;1&quot;</span>&gt;</span>Markdown编辑器<span class="hljs-tag">&lt;/<span class="hljs-name">el-radio</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">el-radio</span> <span class="hljs-attr">:label</span>=<span class="hljs-string">&quot;0&quot;</span>&gt;</span>富文本编辑器<span class="hljs-tag">&lt;/<span class="hljs-name">el-radio</span>&gt;</span>
+              <span class="hljs-tag">&lt;/<span class="hljs-name">el-radio-group</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">el-form-item</span>&gt;</span>
+          <span class="hljs-tag">&lt;/<span class="hljs-name">el-col</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">el-col</span> <span class="hljs-attr">:span</span>=<span class="hljs-string">&quot;12&quot;</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">el-form-item</span> <span class="hljs-attr">label</span>=<span class="hljs-string">&quot;职业&quot;</span>
+                          <span class="hljs-attr">prop</span>=<span class="hljs-string">&quot;profession&quot;</span>&gt;</span>
+              <span class="hljs-tag">&lt;<span class="hljs-name">el-input</span> <span class="hljs-attr">v-model</span>=<span class="hljs-string">&quot;formData.profession&quot;</span> /&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">el-form-item</span>&gt;</span>
+          <span class="hljs-tag">&lt;/<span class="hljs-name">el-col</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">el-row</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">el-row</span> <span class="hljs-attr">:gutter</span>=<span class="hljs-string">&quot;10&quot;</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">el-col</span> <span class="hljs-attr">:span</span>=<span class="hljs-string">&quot;24&quot;</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">el-form-item</span> <span class="hljs-attr">label</span>=<span class="hljs-string">&quot;头像&quot;</span>
+                          <span class="hljs-attr">prop</span>=<span class="hljs-string">&quot;avatar&quot;</span>&gt;</span>
+              <span class="hljs-tag">&lt;<span class="hljs-name">cover-upload</span> <span class="hljs-attr">v-model</span>=<span class="hljs-string">&quot;formData.avatar&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">cover-upload</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">el-form-item</span>&gt;</span>
+          <span class="hljs-tag">&lt;/<span class="hljs-name">el-col</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">el-row</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">el-row</span> <span class="hljs-attr">:gutter</span>=<span class="hljs-string">&quot;10&quot;</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">el-col</span> <span class="hljs-attr">:span</span>=<span class="hljs-string">&quot;24&quot;</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">el-form-item</span> <span class="hljs-attr">label</span>=<span class="hljs-string">&quot;简介&quot;</span>
+                          <span class="hljs-attr">prop</span>=<span class="hljs-string">&quot;introduction&quot;</span>&gt;</span>
+              <span class="hljs-tag">&lt;<span class="hljs-name">editor-html</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;introduction&quot;</span>
+                           <span class="hljs-attr">ref</span>=<span class="hljs-string">&quot;introduction&quot;</span>
+                           <span class="hljs-attr">:height</span>=<span class="hljs-string">&quot;300&quot;</span>
+                           <span class="hljs-attr">v-model</span>=<span class="hljs-string">&quot;formData.introduction&quot;</span>&gt;</span>
+              <span class="hljs-tag">&lt;/<span class="hljs-name">editor-html</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">el-form-item</span>&gt;</span>
+          <span class="hljs-tag">&lt;/<span class="hljs-name">el-col</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">el-row</span>&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-name">el-form</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">Dialog</span>&gt;</span>
+
+    <span class="hljs-comment">&lt;!--修改密码--&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Dialog</span> <span class="hljs-attr">:show</span>=<span class="hljs-string">&quot;dialogConfig.show&quot;</span>
+            <span class="hljs-attr">:title</span>=<span class="hljs-string">&quot;dialogConfig.title&quot;</span>
+            <span class="hljs-attr">:buttons</span>=<span class="hljs-string">&quot;dialogConfig.buttons&quot;</span>
+            <span class="hljs-attr">width</span>=<span class="hljs-string">&quot;400px&quot;</span>
+            @<span class="hljs-attr">close</span>=<span class="hljs-string">&quot;dialogConfig.show=false&quot;</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">el-form</span> <span class="hljs-attr">:model</span>=<span class="hljs-string">&quot;formData&quot;</span>
+               <span class="hljs-attr">:rules</span>=<span class="hljs-string">&quot;rules&quot;</span>
+               <span class="hljs-attr">ref</span>=<span class="hljs-string">&quot;passwordFormRef&quot;</span>
+               <span class="hljs-attr">label-width</span>=<span class="hljs-string">&quot;80px&quot;</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">el-form-item</span> <span class="hljs-attr">label</span>=<span class="hljs-string">&quot;密码&quot;</span>
+                      <span class="hljs-attr">prop</span>=<span class="hljs-string">&quot;password&quot;</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">el-input</span> <span class="hljs-attr">placeholder</span>=<span class="hljs-string">&quot;请输入密码&quot;</span>
+                    <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;password&quot;</span>
+                    <span class="hljs-attr">v-model</span>=<span class="hljs-string">&quot;formData.password&quot;</span>&gt;</span>
+          <span class="hljs-tag">&lt;/<span class="hljs-name">el-input</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">el-form-item</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">el-form-item</span> <span class="hljs-attr">label</span>=<span class="hljs-string">&quot;重复密码&quot;</span>
+                      <span class="hljs-attr">prop</span>=<span class="hljs-string">&quot;rePassword&quot;</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">el-input</span> <span class="hljs-attr">placeholder</span>=<span class="hljs-string">&quot;请再次输入密码&quot;</span>
+                    <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;password&quot;</span>
+                    <span class="hljs-attr">v-model</span>=<span class="hljs-string">&quot;formData.rePassword&quot;</span>&gt;</span>
+          <span class="hljs-tag">&lt;/<span class="hljs-name">el-input</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">el-form-item</span>&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-name">el-form</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">Dialog</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+
+</code></pre>
+</div></div><h2 data-v-md-heading="js" data-v-md-line="214">js</h2>
+<div data-v-md-line="215"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code>&lt;script setup&gt;
+<span class="hljs-keyword">import</span> { getCurrentInstance, reactive, ref, nextTick } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;vue&quot;</span>;
+<span class="hljs-keyword">const</span> { proxy } = <span class="hljs-title function_">getCurrentInstance</span>();
+<span class="hljs-keyword">const</span> api = {
+  <span class="hljs-string">&quot;loadDataList&quot;</span>: <span class="hljs-string">&quot;setting/loadUser&quot;</span>,
+  <span class="hljs-string">&quot;saveTeamUser&quot;</span>: <span class="hljs-string">&quot;setting/saveTeamUser&quot;</span>,
+  <span class="hljs-string">&quot;updateStatus&quot;</span>: <span class="hljs-string">&quot;setting/updateStatus&quot;</span>,
+  <span class="hljs-string">&quot;delUser&quot;</span>: <span class="hljs-string">&quot;setting/delUser&quot;</span>,
+  <span class="hljs-string">&quot;updatePassword&quot;</span>: <span class="hljs-string">&quot;setting/updatePassword&quot;</span>
+}
+
+<span class="hljs-keyword">const</span> userInfo = <span class="hljs-title function_">ref</span>(proxy.<span class="hljs-property">VueCookies</span>.<span class="hljs-title function_">get</span>(<span class="hljs-string">&quot;userInfo&quot;</span>) || {});
+
+<span class="hljs-keyword">const</span> searchFormData = <span class="hljs-title function_">reactive</span>({});
+<span class="hljs-comment">//列表</span>
+<span class="hljs-keyword">const</span> columns = [{
+  <span class="hljs-attr">label</span>: <span class="hljs-string">&quot;头像&quot;</span>,
+  <span class="hljs-attr">prop</span>: <span class="hljs-string">&quot;avatar&quot;</span>,
+  <span class="hljs-attr">width</span>: <span class="hljs-number">80</span>,
+  <span class="hljs-attr">scopedSlots</span>: <span class="hljs-string">&quot;avatar&quot;</span>,
+},
+{
+  <span class="hljs-attr">label</span>: <span class="hljs-string">&quot;用户信息&quot;</span>,
+  <span class="hljs-attr">prop</span>: <span class="hljs-string">&quot;nickName&quot;</span>,
+  <span class="hljs-attr">scopedSlots</span>: <span class="hljs-string">&quot;userInfo&quot;</span>,
+},
+{
+  <span class="hljs-attr">label</span>: <span class="hljs-string">&quot;默认编辑器&quot;</span>,
+  <span class="hljs-attr">prop</span>: <span class="hljs-string">&quot;editorTypeName&quot;</span>,
+  <span class="hljs-attr">width</span>: <span class="hljs-number">150</span>,
+},
+{
+  <span class="hljs-attr">label</span>: <span class="hljs-string">&quot;角色&quot;</span>,
+  <span class="hljs-attr">prop</span>: <span class="hljs-string">&quot;roleTypeName&quot;</span>,
+  <span class="hljs-attr">scopedSlots</span>: <span class="hljs-string">&quot;roleInfo&quot;</span>,
+  <span class="hljs-attr">width</span>: <span class="hljs-number">150</span>,
+},
+{
+  <span class="hljs-attr">label</span>: <span class="hljs-string">&quot;状态&quot;</span>,
+  <span class="hljs-attr">prop</span>: <span class="hljs-string">&quot;statusInfo&quot;</span>,
+  <span class="hljs-attr">scopedSlots</span>: <span class="hljs-string">&quot;statusInfo&quot;</span>,
+  <span class="hljs-attr">width</span>: <span class="hljs-number">150</span>,
+},
+{
+  <span class="hljs-attr">label</span>: <span class="hljs-string">&quot;时间&quot;</span>,
+  <span class="hljs-attr">prop</span>: <span class="hljs-string">&quot;createTime&quot;</span>,
+  <span class="hljs-attr">scopedSlots</span>: <span class="hljs-string">&quot;timeInfo&quot;</span>,
+  <span class="hljs-attr">width</span>: <span class="hljs-number">300</span>,
+},
+{
+  <span class="hljs-attr">label</span>: <span class="hljs-string">&quot;操作&quot;</span>,
+  <span class="hljs-attr">prop</span>: <span class="hljs-string">&quot;operation&quot;</span>,
+  <span class="hljs-attr">width</span>: <span class="hljs-number">250</span>,
+  <span class="hljs-attr">scopedSlots</span>: <span class="hljs-string">&quot;operation&quot;</span>,
+}]
+
+<span class="hljs-keyword">const</span> tableData = <span class="hljs-title function_">ref</span>({})
+<span class="hljs-keyword">const</span> tableOptions = {
+  <span class="hljs-attr">extHeight</span>: <span class="hljs-number">50</span>,
+}
+
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">loadDataList</span> = <span class="hljs-keyword">async</span> (<span class="hljs-params"></span>) =&gt; {
+  <span class="hljs-keyword">let</span> params = {
+    <span class="hljs-attr">pageNo</span>: tableData.<span class="hljs-property">value</span>.<span class="hljs-property">pageNo</span>,
+    <span class="hljs-attr">pageSize</span>: tableData.<span class="hljs-property">value</span>.<span class="hljs-property">pageSize</span>,
+  }
+  <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">assign</span>(params, searchFormData);
+  <span class="hljs-keyword">let</span> result = <span class="hljs-keyword">await</span> proxy.<span class="hljs-title class_">Request</span>({
+    <span class="hljs-attr">url</span>: api.<span class="hljs-property">loadDataList</span>,
+    params
+  })
+  <span class="hljs-keyword">if</span> (!result) {
+    <span class="hljs-keyword">return</span>
+  }
+  tableData.<span class="hljs-property">value</span> = result.<span class="hljs-property">data</span>;
+}
+
+<span class="hljs-comment">//新增用户</span>
+
+
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">validateRePass</span> = (<span class="hljs-params">rule, value, callback</span>) =&gt; {
+  <span class="hljs-keyword">if</span> (value !== formData.<span class="hljs-property">value</span>.<span class="hljs-property">password</span>) {
+    <span class="hljs-title function_">callback</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(rule.<span class="hljs-property">message</span>));
+  } <span class="hljs-keyword">else</span> {
+    <span class="hljs-title function_">callback</span>();
+  }
+};
+<span class="hljs-keyword">const</span> rules = {
+  <span class="hljs-attr">nickName</span>: [{ <span class="hljs-attr">required</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">message</span>: <span class="hljs-string">&quot;昵称不能为空&quot;</span> }],
+  <span class="hljs-attr">editorType</span>: [{ <span class="hljs-attr">required</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">message</span>: <span class="hljs-string">&quot;请选择默认编辑器&quot;</span> }],
+  <span class="hljs-attr">password</span>: [
+    { <span class="hljs-attr">required</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">message</span>: <span class="hljs-string">&quot;请输入密码&quot;</span> },
+    {
+      <span class="hljs-attr">validator</span>: proxy.<span class="hljs-property">Verify</span>.<span class="hljs-property">password</span>,
+      <span class="hljs-attr">message</span>: <span class="hljs-string">&quot;密码最少8位，只能数字字母和特殊字符&quot;</span>,
+    },
+  ],
+  <span class="hljs-attr">rePassword</span>: [
+    { <span class="hljs-attr">required</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">message</span>: <span class="hljs-string">&quot;请再次输入密码&quot;</span> },
+    {
+      <span class="hljs-attr">validator</span>: validateRePass,
+      <span class="hljs-attr">message</span>: <span class="hljs-string">&quot;两次输入的密码不一致&quot;</span>,
+    },
+  ],
+  <span class="hljs-attr">phone</span>: [
+    { <span class="hljs-attr">required</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">message</span>: <span class="hljs-string">&quot;请输入手机号&quot;</span> },
+    {
+      <span class="hljs-attr">validator</span>: proxy.<span class="hljs-property">Verify</span>.<span class="hljs-property">phone</span>,
+      <span class="hljs-attr">trigger</span>: <span class="hljs-string">&quot;blur&quot;</span>,
+      <span class="hljs-attr">message</span>: <span class="hljs-string">&quot;请输入正确的手机号&quot;</span>,
+    },
+  ],
+};
+
+<span class="hljs-keyword">const</span> editDialogInfo = <span class="hljs-title function_">reactive</span>({
+  <span class="hljs-attr">show</span>: <span class="hljs-literal">false</span>,
+  <span class="hljs-attr">title</span>: <span class="hljs-string">&quot;新增用户&quot;</span>,
+  <span class="hljs-attr">buttons</span>: [
+    {
+      <span class="hljs-attr">type</span>: <span class="hljs-string">&quot;danger&quot;</span>,
+      <span class="hljs-attr">text</span>: <span class="hljs-string">&quot;确定&quot;</span>,
+      <span class="hljs-attr">click</span>: <span class="hljs-function">(<span class="hljs-params">e</span>) =&gt;</span> {
+        <span class="hljs-title function_">submitForm</span>();
+      },
+    },
+  ],
+});
+
+<span class="hljs-keyword">const</span> formData = <span class="hljs-title function_">ref</span>({});
+<span class="hljs-keyword">const</span> editFormRef = <span class="hljs-title function_">ref</span>();
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">showEdit</span> = (<span class="hljs-params">type, data</span>) =&gt; {
+  editDialogInfo.<span class="hljs-property">show</span> = <span class="hljs-literal">true</span>;
+  <span class="hljs-title function_">nextTick</span>(<span class="hljs-keyword">async</span> () =&gt; {
+    editFormRef.<span class="hljs-property">value</span>.<span class="hljs-title function_">resetFields</span>();
+    <span class="hljs-keyword">if</span> (type === <span class="hljs-string">&quot;add&quot;</span>) {
+      editDialogInfo.<span class="hljs-property">edit</span> = <span class="hljs-literal">false</span>;
+      editDialogInfo.<span class="hljs-property">title</span> = <span class="hljs-string">&quot;新增账号&quot;</span>;
+      formData.<span class="hljs-property">value</span> = {
+        <span class="hljs-attr">introduction</span>: <span class="hljs-string">&quot;&quot;</span>,
+      }
+    } <span class="hljs-keyword">else</span> {
+      editDialogInfo.<span class="hljs-property">edit</span> = <span class="hljs-literal">true</span>;
+      editDialogInfo.<span class="hljs-property">title</span> = <span class="hljs-string">&quot;修改账号&quot;</span>;
+      <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">assign</span>(formData.<span class="hljs-property">value</span>, data)
+    }
+  });
+};
+
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">submitForm</span> = (<span class="hljs-params"></span>) =&gt; {
+  editFormRef.<span class="hljs-property">value</span>.<span class="hljs-title function_">validate</span>(<span class="hljs-keyword">async</span> (valid) =&gt; {
+    <span class="hljs-keyword">if</span> (!valid) {
+      <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+    }
+    <span class="hljs-keyword">let</span> params = {};
+    <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">assign</span>(params, formData.<span class="hljs-property">value</span>);
+    <span class="hljs-keyword">delete</span> params.<span class="hljs-property">createTime</span>;
+    <span class="hljs-keyword">delete</span> params.<span class="hljs-property">lastLoginTime</span>;
+    <span class="hljs-keyword">let</span> result = <span class="hljs-keyword">await</span> proxy.<span class="hljs-title class_">Request</span>({
+      <span class="hljs-attr">url</span>: api.<span class="hljs-property">saveTeamUser</span>,
+      <span class="hljs-attr">params</span>: params,
+    });
+    <span class="hljs-keyword">if</span> (!result) {
+      <span class="hljs-keyword">return</span>;
+    }
+    editDialogInfo.<span class="hljs-property">show</span> = <span class="hljs-literal">false</span>;
+    proxy.<span class="hljs-property">Message</span>.<span class="hljs-title function_">success</span>(<span class="hljs-string">&quot;保存成功&quot;</span>);
+    <span class="hljs-title function_">loadDataList</span>();
+  });
+};
+
+<span class="hljs-comment">//修改状态</span>
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">changeAccountStatus</span> = (<span class="hljs-params">data</span>) =&gt; {
+  <span class="hljs-keyword">let</span> status = data.<span class="hljs-property">status</span> == <span class="hljs-number">0</span> ? <span class="hljs-number">1</span> : <span class="hljs-number">0</span>;
+  <span class="hljs-keyword">let</span> statsuName = data.<span class="hljs-property">status</span> == <span class="hljs-number">0</span> ? <span class="hljs-string">&quot;启用&quot;</span> : <span class="hljs-string">&quot;禁用&quot;</span>
+  proxy.<span class="hljs-title class_">Confirm</span>(<span class="hljs-string">`你确定要【<span class="hljs-subst">${statsuName}</span>】<span class="hljs-subst">${data.nickName}</span>`</span>, <span class="hljs-keyword">async</span> () =&gt; {
+    <span class="hljs-keyword">let</span> result = <span class="hljs-keyword">await</span> proxy.<span class="hljs-title class_">Request</span>({
+      <span class="hljs-attr">url</span>: api.<span class="hljs-property">updateStatus</span>,
+      <span class="hljs-attr">params</span>: {
+        <span class="hljs-attr">userId</span>: data.<span class="hljs-property">userId</span>,
+        <span class="hljs-attr">status</span>: status
+      }
+    })
+    <span class="hljs-keyword">if</span> (!result) {
+      <span class="hljs-keyword">return</span>;
+    }
+    <span class="hljs-title function_">loadDataList</span>();
+  })
+}
+
+<span class="hljs-comment">//删除</span>
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">delUser</span> = (<span class="hljs-params">data</span>) =&gt; {
+  proxy.<span class="hljs-title class_">Confirm</span>(<span class="hljs-string">`你确定要删除【<span class="hljs-subst">${data.nickName}</span>】`</span>, <span class="hljs-keyword">async</span> () =&gt; {
+    <span class="hljs-keyword">let</span> result = <span class="hljs-keyword">await</span> proxy.<span class="hljs-title class_">Request</span>({
+      <span class="hljs-attr">url</span>: api.<span class="hljs-property">delUser</span>,
+      <span class="hljs-attr">params</span>: {
+        <span class="hljs-attr">userId</span>: data.<span class="hljs-property">userId</span>,
+      }
+    })
+    <span class="hljs-keyword">if</span> (!result) {
+      <span class="hljs-keyword">return</span>;
+    }
+    <span class="hljs-title function_">loadDataList</span>();
+  })
+}
+
+<span class="hljs-comment">//修改密码</span>
+
+<span class="hljs-comment">//修改密码</span>
+<span class="hljs-keyword">const</span> passwordFormRef = <span class="hljs-title function_">ref</span>(<span class="hljs-literal">null</span>);
+<span class="hljs-keyword">const</span> dialogConfig = <span class="hljs-title function_">reactive</span>({
+  <span class="hljs-attr">show</span>: <span class="hljs-literal">false</span>,
+  <span class="hljs-attr">title</span>: <span class="hljs-string">&quot;修改密码&quot;</span>,
+  <span class="hljs-attr">buttons</span>: [{
+    <span class="hljs-attr">type</span>: <span class="hljs-string">&quot;danger&quot;</span>,
+    <span class="hljs-attr">text</span>: <span class="hljs-string">&quot;确定&quot;</span>,
+    <span class="hljs-attr">click</span>: <span class="hljs-function">(<span class="hljs-params">e</span>) =&gt;</span> {
+      <span class="hljs-title function_">submitPass</span>();
+    }
+  }]
+})
+
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">showUpdatePassword</span> = (<span class="hljs-params">userId</span>) =&gt; {
+  dialogConfig.<span class="hljs-property">show</span> = <span class="hljs-literal">true</span>;
+  <span class="hljs-title function_">nextTick</span>(<span class="hljs-function">() =&gt;</span> {
+    passwordFormRef.<span class="hljs-property">value</span>.<span class="hljs-title function_">resetFields</span>();
+    formData.<span class="hljs-property">value</span> = { <span class="hljs-attr">userId</span>: userId };
+  })
+}
+
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">submitPass</span> = (<span class="hljs-params"></span>) =&gt; {
+  passwordFormRef.<span class="hljs-property">value</span>.<span class="hljs-title function_">validate</span>(<span class="hljs-keyword">async</span> (valid) =&gt; {
+    <span class="hljs-keyword">if</span> (!valid) {
+      <span class="hljs-keyword">return</span>;
+    }
+    <span class="hljs-keyword">let</span> result = <span class="hljs-keyword">await</span> proxy.<span class="hljs-title class_">Request</span>({
+      <span class="hljs-attr">url</span>: api.<span class="hljs-property">updatePassword</span>,
+      <span class="hljs-attr">params</span>: {
+        <span class="hljs-attr">userId</span>: formData.<span class="hljs-property">value</span>.<span class="hljs-property">userId</span>,
+        <span class="hljs-attr">password</span>: formData.<span class="hljs-property">value</span>.<span class="hljs-property">password</span>
+      }
+    })
+    <span class="hljs-keyword">if</span> (!result) {
+      reutrn;
+    }
+    dialogConfig.<span class="hljs-property">show</span> = <span class="hljs-literal">false</span>;
+    proxy.<span class="hljs-property">Message</span>.<span class="hljs-title function_">success</span>(<span class="hljs-string">&quot;密码修改成功&quot;</span>);
+  });
+}
+&lt;/script&gt;
+
+</code></pre>
+</div></div></div>
+                </div>
+            </div>
+                <div class="container-comment">
+                    <div class="comment-title">评论</div>
+                    <div id="SOHUCS" sid="viNtWrqfmA"></div>
+                    <script charset="utf-8" type="text/javascript" src="https://cy-cdn.kuaizhan.com/upload/changyan.js"></script>
+                    <script type="text/javascript">
+                        window.changyan.api.config({
+                            appid: "cyvP1EXdR",
+                            conf: '0264664c4b9d1fb578d732b34abf3246'
+                        });
+                    </script>
+                </div>
+            <div id="right-container">
+                <div class="toc-title" id="toc-title">目录<span class="icon-arrow arrow-down"></span></div>
+                <div id="toc" class="toc"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+        <div class="footer">
+            <div>
+                <span>©2021-2022 www.wuhancoder.com All rights reserved. </span>
+                <a target="_blank" href="https://beian.miit.gov.cn/">鄂ICP备13017512号-3</a></div>
+            <div>
+                <img src="../resource/static/beian.png">
+                <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=42011502000890">
+                    鄂公网安备 42011502000890号
+                </a></div>
+        </div>
+    <script>
+        var _hmt = _hmt || [];
+        (function () {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?63b3f00d92dbfecbe9376c26282c2599";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+</body>
+</html>
