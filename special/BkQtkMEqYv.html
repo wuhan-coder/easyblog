@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>EasyBlog文档 - 专题列表 - 我是程序员</title>
+        <meta name="keywords" content="专题列表">
+        <meta name="description" content="先来一个效果图">
+
+    <link rel="stylesheet" href="../resource/static/plugin/highlight/styles/github.min.css">
+    <link rel="stylesheet" href="../resource/static/plugin/viewer/viewer.min.css">
+    <script src="../resource/static/plugin/highlight/highlight.min.js"></script>
+    <script src="../resource/static/plugin/jquery/jquery.min.js"></script>
+    <script src="../resource/static/plugin/viewer/viewer-jquery.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <link rel="stylesheet" href="../resource/static/css/special.detail.css">
+    <script>
+        $(document).ready(function (e) {
+            createToc();
+            $("#content").viewer({
+                navbar: false
+            });
+
+            $("#content a").each(function (index, element) {
+                $(element).attr("target", "_blank");
+            })
+
+            $(".icon-arrow").click(function () {
+                let nextLiDom = $(this).parent().next("div").eq(0)
+                if ($(this).hasClass("arrow-down")) {
+                    $(this).removeClass("arrow-down");
+                    $(this).addClass("arrow-right");
+                    nextLiDom.hide();
+                } else {
+                    $(this).removeClass("arrow-right");
+                    $(this).addClass("arrow-down");
+                    nextLiDom.show();
+                }
+            });
+
+            //目录展开收齐
+            $("#toc-title").click(function () {
+                let spanDom = $(this).find(".icon-arrow")
+                if (spanDom.hasClass("arrow-down")) {
+                    spanDom.removeClass("arrow-down");
+                    spanDom.addClass("arrow-right");
+                    $("#toc").hide();
+                } else {
+                    spanDom.removeClass("arrow-right");
+                    spanDom.addClass("arrow-down");
+                    $("#toc").show();
+                }
+            });
+
+            let currentUrl = document.location.href;
+            currentUrl = currentUrl.substring(currentUrl.lastIndexOf("/") + 1, currentUrl.lastIndexOf("."));
+            $("#" + currentUrl).addClass("active");
+        });
+
+        const createToc = () => {
+            const hTagList = ["h1", "h2", "h3", "h4", "h5", "h6", "h7"]
+            const children = document.querySelector("#content").children;
+            const hList = [];
+            for (let i = 0; i < children.length; i++) {
+                const node = children[i];
+                let tagName = node.tagName;
+                tagName = tagName == undefined ? "" : tagName.toLowerCase();
+                if (hTagList.indexOf(tagName) != -1) {
+                    const id = "hash-node-" + i;
+                    node.setAttribute("id", id);
+                    hList.push({
+                        pId: "0",
+                        id: id,
+                        level: Number.parseInt(tagName.substring(1, 2)),
+                        name: node.innerText,
+                    });
+                }
+            }
+            for (let i = 0; i < hList.length; i++) {
+                findParentId(hList, hList[i], i);
+            }
+            const newDataList = convertLine2Tree(hList, "0");
+            if (newDataList.length == 0) {
+                $("<div class='no-data'>暂无目录信息</div>").appendTo($("#toc"));
+                return;
+            }
+            newDataList.forEach(element => {
+                createTree($("#toc"), element);
+            })
+        }
+
+        const createTree = (pNode, data) => {
+            const currentNode = $("<div></div>").appendTo(pNode);
+            let extPadding = 26;
+            if (data.children.length > 0) {
+                extPadding = 10
+            }
+            const paddingLeft = (data.level - 1) * 16 + extPadding;
+            const titleNode = $("<div class='title' style='padding-left:" + paddingLeft + "px'></div>").appendTo(currentNode);
+            if (data.children.length > 0) {
+                $("<span class='icon-arrow arrow-down'></span>").appendTo(titleNode);
+            }
+            $("<a href='#" + data.id + "'  title='" + data.name + "'>" + data.name + "</a>").appendTo(titleNode);
+
+            if (data.children.length > 0) {
+                let subNode = $("<div class='sub-title'></div>").appendTo(currentNode);
+                data.children.forEach(item => {
+                    createTree(subNode, item);
+                })
+            }
+        }
+
+        //查找父级节点
+        const findParentId = (hList, item, index) => {
+            for (let i = index - 1; i >= 0; i--) {
+                const pNode = hList[i];
+                if (pNode.level < item.level) {
+                    item.pId = pNode.id;
+                    break;
+                }
+            }
+        }
+
+        //将数据转换为树形
+        const convertLine2Tree = (hList, pId) => {
+            const children = [];
+            hList.forEach(element => {
+                if (element.pId === pId) {
+                    children.push(element);
+                    element.children = convertLine2Tree(hList, element.id);
+                }
+            });
+            return children;
+        }
+
+        $(window).scroll(function () {
+            //console.log($(document).scrollTop());
+            $("#right-container").css("top", $(document).scrollTop() + "px");
+        });
+
+        function scroll(markId) {
+            let url = document.location.href;
+            if (url.indexOf("#") == -1) {
+                document.location.href = url + "#" + markId;
+            } else {
+                document.location.href = url.substring(0, url.indexOf("#") + 1) + markId;
+            }
+            $("html,body").animate({scrollTop: $("#" + markId).offset().top - 80}, 100);
+        }
+    </script>
+</head>
+<body>
+    <div class="top">
+        <div class="top-container">
+            <div class="logo">
+                    <a href="../index.html">我是程序员</a>
+            </div>
+                <a href="../index.html" class="nav ">博客</a>
+                <a href="../category.html" class="nav ">分类专栏</a>
+                <a href="../special.html" class="nav active">专题</a>
+                <a href="../user.html" class="nav ">成员</a>
+                <a href="../comment.html" class="nav ">留言板</a>
+        </div>
+    </div>
+<div class="body-container">
+    <div class="blog-detail">
+        <div class="blog-special-list">
+            <div class="blog-special">
+                <div class="category-image">
+                        <img src="../resource/image/202209/qmHjiTxzjtapHaOojwciCzTlqCPFWs.jpg">
+                </div>
+                <div class="category-info">
+                    <div class="category-title" title="EasyBlog文档">EasyBlog文档</div>
+                    <div class="blog-count">文章数：18</div>
+                </div>
+            </div>
+            <div class="category-desc" title="EasyBlog 相关文档，接口，环境搭建">简介：EasyBlog 相关文档，接口，环境搭建</div>
+            <div class="blog-list toc">
+        <div>
+            <div class="title" style="padding-left:10px" id="gTvGKLsNNZ">
+                    <span class="icon-arrow arrow-down"></span>
+                <a href="gTvGKLsNNZ.html" title="后端服务部署">后端服务部署</a>
+            </div>
+                <div class="sub-title">
+        <div>
+            <div class="title" style="padding-left:42px" id="vbbStsCMXs">
+                <a href="vbbStsCMXs.html" title="安装后端程序">安装后端程序</a>
+            </div>
+        </div>
+                </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:10px" id="azvNIIFQCy">
+                    <span class="icon-arrow arrow-down"></span>
+                <a href="azvNIIFQCy.html" title="接口文档">接口文档</a>
+            </div>
+                <div class="sub-title">
+        <div>
+            <div class="title" style="padding-left:42px" id="cqzKWftzyr">
+                <a href="cqzKWftzyr.html" title="管理端">管理端</a>
+            </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:42px" id="wBURpKFtiT">
+                <a href="wBURpKFtiT.html" title="web端">web端</a>
+            </div>
+        </div>
+                </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:26px" id="DEdkCxjkqy">
+                <a href="DEdkCxjkqy.html" title="简介">简介</a>
+            </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:10px" id="rTZtGSfpKO">
+                    <span class="icon-arrow arrow-down"></span>
+                <a href="rTZtGSfpKO.html" title="管理端">管理端</a>
+            </div>
+                <div class="sub-title">
+        <div>
+            <div class="title" style="padding-left:42px" id="ReLhoidFfc">
+                <a href="ReLhoidFfc.html" title="前端项目构建">前端项目构建</a>
+            </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:42px" id="yZiEkYlOaT">
+                <a href="yZiEkYlOaT.html" title="登录">登录</a>
+            </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:42px" id="QYdGDDRMGU">
+                <a href="QYdGDDRMGU.html" title="博客分类">博客分类</a>
+            </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:26px" id="uWueRbkwnp">
+                    <span class="icon-arrow arrow-down"></span>
+                <a href="uWueRbkwnp.html" title="博客管理">博客管理</a>
+            </div>
+                <div class="sub-title">
+        <div>
+            <div class="title" style="padding-left:58px" id="IgizsOFvBL">
+                <a href="IgizsOFvBL.html" title="博客列表">博客列表</a>
+            </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:58px" id="bFvFteyYlx">
+                <a href="bFvFteyYlx.html" title="新增、修改博客">新增、修改博客</a>
+            </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:58px" id="bLIAnUNUdx">
+                <a href="bLIAnUNUdx.html" title="博客详情">博客详情</a>
+            </div>
+        </div>
+                </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:26px" id="LdgbxmwFeg">
+                    <span class="icon-arrow arrow-down"></span>
+                <a href="LdgbxmwFeg.html" title="专题管理">专题管理</a>
+            </div>
+                <div class="sub-title">
+        <div>
+            <div class="title" style="padding-left:58px" id="BkQtkMEqYv">
+                <a href="BkQtkMEqYv.html" title="专题列表">专题列表</a>
+            </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:58px" id="hwjDGsEGxu">
+                <a href="hwjDGsEGxu.html" title="专题文章管理">专题文章管理</a>
+            </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:58px" id="zkAAjqsOgD">
+                <a href="zkAAjqsOgD.html" title="专题文章详情">专题文章详情</a>
+            </div>
+        </div>
+                </div>
+        </div>
+                </div>
+        </div>
+            </div>
+
+        </div>
+        <div class="container">
+            <div class="container-content">
+                <div>
+                    <div class="blog-title">专题列表</div>
+                    <div class="blog-info">
+                        <div class="time">2022-10-25 03:30:05</div>
+                        <div class="nick-name">作者：<a href="../user.html#100000">程序员老罗</a></div>
+                    </div>
+                    <div class="content" id="content"><h1 data-v-md-heading="主要代码" data-v-md-line="1">主要代码</h1>
+<h2 data-v-md-heading="template" data-v-md-line="2">template</h2>
+<div data-v-md-line="3"><div class="v-md-pre-wrapper v-md-pre-wrapper-html extra-class"><pre class="v-md-hljs-html"><code><span class="hljs-tag">&lt;<span class="hljs-name">template</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">el-button</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;danger&quot;</span>
+               @<span class="hljs-attr">click</span>=<span class="hljs-string">&quot;showEdit(&#x27;add&#x27;)&quot;</span>&gt;</span>新增专题<span class="hljs-tag">&lt;/<span class="hljs-name">el-button</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">el-row</span> <span class="hljs-attr">:gutter</span>=<span class="hljs-string">&quot;10&quot;</span>
+            <span class="hljs-attr">:style</span>=<span class="hljs-string">&quot;{&#x27;margin-top&#x27;:&#x27;10px&#x27;}&quot;</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">el-col</span> <span class="hljs-attr">:span</span>=<span class="hljs-string">&quot;14&quot;</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">el-card</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;box-card&quot;</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">template</span> #<span class="hljs-attr">header</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;card-header&quot;</span>&gt;</span>
+              <span class="hljs-tag">&lt;<span class="hljs-name">span</span>&gt;</span>专题<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+          <span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">Table</span> <span class="hljs-attr">:columns</span>=<span class="hljs-string">&quot;columns&quot;</span>
+                 <span class="hljs-attr">:showPagination</span>=<span class="hljs-string">&quot;true&quot;</span>
+                 <span class="hljs-attr">:dataSource</span>=<span class="hljs-string">&quot;tableData&quot;</span>
+                 <span class="hljs-attr">:fetch</span>=<span class="hljs-string">&quot;loadDataList&quot;</span>
+                 <span class="hljs-attr">:options</span>=<span class="hljs-string">&quot;tableOptions&quot;</span>
+                 @<span class="hljs-attr">rowClick</span>=<span class="hljs-string">&quot;rowClick&quot;</span>
+                 <span class="hljs-attr">ref</span>=<span class="hljs-string">&quot;dataTableRef&quot;</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">template</span> #<span class="hljs-attr">cover</span>=<span class="hljs-string">&quot;{index,row}&quot;</span>&gt;</span>
+              <span class="hljs-tag">&lt;<span class="hljs-name">Cover</span> <span class="hljs-attr">:cover</span>=<span class="hljs-string">&quot;row.cover&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">Cover</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">template</span> #<span class="hljs-attr">op</span>=<span class="hljs-string">&quot;{index,row}&quot;</span>&gt;</span>
+              <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;op&quot;</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;javascript:void(0)&quot;</span>
+                   <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;a-link&quot;</span>
+                   @<span class="hljs-attr">click</span>=<span class="hljs-string">&quot;showEdit(&#x27;update&#x27;,row)&quot;</span>
+                   <span class="hljs-attr">v-if</span>=<span class="hljs-string">&quot;userInfo.userId==row.userId&quot;</span>&gt;</span>修改<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">v-else</span>&gt;</span>--<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">el-divider</span> <span class="hljs-attr">direction</span>=<span class="hljs-string">&quot;vertical&quot;</span> /&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;javascript:void(0)&quot;</span>
+                   <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;a-link&quot;</span>
+                   @<span class="hljs-attr">click</span>=<span class="hljs-string">&quot;del(row)&quot;</span>
+                   <span class="hljs-attr">v-if</span>=<span class="hljs-string">&quot;userInfo.userId==row.userId&quot;</span>&gt;</span>删除<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">v-else</span>&gt;</span>--<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+              <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+          <span class="hljs-tag">&lt;/<span class="hljs-name">Table</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">el-card</span>&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-name">el-col</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">el-col</span> <span class="hljs-attr">:span</span>=<span class="hljs-string">&quot;10&quot;</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">el-card</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;box-card&quot;</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">template</span> #<span class="hljs-attr">header</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;card-header&quot;</span>&gt;</span>
+              <span class="hljs-tag">&lt;<span class="hljs-name">span</span>&gt;</span>专题文章<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+          <span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">:style</span>=<span class="hljs-string">&quot;{ &#x27;margin-bottom&#x27;: &#x27;5px&#x27; }&quot;</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">el-alert</span> <span class="hljs-attr">title</span>=<span class="hljs-string">&quot;红色代表草稿绿色代表已发布、拖动文章修改排序&quot;</span>
+                      <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;info&quot;</span>
+                      <span class="hljs-attr">show-icon</span>
+                      <span class="hljs-attr">:closable</span>=<span class="hljs-string">&quot;false&quot;</span> /&gt;</span>
+          <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">el-tree</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;tree-panel&quot;</span>
+                   <span class="hljs-attr">ref</span>=<span class="hljs-string">&quot;refTree&quot;</span>
+                   <span class="hljs-attr">:data</span>=<span class="hljs-string">&quot;blogList&quot;</span>
+                   <span class="hljs-attr">defaultExpandAll</span>
+                   <span class="hljs-attr">node-key</span>=<span class="hljs-string">&quot;blogId&quot;</span>
+                   <span class="hljs-attr">:expand-on-click-node</span>=<span class="hljs-string">&quot;false&quot;</span>
+                   <span class="hljs-attr">:props</span>=<span class="hljs-string">&quot;treeProps&quot;</span>
+                   <span class="hljs-attr">:highlight-current</span>=<span class="hljs-string">&quot;true&quot;</span>
+                   <span class="hljs-attr">draggable</span>
+                   @<span class="hljs-attr">node-drop</span>=<span class="hljs-string">&quot;blogDrag&quot;</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">template</span> #<span class="hljs-attr">default</span>=<span class="hljs-string">&quot;{ node, data }&quot;</span>&gt;</span>
+              <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;custom-node-style&quot;</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;node-title&quot;</span>&gt;</span>
+                  <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">v-if</span>=<span class="hljs-string">&quot;data.status==0&quot;</span>
+                        <span class="hljs-attr">:style</span>=<span class="hljs-string">&quot;{&#x27;color&#x27;:&#x27;red&#x27;,&#x27;font-size&#x27;:&#x27;13px&#x27;}&quot;</span>&gt;</span> {{ data.title }}<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+                  <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">v-else</span>
+                        <span class="hljs-attr">:style</span>=<span class="hljs-string">&quot;{&#x27;color&#x27;:&#x27;green&#x27;,&#x27;font-size&#x27;:&#x27;13px&#x27;}&quot;</span>&gt;</span> {{ data.title }}<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+                <span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;node-op&quot;</span>&gt;</span>
+                  <span class="hljs-tag">&lt;<span class="hljs-name">template</span> <span class="hljs-attr">v-if</span>=<span class="hljs-string">&quot;data.blogId === &#x27;0&#x27;&quot;</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;a-link&quot;</span>
+                       <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;javascript:void(0)&quot;</span>
+                       @<span class="hljs-attr">click</span>=<span class="hljs-string">&quot;editBlog(&#x27;add&#x27;, data)&quot;</span>&gt;</span>新增文章<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span>
+                  <span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+                  <span class="hljs-tag">&lt;<span class="hljs-name">template</span> <span class="hljs-attr">v-else</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;a-link&quot;</span>
+                       <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;javascript:void(0)&quot;</span>
+                       @<span class="hljs-attr">click</span>=<span class="hljs-string">&quot;showDetail(data)&quot;</span>&gt;</span>预览<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">el-divider</span> <span class="hljs-attr">direction</span>=<span class="hljs-string">&quot;vertical&quot;</span> /&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;a-link&quot;</span>
+                       <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;javascript:void(0)&quot;</span>
+                       @<span class="hljs-attr">click</span>=<span class="hljs-string">&quot;editBlog(&#x27;edit&#x27;, data)&quot;</span>
+                       <span class="hljs-attr">v-if</span>=<span class="hljs-string">&quot;userInfo.userId==data.userId&quot;</span>&gt;</span>修改<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">v-else</span>&gt;</span>--<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">el-divider</span> <span class="hljs-attr">direction</span>=<span class="hljs-string">&quot;vertical&quot;</span> /&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;a-link&quot;</span>
+                       <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;javascript:void(0)&quot;</span>
+                       @<span class="hljs-attr">click</span>=<span class="hljs-string">&quot;delBlog(data)&quot;</span>
+                       <span class="hljs-attr">v-if</span>=<span class="hljs-string">&quot;userInfo.userId==data.userId&quot;</span>&gt;</span>删除<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">v-else</span>&gt;</span>--<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">el-divider</span> <span class="hljs-attr">direction</span>=<span class="hljs-string">&quot;vertical&quot;</span> /&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;a-link&quot;</span>
+                       <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;javascript:void(0)&quot;</span>
+                       @<span class="hljs-attr">click</span>=<span class="hljs-string">&quot;editBlog(&#x27;add&#x27;, data)&quot;</span>&gt;</span>新增下级文章<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span>
+                  <span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+                <span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+              <span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+          <span class="hljs-tag">&lt;/<span class="hljs-name">el-tree</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">el-card</span>&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-name">el-col</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">el-row</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Dialog</span> <span class="hljs-attr">:show</span>=<span class="hljs-string">&quot;dialogConfig.show&quot;</span>
+            <span class="hljs-attr">:title</span>=<span class="hljs-string">&quot;dialogConfig.title&quot;</span>
+            <span class="hljs-attr">:buttons</span>=<span class="hljs-string">&quot;dialogConfig.buttons&quot;</span>
+            <span class="hljs-attr">width</span>=<span class="hljs-string">&quot;500px&quot;</span>
+            @<span class="hljs-attr">close</span>=<span class="hljs-string">&quot;dialogConfig.show=false&quot;</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">el-form</span> <span class="hljs-attr">:model</span>=<span class="hljs-string">&quot;formData&quot;</span>
+               <span class="hljs-attr">:rules</span>=<span class="hljs-string">&quot;rules&quot;</span>
+               <span class="hljs-attr">ref</span>=<span class="hljs-string">&quot;formDataRef&quot;</span>
+               <span class="hljs-attr">label-width</span>=<span class="hljs-string">&quot;80px&quot;</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">el-form-item</span> <span class="hljs-attr">label</span>=<span class="hljs-string">&quot;名称&quot;</span>
+                      <span class="hljs-attr">prop</span>=<span class="hljs-string">&quot;categoryName&quot;</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">el-input</span> <span class="hljs-attr">placeholder</span>=<span class="hljs-string">&quot;请输入名称&quot;</span>
+                    <span class="hljs-attr">v-model</span>=<span class="hljs-string">&quot;formData.categoryName&quot;</span>&gt;</span>
+          <span class="hljs-tag">&lt;/<span class="hljs-name">el-input</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">el-form-item</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">el-form-item</span> <span class="hljs-attr">label</span>=<span class="hljs-string">&quot;封面&quot;</span>
+                      <span class="hljs-attr">prop</span>=<span class="hljs-string">&quot;cover&quot;</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">CoverUpload</span> <span class="hljs-attr">v-model</span>=<span class="hljs-string">&quot;formData.cover&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">CoverUpload</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">el-form-item</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">el-form-item</span> <span class="hljs-attr">label</span>=<span class="hljs-string">&quot;简介&quot;</span>
+                      <span class="hljs-attr">prop</span>=<span class="hljs-string">&quot;categoryDesc&quot;</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">el-input</span> <span class="hljs-attr">v-model</span>=<span class="hljs-string">&quot;formData.categoryDesc&quot;</span>
+                    <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;textarea&quot;</span>
+                    <span class="hljs-attr">placeholder</span>=<span class="hljs-string">&quot;请输入简介&quot;</span>
+                    <span class="hljs-attr">:autosize</span>=<span class="hljs-string">&quot;{minRows:4,maxRows:4}&quot;</span>&gt;</span>
+          <span class="hljs-tag">&lt;/<span class="hljs-name">el-input</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">el-form-item</span>&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-name">el-form</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">Dialog</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">BlogEdit</span> <span class="hljs-attr">ref</span>=<span class="hljs-string">&quot;blogEditRef&quot;</span>
+              @<span class="hljs-attr">callback</span>=<span class="hljs-string">&quot;saveBlogCallback&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">BlogEdit</span>&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">BlogDetail</span> <span class="hljs-attr">ref</span>=<span class="hljs-string">&quot;blogDetailRef&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">BlogDetail</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+
+</code></pre>
+</div></div><h2 data-v-md-heading="js" data-v-md-line="147">js</h2>
+<div data-v-md-line="148"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code>&lt;script setup&gt;
+import BlogDetail from &quot;./BlogDetail.vue&quot;
+import BlogEdit from &quot;./BlogEdit.vue&quot;
+
+import { getCurrentInstance, ref, reactive, nextTick } from &quot;vue&quot;
+
+const { proxy } = getCurrentInstance();
+
+const api = {
+  &quot;loadDataList&quot;: &quot;/category/loadCategory4Special&quot;,
+  &quot;saveCategory&quot;: &quot;/category/saveCategory4Special&quot;,
+  &quot;delCategory&quot;: &quot;category/delCategory4Special&quot;,
+  &quot;getSpecialInfo&quot;: &quot;blog/getSpecialInfo&quot;,
+  &quot;delBlog&quot;: &quot;/blog/recoveryBlog&quot;,
+  &quot;updateSpecialBlogSort&quot;: &quot;blog/updateSpecialBlogSort&quot;,
+}
+
+const userInfo = ref(proxy.VueCookies.get(&quot;userInfo&quot;) || {});
+
+const columns = [{
+  label: &quot;封面&quot;,
+  prop: &quot;cover&quot;,
+  width: 100,
+  scopedSlots: &quot;cover&quot;,
+}, {
+  label: &quot;名称&quot;,
+  prop: &quot;categoryName&quot;,
+  width: 200,
+}, {
+  label: &quot;简介&quot;,
+  prop: &quot;categoryDesc&quot;,
+}, {
+  label: &quot;博客数量&quot;,
+  prop: &quot;blogCount&quot;,
+  width: 100,
+}, {
+  label: &quot;操作&quot;,
+  prop: &quot;op&quot;,
+  width: 100,
+  scopedSlots: &quot;op&quot;,
+}]
+
+const tableData = reactive({})
+const tableOptions = {
+  extHeight: 135,
+}
+
+const dataTableRef = ref(null);
+const currentCategoryId = ref(null);
+const loadDataList = async () =&gt; {
+  let result = await proxy.Request({
+    url: api.loadDataList
+  })
+  if (!result) {
+    return
+  }
+  Object.assign(tableData, result.data)
+  if (currentCategoryId.value == null &amp;&amp; result.data.list.length &gt; 0) {
+    currentCategoryId.value = result.data.list[0].categoryId;
+    loadBlogList();
+  }
+  nextTick(() =&gt; {
+    dataTableRef.value.setCurrentRow(&quot;categoryId&quot;, currentCategoryId.value);
+  })
+}
+
+//新增，修改 专题
+const dialogConfig = reactive({
+  show: false,
+  title: &quot;标题&quot;,
+  buttons: [{
+    type: &quot;danger&quot;,
+    text: &quot;确定&quot;,
+    click: (e) =&gt; {
+      submitForm();
+    }
+  }]
+})
+const formData = ref({})
+const rules = {
+  categoryName: [{ required: true, message: &quot;请输入分类名称&quot; }]
+};
+const formDataRef = ref();
+const showEdit = (type, data) =&gt; {
+  dialogConfig.show = true;
+  nextTick(() =&gt; {
+    formDataRef.value.resetFields();
+    if (type == &quot;add&quot;) {
+      dialogConfig.title = &quot;新增分类&quot;;
+      formData.value = {};
+    } else if (type == &quot;update&quot;) {
+      dialogConfig.title = &quot;编辑分类&quot;;
+      formData.value = JSON.parse(JSON.stringify(data));
+    }
+  })
+}
+const submitForm = () =&gt; {
+  formDataRef.value.validate(async (valid) =&gt; {
+    if (!valid) {
+      return;
+    }
+    let params = {};
+    Object.assign(params, formData.value);
+    let result = await proxy.Request({
+      url: api.saveCategory,
+      params,
+    })
+    if (!result) {
+      return;
+    }
+    dialogConfig.show = false;
+    proxy.Message.success(&quot;保存成功&quot;);
+    loadDataList();
+  })
+}
+
+//删除
+const del = (data) =&gt; {
+  proxy.Confirm(`你确定要删除${data.categoryName}`, async () =&gt; {
+    let result = await proxy.Request({
+      url: api.delCategory,
+      params: {
+        categoryId: data.categoryId,
+      }
+    })
+    if (!result) {
+      return;
+    }
+    loadDataList();
+    currentCategoryId.value = null;
+  })
+}
+
+//专题树
+//获取专题文章
+const rowClick = (row) =&gt; {
+  currentCategoryId.value = row.categoryId;
+  loadBlogList();
+}
+
+const blogList = ref([]);
+const loadBlogList = async () =&gt; {
+  let result = await proxy.Request({
+    url: api.getSpecialInfo,
+    params: {
+      categoryId: currentCategoryId.value,
+      showType: &quot;1&quot;
+    }
+  })
+  blogList.value = result.data;
+}
+
+//属性展示专题
+const treeProps = {
+  children: &quot;children&quot;,
+  label: &quot;title&quot;,
+  value: &quot;blogId&quot;,
+};
+
+//新增，修改 专题博客
+const blogEditRef = ref(null);
+const editBlog = (type, data) =&gt; {
+  blogEditRef.value.init(type, data);
+}
+
+//保存专题博客回调
+const saveBlogCallback = () =&gt; {
+  loadBlogList();
+}
+
+//删除博客
+//删除博客
+const delBlog = (data) =&gt; {
+  proxy.Confirm(`你确定要删除【${data.title}】`, async () =&gt; {
+    let result = await proxy.Request({
+      url: api.delBlog,
+      params: {
+        blogId: data.blogId,
+      }
+    })
+    if (!result) {
+      return;
+    }
+    loadBlogList();
+  })
+}
+
+
+//拖动改变排序，修改父级
+const blogDrag = async (draggingNode, dropNode, dropType, ev) =&gt; {
+  console.log(draggingNode, dropNode, dropType);
+  //拖入某个节点内，修改父级节点为目标节点，同时修改目标节点下的所有子节点的排序
+  let parentNode = null;
+  if (dropType == &quot;inner&quot;) {
+    //拖入某个几点内，修改父级节点为目标节点，同时修改目标节点下的所有子节点的排序
+    parentNode = dropNode;
+  } else {
+    //拖入之前，之后，修改被拖动的节点的父节点为目标节点的父节点，同时修改目标节点父节点下所有的子节点的排序
+    parentNode = dropNode.parent;
+  }
+  //操作的节点ID
+  const blogId = draggingNode.data.blogId;
+  const pBlogId = parentNode.data.blogId;
+  //需要从新排序的博客ID
+  const blogIds = [];
+  parentNode.childNodes.forEach((element) =&gt; {
+    blogIds.push(element.data.blogId);
+  });
+  let params = {
+    blogId,
+    pBlogId,
+    blogIds: blogIds.join(&quot;,&quot;),
+  };
+  let result = await proxy.Request({
+    url: api.updateSpecialBlogSort,
+    params,
+  });
+  if (!result) {
+    return;
+  }
+  //重新加载文章树
+  loadBlogList();
+};
+
+//详情
+const blogDetailRef = ref(null);
+const showDetail = (data) =&gt; {
+  blogDetailRef.value.showDetail(data);
+}
+&lt;/script&gt;
+
+</code></pre>
+</div></div><h2 data-v-md-heading="css" data-v-md-line="381">CSS</h2>
+<div data-v-md-line="382"><div class="v-md-pre-wrapper v-md-pre-wrapper-CSS extra-class"><pre class="v-md-hljs-CSS"><code>&lt;style lang=&quot;scss&quot;&gt;
+<span class="hljs-selector-class">.tree-panel</span> {
+  <span class="hljs-attribute">height</span>: <span class="hljs-built_in">calc</span>(<span class="hljs-number">100vh</span> - <span class="hljs-number">290px</span>);
+  <span class="hljs-attribute">overflow</span>: auto;
+  <span class="hljs-selector-class">.el-tree-node__label</span> {
+    <span class="hljs-attribute">flex</span>: <span class="hljs-number">1</span>;
+  }
+  <span class="hljs-selector-class">.custom-node-style</span> {
+    <span class="hljs-attribute">display</span>: flex;
+    <span class="hljs-attribute">justify-content</span>: space-between;
+  }
+}
+&lt;/style&gt;
+</code></pre>
+</div></div><p data-v-md-line="397">BlogDetail  BlogEdit 这两个组件在一章</p>
+</div>
+                </div>
+            </div>
+                <div class="container-comment">
+                    <div class="comment-title">评论</div>
+                    <div id="SOHUCS" sid="BkQtkMEqYv"></div>
+                    <script charset="utf-8" type="text/javascript" src="https://cy-cdn.kuaizhan.com/upload/changyan.js"></script>
+                    <script type="text/javascript">
+                        window.changyan.api.config({
+                            appid: "cyvP1EXdR",
+                            conf: '0264664c4b9d1fb578d732b34abf3246'
+                        });
+                    </script>
+                </div>
+            <div id="right-container">
+                <div class="toc-title" id="toc-title">目录<span class="icon-arrow arrow-down"></span></div>
+                <div id="toc" class="toc"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+        <div class="footer">
+            <div>
+                <span>©2021-2022 www.wuhancoder.com All rights reserved. </span>
+                <a target="_blank" href="https://beian.miit.gov.cn/">鄂ICP备13017512号-3</a></div>
+            <div>
+                <img src="../resource/static/beian.png">
+                <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=42011502000890">
+                    鄂公网安备 42011502000890号
+                </a></div>
+        </div>
+    <script>
+        var _hmt = _hmt || [];
+        (function () {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?63b3f00d92dbfecbe9376c26282c2599";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+</body>
+</html>

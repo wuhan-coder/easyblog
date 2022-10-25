@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>EasyBlog文档 - 后端服务部署 - 我是程序员</title>
-        <meta name="keywords" content="后端服务部署">
-        <meta name="description" content="下载jdk,mysql,navicatjdk下载地址：jdk1.8mysql下载地址：mysql8navicat下载地址:navicat安装java直接双击安装文件，选择好路径，然后一路下一步就可以。安装好后安装jre的时候记得跟jdk放到一个目录下然后就是配置环境变量。在path中添加%JAVA_HOME%\bin新增classpath.;%JAVA_HOME%\lib\dt.jar;%JAVA_HOME%\lib\tools.jar配置好运行java-version看到下面的说明java环境配置OK了安装mysql直接打开安装文件，一路next就可以了设置localhost可以连接管理员运">
+    <title>EasyBlog文档 - 专题管理 - 我是程序员</title>
+        <meta name="keywords" content="专题管理">
+        <meta name="description" content="专题管理，主要博客专题管理，专题文章管理，专题可以生成树形结构的文章目录，方便预览，也可以使用专题做接口文档，生成静态页面提供给其他人用也是非常不错的">
 
     <link rel="stylesheet" href="../resource/static/plugin/highlight/styles/github.min.css">
     <link rel="stylesheet" href="../resource/static/plugin/viewer/viewer.min.css">
@@ -286,54 +286,22 @@
         <div class="container">
             <div class="container-content">
                 <div>
-                    <div class="blog-title">后端服务部署</div>
+                    <div class="blog-title">专题管理</div>
                     <div class="blog-info">
-                        <div class="time">2022-09-21 09:27:54</div>
+                        <div class="time">2022-10-25 03:12:15</div>
                         <div class="nick-name">作者：<a href="../user.html#100000">程序员老罗</a></div>
                     </div>
-                    <div class="content" id="content"><h1 data-v-md-heading="下载jdk-mysql-navicat" data-v-md-line="1">下载jdk,mysql,navicat</h1>
-<p data-v-md-line="2">jdk 下载地址：<a href="http://dx5.198449.com/jdk1.8x64.zip" target="_blank">jdk1.8</a><br>
-mysql 下载地址：<a href="https://dev.mysql.com/get/Downloads/MySQLInstaller/mysql-installer-community-8.0.30.0.msi" target="_blank">mysql8</a><br>
-navicat 下载地址: <a href="http://www.kkx.net/soft/43452.html" target="_blank">navicat</a></p>
-<h1 data-v-md-heading="安装java" data-v-md-line="6">安装java</h1>
-<p data-v-md-line="7">直接双击 安装文件，选择好路径，然后一路下一步就可以。<br>
-安装好后<br>
-<img src="../resource/image/202209/hPNHZZLttuhifCYDUKvHYTERsIlpAF.png" alt="图片"><br>
-安装jre的时候记得跟jdk放到一个目录下</p>
-<p data-v-md-line="12">然后就是配置环境变量。<br>
-<img src="../resource/image/202209/mKvjSYKDDHLRsHAhjJhuQoBTFIXrNd.png" alt="图片"><br>
-在path中添加<br>
-<img src="../resource/image/202209/AQNKUCVukAOAPhuGCiXCuFhZujLYIM.png" alt="图片"></p>
-<div data-v-md-line="16"><div class="v-md-pre-wrapper v-md-pre-wrapper-shell extra-class"><pre class="v-md-hljs-shell"><code><span class="hljs-meta prompt_">%</span><span class="language-bash">JAVA_HOME%\bin</span>
-</code></pre>
-</div></div><p data-v-md-line="19"><img src="../resource/image/202209/UqCrujXnLzpuFKYEXcIUJbsixdGvRW.png" alt="图片"></p>
-<p data-v-md-line="21">新增class path</p>
-<div data-v-md-line="22"><div class="v-md-pre-wrapper v-md-pre-wrapper-shell extra-class"><pre class="v-md-hljs-shell"><code>.;%JAVA_HOME%\lib\dt.jar;%JAVA_HOME%\lib\tools.jar
-</code></pre>
-</div></div><p data-v-md-line="25"><img src="../resource/image/202209/dKNkDWbxFHspjPdILtRCgADEpmBOlb.png" alt="图片"></p>
-<p data-v-md-line="27">配置好运行java -version<br>
-<img src="../resource/image/202209/xLLZCHyIHBkNNZPccTVyWQQaIIMofi.png" alt="图片"><br>
-看到下面的说明java环境配置OK了</p>
-<h1 data-v-md-heading="安装-mysql" data-v-md-line="31">安装 mysql</h1>
-<p data-v-md-line="32">直接打开安装文件，一路next就可以了</p>
-<p data-v-md-line="34">设置localhost可以连接<br>
-管理员运行 doc，进入到 mysql的安装目录的bin目录下<br>
-执行</p>
-<div data-v-md-line="37"><div class="v-md-pre-wrapper v-md-pre-wrapper-shell extra-class"><pre class="v-md-hljs-shell"><code>alter user &#x27;root&#x27;@&#x27;localhost&#x27; identified with mysql_native_password by &#x27;root&#x27;
-flush privileges;
-</code></pre>
-</div></div><h1 data-v-md-heading="安装navicat" data-v-md-line="41">安装navicat</h1>
-<p data-v-md-line="42">由于这个软件是收费的，所以给了个下载网址，是可以免费使用的，这里就不过多说明，大家自行安装<br>
-安装好后，新建链接<br>
-<img src="../resource/image/202209/CEvXkfIEPtrDdqLKaIBzEcQoPsDxNK.png" alt="图片"><br>
-输入相关信息，然后点击  链接测试  如果提示成功，说明数据库安装没有问题</p>
-<p data-v-md-line="47">到此后端服务的环境已经准备好了。</p>
+                    <div class="content" id="content"><p data-v-md-line="1">专题管理，主要博客专题管理，专题文章管理，专题可以生成树形结构的文章目录，方便预览，也可以使用专题做接口文档，生成静态页面提供给其他人用也是非常不错的<br>
+这是效果图<br>
+<img src="../resource/image/202210/zRjUlbdtUwyIPYYXwEHiZzrSlMSBWn.png" alt="图片"></p>
+<p data-v-md-line="5">这是预览效果图<br>
+<img src="../resource/image/202210/wfSGeYNEjAoRrjaWOAzYEWjkGHnLJF.png" alt="图片"></p>
 </div>
                 </div>
             </div>
                 <div class="container-comment">
                     <div class="comment-title">评论</div>
-                    <div id="SOHUCS" sid="gTvGKLsNNZ"></div>
+                    <div id="SOHUCS" sid="LdgbxmwFeg"></div>
                     <script charset="utf-8" type="text/javascript" src="https://cy-cdn.kuaizhan.com/upload/changyan.js"></script>
                     <script type="text/javascript">
                         window.changyan.api.config({

@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>EasyBlog文档 - 博客详情 - 我是程序员</title>
-        <meta name="keywords" content="博客详情">
-        <meta name="description" content="博客详情就一个页面，封装为一个组件即可BlogDetail.vue主要代码template&lt;template&gt;&lt;div&gt;&lt;Window:show=&quot;windowConfig.show&quot;:buttons=&quot;windowConfig.buttons&quot;:showCancel=&quot;false&quot;@close=&quot;windowConfig.show=false&quot;&gt;&lt;divclass=&quot;my-title&quot;&gt;{{blog.title}}&lt;/div&gt;&lt;">
+    <title>EasyBlog文档 - 专题文章详情 - 我是程序员</title>
+        <meta name="keywords" content="专题文章详情">
+        <meta name="description" content="这一章主要是预览专题文章主要代码BlogDetail.vuetemplate&lt;template&gt;&lt;div&gt;&lt;Window:show=&quot;windowConfig.show&quot;:buttons=&quot;windowConfig.buttons&quot;:showCancel=&quot;false&quot;@close=&quot;windowConfig.show=false&quot;&gt;&lt;el-row:gutter=&quot;10&quot;&gt;&lt;el-col:span=&quot;10&quot;&gt;&lt;">
 
     <link rel="stylesheet" href="../resource/static/plugin/highlight/styles/github.min.css">
     <link rel="stylesheet" href="../resource/static/plugin/viewer/viewer.min.css">
@@ -286,31 +286,78 @@
         <div class="container">
             <div class="container-content">
                 <div>
-                    <div class="blog-title">博客详情</div>
+                    <div class="blog-title">专题文章详情</div>
                     <div class="blog-info">
-                        <div class="time">2022-10-25 02:58:17</div>
+                        <div class="time">2022-10-25 03:39:57</div>
                         <div class="nick-name">作者：<a href="../user.html#100000">程序员老罗</a></div>
                     </div>
-                    <div class="content" id="content"><p data-v-md-line="1">博客详情就一个页面，封装为一个组件即可<br>
-BlogDetail.vue</p>
-<h1 data-v-md-heading="主要代码" data-v-md-line="4">主要代码</h1>
-<h2 data-v-md-heading="template" data-v-md-line="5">template</h2>
-<div data-v-md-line="6"><div class="v-md-pre-wrapper v-md-pre-wrapper-html extra-class"><pre class="v-md-hljs-html"><code><span class="hljs-tag">&lt;<span class="hljs-name">template</span>&gt;</span>
+                    <div class="content" id="content"><p data-v-md-line="1">这一章主要是预览专题文章</p>
+<h1 data-v-md-heading="主要代码" data-v-md-line="2">主要代码</h1>
+<p data-v-md-line="3">BlogDetail.vue</p>
+<h2 data-v-md-heading="template" data-v-md-line="4">template</h2>
+<div data-v-md-line="5"><div class="v-md-pre-wrapper v-md-pre-wrapper-html extra-class"><pre class="v-md-hljs-html"><code><span class="hljs-tag">&lt;<span class="hljs-name">template</span>&gt;</span>
   <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">Window</span> <span class="hljs-attr">:show</span>=<span class="hljs-string">&quot;windowConfig.show&quot;</span>
             <span class="hljs-attr">:buttons</span>=<span class="hljs-string">&quot;windowConfig.buttons&quot;</span>
             <span class="hljs-attr">:showCancel</span>=<span class="hljs-string">&quot;false&quot;</span>
             @<span class="hljs-attr">close</span>=<span class="hljs-string">&quot;windowConfig.show = false&quot;</span>&gt;</span>
-      <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;my-title&quot;</span>&gt;</span> {{blog.title}}<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-      <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">v-html</span>=<span class="hljs-string">&quot;blog.content&quot;</span>
-           <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;blog-detail&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">el-row</span> <span class="hljs-attr">:gutter</span>=<span class="hljs-string">&quot;10&quot;</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">el-col</span> <span class="hljs-attr">:span</span>=<span class="hljs-string">&quot;10&quot;</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">el-card</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;box-card&quot;</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">template</span> #<span class="hljs-attr">header</span>&gt;</span>
+              <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;card-header&quot;</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">span</span>&gt;</span>专题文章<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+              <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">el-tree</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;tree-panel&quot;</span>
+                     <span class="hljs-attr">ref</span>=<span class="hljs-string">&quot;refTree&quot;</span>
+                     <span class="hljs-attr">:data</span>=<span class="hljs-string">&quot;blogList&quot;</span>
+                     <span class="hljs-attr">defaultExpandAll</span>
+                     <span class="hljs-attr">node-key</span>=<span class="hljs-string">&quot;blogId&quot;</span>
+                     <span class="hljs-attr">:expand-on-click-node</span>=<span class="hljs-string">&quot;false&quot;</span>
+                     <span class="hljs-attr">:props</span>=<span class="hljs-string">&quot;treeProps&quot;</span>
+                     <span class="hljs-attr">:highlight-current</span>=<span class="hljs-string">&quot;true&quot;</span>
+                     @<span class="hljs-attr">node-click</span>=<span class="hljs-string">&quot;treeNodeClick&quot;</span>&gt;</span>
+              <span class="hljs-tag">&lt;<span class="hljs-name">template</span> #<span class="hljs-attr">default</span>=<span class="hljs-string">&quot;{ node, data }&quot;</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;custom-node-style&quot;</span>&gt;</span>
+                  <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;node-title&quot;</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">v-if</span>=<span class="hljs-string">&quot;data.status==0&quot;</span>
+                          <span class="hljs-attr">:style</span>=<span class="hljs-string">&quot;{&#x27;color&#x27;:&#x27;red&#x27;,&#x27;font-size&#x27;:&#x27;13px&#x27;}&quot;</span>&gt;</span> {{ data.title }}<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">v-else</span>
+                          <span class="hljs-attr">:style</span>=<span class="hljs-string">&quot;{&#x27;color&#x27;:&#x27;green&#x27;,&#x27;font-size&#x27;:&#x27;13px&#x27;}&quot;</span>&gt;</span> {{ data.title }}<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+                  <span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+                <span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+              <span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">el-tree</span>&gt;</span>
+          <span class="hljs-tag">&lt;/<span class="hljs-name">el-card</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">el-col</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">el-col</span> <span class="hljs-attr">:span</span>=<span class="hljs-string">&quot;14&quot;</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">el-card</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;box-card&quot;</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">template</span> #<span class="hljs-attr">header</span>&gt;</span>
+              <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;card-header&quot;</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">span</span>&gt;</span>文章详情<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+              <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">v-if</span>=<span class="hljs-string">&quot;blog.title&quot;</span>&gt;</span>
+              <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;my-title&quot;</span>&gt;</span> {{blog.title}}<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+              <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">v-html</span>=<span class="hljs-string">&quot;blog.content&quot;</span>
+                   <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;blog-detail&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">v-else</span>
+                 <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;no-data&quot;</span>&gt;</span>
+              请选择专题文章，查看详情
+            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+          <span class="hljs-tag">&lt;/<span class="hljs-name">el-card</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">el-col</span>&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-name">el-row</span>&gt;</span>
+
     <span class="hljs-tag">&lt;/<span class="hljs-name">Window</span>&gt;</span>
   <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+
 </code></pre>
-</div></div><h2 data-v-md-heading="js" data-v-md-line="20">js</h2>
-<div data-v-md-line="21"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code>
-&lt;script setup&gt;
+</div></div><h2 data-v-md-heading="js" data-v-md-line="67">js</h2>
+<div data-v-md-line="68"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code>&lt;script setup&gt;
 <span class="hljs-keyword">import</span> hljs <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;highlight.js&quot;</span>;
 <span class="hljs-keyword">import</span> <span class="hljs-string">&quot;highlight.js/styles/atom-one-light.css&quot;</span>; <span class="hljs-comment">//样式</span>
 
@@ -318,7 +365,8 @@ BlogDetail.vue</p>
 <span class="hljs-keyword">const</span> { proxy } = <span class="hljs-title function_">getCurrentInstance</span>();
 
 <span class="hljs-keyword">const</span> api = {
-  <span class="hljs-attr">getBlogDetail</span>: <span class="hljs-string">&quot;/blog/getBlogById&quot;</span>,
+  <span class="hljs-string">&quot;getBlogDetail&quot;</span>: <span class="hljs-string">&quot;/blog/getBlogById&quot;</span>,
+  <span class="hljs-string">&quot;getSpecialInfo&quot;</span>: <span class="hljs-string">&quot;blog/getSpecialInfo&quot;</span>,
 }
 
 <span class="hljs-keyword">const</span> windowConfig = <span class="hljs-title function_">reactive</span>({
@@ -332,9 +380,18 @@ BlogDetail.vue</p>
   }]
 })
 
+<span class="hljs-keyword">const</span> currentBlogId = <span class="hljs-title function_">ref</span>(<span class="hljs-literal">null</span>);
 <span class="hljs-keyword">const</span> blog = <span class="hljs-title function_">ref</span>({});
-<span class="hljs-keyword">const</span> <span class="hljs-title function_">showDetail</span> = <span class="hljs-keyword">async</span> (<span class="hljs-params">blogId</span>) =&gt; {
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">showDetail</span> = <span class="hljs-keyword">async</span> (<span class="hljs-params">data</span>) =&gt; {
   windowConfig.<span class="hljs-property">show</span> = <span class="hljs-literal">true</span>;
+  currentBlogId.<span class="hljs-property">value</span> = data.<span class="hljs-property">blogId</span>;
+  <span class="hljs-comment">//获取所有文章树</span>
+  <span class="hljs-title function_">getSpecialInfo</span>(data.<span class="hljs-property">categoryId</span>);
+  <span class="hljs-comment">//获取详情</span>
+  <span class="hljs-title function_">showBlogDetail</span>(data.<span class="hljs-property">blogId</span>);
+}
+
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">showBlogDetail</span> = <span class="hljs-keyword">async</span> (<span class="hljs-params">blogId</span>) =&gt; {
   <span class="hljs-keyword">let</span> result = <span class="hljs-keyword">await</span> proxy.<span class="hljs-title class_">Request</span>({
     <span class="hljs-attr">url</span>: api.<span class="hljs-property">getBlogDetail</span>,
     <span class="hljs-attr">params</span>: {
@@ -354,12 +411,45 @@ BlogDetail.vue</p>
   });
 }
 
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">treeNodeClick</span> = (<span class="hljs-params">data</span>) =&gt; {
+  <span class="hljs-keyword">if</span> (data.<span class="hljs-property">blogId</span> == <span class="hljs-string">&quot;0&quot;</span>) {
+    blog.<span class="hljs-property">value</span> = {};
+    <span class="hljs-keyword">return</span>;
+  }
+  <span class="hljs-title function_">showBlogDetail</span>(data.<span class="hljs-property">blogId</span>);
+}
+
+<span class="hljs-comment">//属性展示专题</span>
+<span class="hljs-keyword">const</span> treeProps = {
+  <span class="hljs-attr">children</span>: <span class="hljs-string">&quot;children&quot;</span>,
+  <span class="hljs-attr">label</span>: <span class="hljs-string">&quot;title&quot;</span>,
+  <span class="hljs-attr">value</span>: <span class="hljs-string">&quot;blogId&quot;</span>,
+};
+<span class="hljs-keyword">const</span> blogList = <span class="hljs-title function_">ref</span>([]);
+<span class="hljs-keyword">const</span> refTree = <span class="hljs-title function_">ref</span>(<span class="hljs-literal">null</span>);
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">getSpecialInfo</span> = <span class="hljs-keyword">async</span> (<span class="hljs-params">categoryId</span>) =&gt; {
+  <span class="hljs-keyword">let</span> result = <span class="hljs-keyword">await</span> proxy.<span class="hljs-title class_">Request</span>({
+    <span class="hljs-attr">url</span>: api.<span class="hljs-property">getSpecialInfo</span>,
+    <span class="hljs-attr">params</span>: {
+      <span class="hljs-attr">categoryId</span>: categoryId,
+      <span class="hljs-attr">showType</span>: <span class="hljs-string">&quot;1&quot;</span>
+    }
+  })
+  <span class="hljs-keyword">if</span> (!result) {
+    <span class="hljs-keyword">return</span>;
+  }
+  blogList.<span class="hljs-property">value</span> = result.<span class="hljs-property">data</span>;
+  <span class="hljs-title function_">nextTick</span>(<span class="hljs-function">() =&gt;</span> {
+    refTree.<span class="hljs-property">value</span>.<span class="hljs-title function_">setCurrentKey</span>(currentBlogId.<span class="hljs-property">value</span>);
+  });
+}
+
 <span class="hljs-title function_">defineExpose</span>({ showDetail })
 &lt;/script&gt;
+
 </code></pre>
-</div></div><h2 data-v-md-heading="css" data-v-md-line="71">css</h2>
-<div data-v-md-line="72"><div class="v-md-pre-wrapper v-md-pre-wrapper-css extra-class"><pre class="v-md-hljs-css"><code>
-&lt;style lang=&quot;scss&quot;&gt;
+</div></div><h2 data-v-md-heading="css" data-v-md-line="160">css</h2>
+<div data-v-md-line="161"><div class="v-md-pre-wrapper v-md-pre-wrapper-css extra-class"><pre class="v-md-hljs-css"><code>&lt;style lang=&quot;scss&quot;&gt;
 <span class="hljs-selector-class">.my-title</span> {
   <span class="hljs-attribute">font-size</span>: <span class="hljs-number">18px</span>;
 }
@@ -382,7 +472,7 @@ BlogDetail.vue</p>
             </div>
                 <div class="container-comment">
                     <div class="comment-title">评论</div>
-                    <div id="SOHUCS" sid="bLIAnUNUdx"></div>
+                    <div id="SOHUCS" sid="zkAAjqsOgD"></div>
                     <script charset="utf-8" type="text/javascript" src="https://cy-cdn.kuaizhan.com/upload/changyan.js"></script>
                     <script type="text/javascript">
                         window.changyan.api.config({
