@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>EasyBlog文档 - 新增、修改博客 - 我是程序员</title>
+        <meta name="keywords" content="新增、修改博客">
+        <meta name="description" content="主要代码template&lt;template&gt;&lt;div&gt;&lt;!--新增修改弹窗--&gt;&lt;Window:show=&quot;windowConfig.show&quot;:buttons=&quot;windowConfig.buttons&quot;@close=&quot;closeWindow&quot;&gt;&lt;el-form:model=&quot;blogFormData&quot;:rules=&quot;rules&quot;ref=&quot;blogFormRef&quot;&gt;&lt;el-form-itemprop=&quo">
+
+    <link rel="stylesheet" href="../resource/static/plugin/highlight/styles/github.min.css">
+    <link rel="stylesheet" href="../resource/static/plugin/viewer/viewer.min.css">
+    <script src="../resource/static/plugin/highlight/highlight.min.js"></script>
+    <script src="../resource/static/plugin/jquery/jquery.min.js"></script>
+    <script src="../resource/static/plugin/viewer/viewer-jquery.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <link rel="stylesheet" href="../resource/static/css/special.detail.css">
+    <script>
+        $(document).ready(function (e) {
+            createToc();
+            $("#content").viewer({
+                navbar: false
+            });
+
+            $("#content a").each(function (index, element) {
+                $(element).attr("target", "_blank");
+            })
+
+            $(".icon-arrow").click(function () {
+                let nextLiDom = $(this).parent().next("div").eq(0)
+                if ($(this).hasClass("arrow-down")) {
+                    $(this).removeClass("arrow-down");
+                    $(this).addClass("arrow-right");
+                    nextLiDom.hide();
+                } else {
+                    $(this).removeClass("arrow-right");
+                    $(this).addClass("arrow-down");
+                    nextLiDom.show();
+                }
+            });
+
+            //目录展开收齐
+            $("#toc-title").click(function () {
+                let spanDom = $(this).find(".icon-arrow")
+                if (spanDom.hasClass("arrow-down")) {
+                    spanDom.removeClass("arrow-down");
+                    spanDom.addClass("arrow-right");
+                    $("#toc").hide();
+                } else {
+                    spanDom.removeClass("arrow-right");
+                    spanDom.addClass("arrow-down");
+                    $("#toc").show();
+                }
+            });
+
+            let currentUrl = document.location.href;
+            currentUrl = currentUrl.substring(currentUrl.lastIndexOf("/") + 1, currentUrl.lastIndexOf("."));
+            $("#" + currentUrl).addClass("active");
+        });
+
+        const createToc = () => {
+            const hTagList = ["h1", "h2", "h3", "h4", "h5", "h6", "h7"]
+            const children = document.querySelector("#content").children;
+            const hList = [];
+            for (let i = 0; i < children.length; i++) {
+                const node = children[i];
+                let tagName = node.tagName;
+                tagName = tagName == undefined ? "" : tagName.toLowerCase();
+                if (hTagList.indexOf(tagName) != -1) {
+                    const id = "hash-node-" + i;
+                    node.setAttribute("id", id);
+                    hList.push({
+                        pId: "0",
+                        id: id,
+                        level: Number.parseInt(tagName.substring(1, 2)),
+                        name: node.innerText,
+                    });
+                }
+            }
+            for (let i = 0; i < hList.length; i++) {
+                findParentId(hList, hList[i], i);
+            }
+            const newDataList = convertLine2Tree(hList, "0");
+            if (newDataList.length == 0) {
+                $("<div class='no-data'>暂无目录信息</div>").appendTo($("#toc"));
+                return;
+            }
+            newDataList.forEach(element => {
+                createTree($("#toc"), element);
+            })
+        }
+
+        const createTree = (pNode, data) => {
+            const currentNode = $("<div></div>").appendTo(pNode);
+            let extPadding = 26;
+            if (data.children.length > 0) {
+                extPadding = 10
+            }
+            const paddingLeft = (data.level - 1) * 16 + extPadding;
+            const titleNode = $("<div class='title' style='padding-left:" + paddingLeft + "px'></div>").appendTo(currentNode);
+            if (data.children.length > 0) {
+                $("<span class='icon-arrow arrow-down'></span>").appendTo(titleNode);
+            }
+            $("<a href='#" + data.id + "'  title='" + data.name + "'>" + data.name + "</a>").appendTo(titleNode);
+
+            if (data.children.length > 0) {
+                let subNode = $("<div class='sub-title'></div>").appendTo(currentNode);
+                data.children.forEach(item => {
+                    createTree(subNode, item);
+                })
+            }
+        }
+
+        //查找父级节点
+        const findParentId = (hList, item, index) => {
+            for (let i = index - 1; i >= 0; i--) {
+                const pNode = hList[i];
+                if (pNode.level < item.level) {
+                    item.pId = pNode.id;
+                    break;
+                }
+            }
+        }
+
+        //将数据转换为树形
+        const convertLine2Tree = (hList, pId) => {
+            const children = [];
+            hList.forEach(element => {
+                if (element.pId === pId) {
+                    children.push(element);
+                    element.children = convertLine2Tree(hList, element.id);
+                }
+            });
+            return children;
+        }
+
+        $(window).scroll(function () {
+            //console.log($(document).scrollTop());
+            $("#right-container").css("top", $(document).scrollTop() + "px");
+        });
+
+        function scroll(markId) {
+            let url = document.location.href;
+            if (url.indexOf("#") == -1) {
+                document.location.href = url + "#" + markId;
+            } else {
+                document.location.href = url.substring(0, url.indexOf("#") + 1) + markId;
+            }
+            $("html,body").animate({scrollTop: $("#" + markId).offset().top - 80}, 100);
+        }
+    </script>
+</head>
+<body>
+    <div class="top">
+        <div class="top-container">
+            <div class="logo">
+                    <a href="../index.html">我是程序员</a>
+            </div>
+                <a href="../index.html" class="nav ">博客</a>
+                <a href="../category.html" class="nav ">分类专栏</a>
+                <a href="../special.html" class="nav active">专题</a>
+                <a href="../user.html" class="nav ">成员</a>
+                <a href="../comment.html" class="nav ">留言板</a>
+        </div>
+    </div>
+<div class="body-container">
+    <div class="blog-detail">
+        <div class="blog-special-list">
+            <div class="blog-special">
+                <div class="category-image">
+                        <img src="../resource/image/202209/qmHjiTxzjtapHaOojwciCzTlqCPFWs.jpg">
+                </div>
+                <div class="category-info">
+                    <div class="category-title" title="EasyBlog文档">EasyBlog文档</div>
+                    <div class="blog-count">文章数：14</div>
+                </div>
+            </div>
+            <div class="category-desc" title="EasyBlog 相关文档，接口，环境搭建">简介：EasyBlog 相关文档，接口，环境搭建</div>
+            <div class="blog-list toc">
+        <div>
+            <div class="title" style="padding-left:26px" id="DEdkCxjkqy">
+                <a href="DEdkCxjkqy.html" title="简介">简介</a>
+            </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:10px" id="gTvGKLsNNZ">
+                    <span class="icon-arrow arrow-down"></span>
+                <a href="gTvGKLsNNZ.html" title="后端服务部署">后端服务部署</a>
+            </div>
+                <div class="sub-title">
+        <div>
+            <div class="title" style="padding-left:42px" id="vbbStsCMXs">
+                <a href="vbbStsCMXs.html" title="安装后端程序">安装后端程序</a>
+            </div>
+        </div>
+                </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:10px" id="azvNIIFQCy">
+                    <span class="icon-arrow arrow-down"></span>
+                <a href="azvNIIFQCy.html" title="接口文档">接口文档</a>
+            </div>
+                <div class="sub-title">
+        <div>
+            <div class="title" style="padding-left:42px" id="cqzKWftzyr">
+                <a href="cqzKWftzyr.html" title="管理端">管理端</a>
+            </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:42px" id="wBURpKFtiT">
+                <a href="wBURpKFtiT.html" title="web端">web端</a>
+            </div>
+        </div>
+                </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:10px" id="rTZtGSfpKO">
+                    <span class="icon-arrow arrow-down"></span>
+                <a href="rTZtGSfpKO.html" title="管理端">管理端</a>
+            </div>
+                <div class="sub-title">
+        <div>
+            <div class="title" style="padding-left:42px" id="ReLhoidFfc">
+                <a href="ReLhoidFfc.html" title="前端项目构建">前端项目构建</a>
+            </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:42px" id="yZiEkYlOaT">
+                <a href="yZiEkYlOaT.html" title="登录">登录</a>
+            </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:42px" id="QYdGDDRMGU">
+                <a href="QYdGDDRMGU.html" title="博客分类">博客分类</a>
+            </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:26px" id="uWueRbkwnp">
+                    <span class="icon-arrow arrow-down"></span>
+                <a href="uWueRbkwnp.html" title="博客管理">博客管理</a>
+            </div>
+                <div class="sub-title">
+        <div>
+            <div class="title" style="padding-left:58px" id="IgizsOFvBL">
+                <a href="IgizsOFvBL.html" title="博客列表">博客列表</a>
+            </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:58px" id="bFvFteyYlx">
+                <a href="bFvFteyYlx.html" title="新增、修改博客">新增、修改博客</a>
+            </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:58px" id="bLIAnUNUdx">
+                <a href="bLIAnUNUdx.html" title="博客详情">博客详情</a>
+            </div>
+        </div>
+                </div>
+        </div>
+                </div>
+        </div>
+            </div>
+
+        </div>
+        <div class="container">
+            <div class="container-content">
+                <div>
+                    <div class="blog-title">新增、修改博客</div>
+                    <div class="blog-info">
+                        <div class="time">2022-10-25 02:51:19</div>
+                        <div class="nick-name">作者：<a href="../user.html#100000">程序员老罗</a></div>
+                    </div>
+                    <div class="content" id="content"><h1 data-v-md-heading="主要代码" data-v-md-line="1">主要代码</h1>
+<h2 data-v-md-heading="template" data-v-md-line="2">template</h2>
+<div data-v-md-line="3"><div class="v-md-pre-wrapper v-md-pre-wrapper-html extra-class"><pre class="v-md-hljs-html"><code><span class="hljs-tag">&lt;<span class="hljs-name">template</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-comment">&lt;!--新增修改弹窗--&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Window</span> <span class="hljs-attr">:show</span>=<span class="hljs-string">&quot;windowConfig.show&quot;</span>
+            <span class="hljs-attr">:buttons</span>=<span class="hljs-string">&quot;windowConfig.buttons&quot;</span>
+            @<span class="hljs-attr">close</span>=<span class="hljs-string">&quot;closeWindow&quot;</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">el-form</span> <span class="hljs-attr">:model</span>=<span class="hljs-string">&quot;blogFormData&quot;</span>
+               <span class="hljs-attr">:rules</span>=<span class="hljs-string">&quot;rules&quot;</span>
+               <span class="hljs-attr">ref</span>=<span class="hljs-string">&quot;blogFormRef&quot;</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">el-form-item</span> <span class="hljs-attr">prop</span>=<span class="hljs-string">&quot;title&quot;</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;title-input&quot;</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">el-input</span> <span class="hljs-attr">placeholder</span>=<span class="hljs-string">&quot;请输入博客标题&quot;</span>
+                      <span class="hljs-attr">v-model</span>=<span class="hljs-string">&quot;blogFormData.title&quot;</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">el-input</span>&gt;</span>
+          <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">el-form-item</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">el-form-item</span> <span class="hljs-attr">prop</span>=<span class="hljs-string">&quot;content&quot;</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">:style</span>=<span class="hljs-string">&quot;{&#x27;width&#x27;:&#x27;100%&#x27;}&quot;</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">EditorHtml</span> <span class="hljs-attr">:height</span>=<span class="hljs-string">&quot;editorHtmlHeight&quot;</span>
+                        <span class="hljs-attr">v-model</span>=<span class="hljs-string">&quot;blogFormData.content&quot;</span>
+                        <span class="hljs-attr">v-if</span>=<span class="hljs-string">&quot;blogFormData.editorType==0&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">EditorHtml</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">EditorMarkdown</span> <span class="hljs-attr">v-else</span>
+                            <span class="hljs-attr">:height</span>=<span class="hljs-string">&quot;editorMarkdownHeight&quot;</span>
+                            <span class="hljs-attr">v-model</span>=<span class="hljs-string">&quot;blogFormData.markdownContent&quot;</span>
+                            @<span class="hljs-attr">htmlContent</span>=<span class="hljs-string">&quot;setHtmlContent&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">EditorMarkdown</span>&gt;</span>
+          <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+
+        <span class="hljs-tag">&lt;/<span class="hljs-name">el-form-item</span>&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-name">el-form</span>&gt;</span>
+
+      <span class="hljs-tag">&lt;<span class="hljs-name">Dialog</span> <span class="hljs-attr">:show</span>=<span class="hljs-string">&quot;dialogConfig.show&quot;</span>
+              <span class="hljs-attr">:title</span>=<span class="hljs-string">&quot;dialogConfig.title&quot;</span>
+              <span class="hljs-attr">:buttons</span>=<span class="hljs-string">&quot;dialogConfig.buttons&quot;</span>
+              <span class="hljs-attr">width</span>=<span class="hljs-string">&quot;800px&quot;</span>
+              @<span class="hljs-attr">close</span>=<span class="hljs-string">&quot;dialogConfig.show=false&quot;</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">el-form</span> <span class="hljs-attr">:model</span>=<span class="hljs-string">&quot;blogFormData&quot;</span>
+                 <span class="hljs-attr">:rules</span>=<span class="hljs-string">&quot;rules&quot;</span>
+                 <span class="hljs-attr">ref</span>=<span class="hljs-string">&quot;settingsFormRef&quot;</span>
+                 <span class="hljs-attr">label-width</span>=<span class="hljs-string">&quot;80px&quot;</span>
+                 <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;blog-setting-form&quot;</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">el-form-item</span> <span class="hljs-attr">label</span>=<span class="hljs-string">&quot;博客分类&quot;</span>
+                        <span class="hljs-attr">prop</span>=<span class="hljs-string">&quot;categoryId&quot;</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">el-select</span> <span class="hljs-attr">v-model</span>=<span class="hljs-string">&quot;blogFormData.categoryId&quot;</span>
+                       <span class="hljs-attr">clearable</span>
+                       <span class="hljs-attr">placeholder</span>=<span class="hljs-string">&quot;请选择分类&quot;</span>
+                       <span class="hljs-attr">:style</span>=<span class="hljs-string">&quot;{width:&#x27;100%&#x27;}&quot;</span>&gt;</span>
+              <span class="hljs-tag">&lt;<span class="hljs-name">el-option</span> <span class="hljs-attr">:value</span>=<span class="hljs-string">&quot;0&quot;</span>
+                         <span class="hljs-attr">label</span>=<span class="hljs-string">&quot;全部分类&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">el-option</span>&gt;</span>
+              <span class="hljs-tag">&lt;<span class="hljs-name">el-option</span> <span class="hljs-attr">:value</span>=<span class="hljs-string">&quot;item.categoryId&quot;</span>
+                         <span class="hljs-attr">:label</span>=<span class="hljs-string">&quot;item.categoryName&quot;</span>
+                         <span class="hljs-attr">v-for</span>=<span class="hljs-string">&quot;item in categoryList&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">el-option</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">el-select</span>&gt;</span>
+          <span class="hljs-tag">&lt;/<span class="hljs-name">el-form-item</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">el-form-item</span> <span class="hljs-attr">label</span>=<span class="hljs-string">&quot;封面&quot;</span>
+                        <span class="hljs-attr">prop</span>=<span class="hljs-string">&quot;cover&quot;</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">CoverUpload</span> <span class="hljs-attr">v-model</span>=<span class="hljs-string">&quot;blogFormData.cover&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">CoverUpload</span>&gt;</span>
+          <span class="hljs-tag">&lt;/<span class="hljs-name">el-form-item</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">el-form-item</span> <span class="hljs-attr">label</span>=<span class="hljs-string">&quot;博客类型&quot;</span>
+                        <span class="hljs-attr">prop</span>=<span class="hljs-string">&quot;type&quot;</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">el-radio-group</span> <span class="hljs-attr">v-model</span>=<span class="hljs-string">&quot;blogFormData.type&quot;</span>&gt;</span>
+              <span class="hljs-tag">&lt;<span class="hljs-name">el-radio</span> <span class="hljs-attr">:label</span>=<span class="hljs-string">&quot;0&quot;</span>&gt;</span>原创<span class="hljs-tag">&lt;/<span class="hljs-name">el-radio</span>&gt;</span>
+              <span class="hljs-tag">&lt;<span class="hljs-name">el-radio</span> <span class="hljs-attr">:label</span>=<span class="hljs-string">&quot;1&quot;</span>&gt;</span>转载<span class="hljs-tag">&lt;/<span class="hljs-name">el-radio</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">el-radio-group</span>&gt;</span>
+          <span class="hljs-tag">&lt;/<span class="hljs-name">el-form-item</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">el-form-item</span> <span class="hljs-attr">label</span>=<span class="hljs-string">&quot;原文地址&quot;</span>
+                        <span class="hljs-attr">prop</span>=<span class="hljs-string">&quot;reprintUrl&quot;</span>
+                        <span class="hljs-attr">v-if</span>=<span class="hljs-string">&quot;blogFormData.type==1&quot;</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">el-input</span> <span class="hljs-attr">v-model</span>=<span class="hljs-string">&quot;blogFormData.reprintUrl&quot;</span>
+                      <span class="hljs-attr">placeholder</span>=<span class="hljs-string">&quot;请输入原文地址&quot;</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">el-input</span>&gt;</span>
+          <span class="hljs-tag">&lt;/<span class="hljs-name">el-form-item</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">el-form-item</span> <span class="hljs-attr">label</span>=<span class="hljs-string">&quot;评论&quot;</span>
+                        <span class="hljs-attr">prop</span>=<span class="hljs-string">&quot;allowComment&quot;</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;allow-comment&quot;</span>&gt;</span>
+              <span class="hljs-tag">&lt;<span class="hljs-name">el-radio-group</span> <span class="hljs-attr">v-model</span>=<span class="hljs-string">&quot;blogFormData.allowComment&quot;</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">el-radio</span> <span class="hljs-attr">:label</span>=<span class="hljs-string">&quot;1&quot;</span>&gt;</span>允许<span class="hljs-tag">&lt;/<span class="hljs-name">el-radio</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">el-radio</span> <span class="hljs-attr">:label</span>=<span class="hljs-string">&quot;0&quot;</span>&gt;</span>不允许<span class="hljs-tag">&lt;/<span class="hljs-name">el-radio</span>&gt;</span>
+              <span class="hljs-tag">&lt;/<span class="hljs-name">el-radio-group</span>&gt;</span>
+              <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;info&quot;</span>&gt;</span>请先在评论设置里设置好相应参数，评论才会生效<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+
+          <span class="hljs-tag">&lt;/<span class="hljs-name">el-form-item</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">el-form-item</span> <span class="hljs-attr">label</span>=<span class="hljs-string">&quot;博客摘要&quot;</span>
+                        <span class="hljs-attr">prop</span>=<span class="hljs-string">&quot;summary&quot;</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">el-input</span> <span class="hljs-attr">v-model</span>=<span class="hljs-string">&quot;blogFormData.summary&quot;</span>
+                      <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;textarea&quot;</span>
+                      <span class="hljs-attr">placeholder</span>=<span class="hljs-string">&quot;请输入摘要&quot;</span>
+                      <span class="hljs-attr">:autosize</span>=<span class="hljs-string">&quot;{minRows:4,maxRows:4}&quot;</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">el-input</span>&gt;</span>
+          <span class="hljs-tag">&lt;/<span class="hljs-name">el-form-item</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">el-form-item</span> <span class="hljs-attr">label</span>=<span class="hljs-string">&quot;博客标签&quot;</span>
+                        <span class="hljs-attr">prop</span>=<span class="hljs-string">&quot;categoryDesc&quot;</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;tag-input-panel&quot;</span>&gt;</span>
+              <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;tag-list&quot;</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">el-tag</span> <span class="hljs-attr">v-for</span>=<span class="hljs-string">&quot;(item,index) in blogFormData.tag&quot;</span>
+                        @<span class="hljs-attr">close</span>=<span class="hljs-string">&quot;closeTag(index)&quot;</span>
+                        <span class="hljs-attr">closable</span>
+                        <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;tag-item&quot;</span>&gt;</span>
+                  {{item}}
+                <span class="hljs-tag">&lt;/<span class="hljs-name">el-tag</span>&gt;</span>
+              <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+
+              <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;info&quot;</span>
+                    <span class="hljs-attr">v-if</span>=<span class="hljs-string">&quot;blogFormData.tag.length==0&quot;</span>&gt;</span>添加标签更容易被搜索引擎收录<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+              <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;iconfont icon-add&quot;</span>
+                    @<span class="hljs-attr">click</span>=<span class="hljs-string">&quot;showTagInputHandler&quot;</span>
+                    <span class="hljs-attr">v-if</span>=<span class="hljs-string">&quot;!showTagInput&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+              <span class="hljs-tag">&lt;<span class="hljs-name">el-input</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;tag-input&quot;</span>
+                        <span class="hljs-attr">v-if</span>=<span class="hljs-string">&quot;showTagInput&quot;</span>
+                        <span class="hljs-attr">v-model</span>=<span class="hljs-string">&quot;tagInputValue&quot;</span>
+                        @<span class="hljs-attr">blur</span>=<span class="hljs-string">&quot;tagInputResult&quot;</span>
+                        @<span class="hljs-attr">keyup.enter</span>=<span class="hljs-string">&quot;tagInputResult&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">el-input</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+          <span class="hljs-tag">&lt;/<span class="hljs-name">el-form-item</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">el-form</span>&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-name">Dialog</span>&gt;</span>
+
+    <span class="hljs-tag">&lt;/<span class="hljs-name">Window</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+</code></pre>
+</div></div><h2 data-v-md-heading="js" data-v-md-line="125">js</h2>
+<div data-v-md-line="126"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code>
+&lt;script setup&gt;
+<span class="hljs-keyword">import</span> { getCurrentInstance, nextTick, onMounted, onUnmounted, reactive, ref } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;vue&quot;</span>
+
+<span class="hljs-keyword">const</span> { proxy } = <span class="hljs-title function_">getCurrentInstance</span>();
+
+<span class="hljs-keyword">const</span> editorMarkdownHeight = <span class="hljs-variable language_">window</span>.<span class="hljs-property">innerHeight</span> - <span class="hljs-number">60</span> - <span class="hljs-number">20</span> - <span class="hljs-number">30</span> - <span class="hljs-number">50</span> - <span class="hljs-number">10</span> - <span class="hljs-number">50</span> - <span class="hljs-number">10</span>;
+<span class="hljs-keyword">const</span> editorHtmlHeight = <span class="hljs-variable language_">window</span>.<span class="hljs-property">innerHeight</span> - <span class="hljs-number">60</span> - <span class="hljs-number">20</span> - <span class="hljs-number">30</span> - <span class="hljs-number">50</span> - <span class="hljs-number">100</span> - <span class="hljs-number">50</span>;
+
+<span class="hljs-keyword">const</span> api = {
+  <span class="hljs-attr">loadAllCategory4Blog</span>: <span class="hljs-string">&quot;/category/loadAllCategory4Blog&quot;</span>,
+  <span class="hljs-attr">saveBlog</span>: <span class="hljs-string">&quot;/blog/saveBlog&quot;</span>,
+  <span class="hljs-attr">getUserInfo</span>: <span class="hljs-string">&quot;getUserInfo&quot;</span>,
+  <span class="hljs-attr">getBlogDetail</span>: <span class="hljs-string">&quot;/blog/getBlogById&quot;</span>,
+  <span class="hljs-attr">autoSave</span>: <span class="hljs-string">&quot;/blog/autoSaveBlog&quot;</span>
+}
+
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">init</span> = (<span class="hljs-params">type, data</span>) =&gt; {
+  <span class="hljs-title function_">startTimer</span>();
+  windowConfig.<span class="hljs-property">show</span> = <span class="hljs-literal">true</span>;
+  <span class="hljs-title function_">nextTick</span>(<span class="hljs-function">() =&gt;</span> {
+    blogFormRef.<span class="hljs-property">value</span>.<span class="hljs-title function_">resetFields</span>();
+    blogFormData.<span class="hljs-property">value</span> = { <span class="hljs-attr">tag</span>: [] };
+    <span class="hljs-keyword">if</span> (type === <span class="hljs-string">&quot;add&quot;</span>) {
+      <span class="hljs-title function_">getUserInfo</span>();
+    } <span class="hljs-keyword">else</span> {
+      <span class="hljs-title function_">getBlogDetail</span>(data.<span class="hljs-property">blogId</span>);
+    }
+  })
+}
+
+<span class="hljs-title function_">defineExpose</span>({ init });
+
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">getUserInfo</span> = <span class="hljs-keyword">async</span> (<span class="hljs-params"></span>) =&gt; {
+  <span class="hljs-keyword">let</span> result = <span class="hljs-keyword">await</span> proxy.<span class="hljs-title class_">Request</span>({
+    <span class="hljs-attr">url</span>: api.<span class="hljs-property">getUserInfo</span>,
+  })
+  <span class="hljs-keyword">if</span> (!result) {
+    <span class="hljs-keyword">return</span>;
+  }
+  blogFormData.<span class="hljs-property">value</span>.<span class="hljs-property">editorType</span> = result.<span class="hljs-property">data</span>.<span class="hljs-property">editorType</span>;
+}
+
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">getBlogDetail</span> = <span class="hljs-keyword">async</span> (<span class="hljs-params">blogId</span>) =&gt; {
+  <span class="hljs-keyword">let</span> result = <span class="hljs-keyword">await</span> proxy.<span class="hljs-title class_">Request</span>({
+    <span class="hljs-attr">url</span>: api.<span class="hljs-property">getBlogDetail</span>,
+    <span class="hljs-attr">params</span>: {
+      <span class="hljs-attr">blogId</span>: blogId
+    }
+  })
+  <span class="hljs-keyword">if</span> (!result) {
+    <span class="hljs-keyword">return</span>
+  }
+  blogFormData.<span class="hljs-property">value</span> = result.<span class="hljs-property">data</span>;
+  <span class="hljs-keyword">if</span> (result.<span class="hljs-property">data</span>.<span class="hljs-property">tag</span>) {
+    blogFormData.<span class="hljs-property">value</span>.<span class="hljs-property">tag</span> = result.<span class="hljs-property">data</span>.<span class="hljs-property">tag</span>.<span class="hljs-title function_">split</span>(<span class="hljs-string">&quot;|&quot;</span>);
+  } <span class="hljs-keyword">else</span> {
+    blogFormData.<span class="hljs-property">value</span>.<span class="hljs-property">tag</span> = [];
+  }
+}
+
+<span class="hljs-keyword">let</span> timmer = <span class="hljs-title function_">ref</span>(<span class="hljs-literal">null</span>);
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">startTimer</span> = (<span class="hljs-params"></span>) =&gt; {
+  timmer.<span class="hljs-property">value</span> = <span class="hljs-built_in">setInterval</span>(<span class="hljs-function">() =&gt;</span> {
+    <span class="hljs-title function_">autoSave</span>();
+  }, <span class="hljs-number">10000</span>);
+}
+
+
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">cleanTimer</span> = (<span class="hljs-params"></span>) =&gt; {
+  <span class="hljs-keyword">if</span> (timmer.<span class="hljs-property">value</span> !== <span class="hljs-literal">null</span>) {
+    <span class="hljs-built_in">clearInterval</span>(timmer.<span class="hljs-property">value</span>);
+    timmer.<span class="hljs-property">value</span> = <span class="hljs-literal">null</span>;
+  }
+}
+
+<span class="hljs-comment">//自动保存</span>
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">autoSave</span> = <span class="hljs-keyword">async</span> (<span class="hljs-params"></span>) =&gt; {
+  <span class="hljs-keyword">if</span> (blogFormData.<span class="hljs-property">value</span>.<span class="hljs-property">title</span> == <span class="hljs-literal">undefined</span> || blogFormData.<span class="hljs-property">value</span>.<span class="hljs-property">content</span> == <span class="hljs-literal">undefined</span> || timmer.<span class="hljs-property">value</span> == <span class="hljs-literal">null</span> || dialogConfig.<span class="hljs-property">show</span>) {
+    <span class="hljs-keyword">return</span>;
+  }
+  <span class="hljs-keyword">const</span> params = {};
+  <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">assign</span>(params, blogFormData.<span class="hljs-property">value</span>)
+  <span class="hljs-keyword">let</span> result = <span class="hljs-keyword">await</span> proxy.<span class="hljs-title class_">Request</span>({
+    <span class="hljs-attr">url</span>: api.<span class="hljs-property">autoSave</span>,
+    <span class="hljs-attr">showLoading</span>: <span class="hljs-literal">false</span>,
+    <span class="hljs-attr">params</span>: params
+  })
+  <span class="hljs-keyword">if</span> (!result) {
+    <span class="hljs-keyword">return</span>;
+  }
+  blogFormData.<span class="hljs-property">value</span>.<span class="hljs-property">blogId</span> = result.<span class="hljs-property">data</span>;
+}
+
+
+<span class="hljs-comment">//新增,修改</span>
+<span class="hljs-keyword">const</span> windowConfig = <span class="hljs-title function_">reactive</span>({
+  <span class="hljs-attr">show</span>: <span class="hljs-literal">false</span>,
+  <span class="hljs-attr">buttons</span>: [{
+    <span class="hljs-attr">type</span>: <span class="hljs-string">&quot;danger&quot;</span>,
+    <span class="hljs-attr">text</span>: <span class="hljs-string">&quot;确定&quot;</span>,
+    <span class="hljs-attr">click</span>: <span class="hljs-function">(<span class="hljs-params">e</span>) =&gt;</span> {
+      <span class="hljs-title function_">showSettings</span>();
+    }
+  }]
+})
+
+<span class="hljs-keyword">const</span> emit = <span class="hljs-title function_">defineEmits</span>();
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">closeWindow</span> = (<span class="hljs-params"></span>) =&gt; {
+  windowConfig.<span class="hljs-property">show</span> = <span class="hljs-literal">false</span>;
+  <span class="hljs-title function_">emit</span>(<span class="hljs-string">&quot;callback&quot;</span>)
+  <span class="hljs-keyword">if</span> (timmer.<span class="hljs-property">value</span> !== <span class="hljs-literal">null</span>) {
+    <span class="hljs-title function_">cleanTimer</span>();
+  }
+}
+
+
+
+<span class="hljs-comment">//博客正文</span>
+<span class="hljs-keyword">const</span> blogFormRef = <span class="hljs-title function_">ref</span>(<span class="hljs-literal">null</span>);
+<span class="hljs-keyword">const</span> blogFormData = <span class="hljs-title function_">ref</span>({ <span class="hljs-attr">tag</span>: [] });
+
+<span class="hljs-comment">//markdown编辑器设置html内容</span>
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">setHtmlContent</span> = (<span class="hljs-params">htmlContent</span>) =&gt; {
+  blogFormData.<span class="hljs-property">value</span>.<span class="hljs-property">content</span> = htmlContent
+}
+<span class="hljs-comment">//第一步提交 展示配置弹窗</span>
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">showSettings</span> = (<span class="hljs-params"></span>) =&gt; {
+  blogFormRef.<span class="hljs-property">value</span>.<span class="hljs-title function_">validate</span>(<span class="hljs-keyword">async</span> (valid) =&gt; {
+    <span class="hljs-keyword">if</span> (!valid) {
+      <span class="hljs-keyword">return</span>;
+    }
+    blogFormData.<span class="hljs-property">tag</span> = blogFormData.<span class="hljs-property">tag</span> == <span class="hljs-literal">null</span> ? [] : blogFormData.<span class="hljs-property">tag</span>;
+    dialogConfig.<span class="hljs-property">show</span> = <span class="hljs-literal">true</span>;
+  });
+}
+
+<span class="hljs-keyword">const</span> rules = {
+  <span class="hljs-attr">title</span>: [{ <span class="hljs-attr">required</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">message</span>: <span class="hljs-string">&quot;请输入标题&quot;</span> }],
+  <span class="hljs-attr">content</span>: [{ <span class="hljs-attr">required</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">message</span>: <span class="hljs-string">&quot;请输入正文&quot;</span> }],
+  <span class="hljs-attr">categoryId</span>: [{ <span class="hljs-attr">required</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">message</span>: <span class="hljs-string">&quot;请选择博客分类&quot;</span> }],
+  <span class="hljs-attr">type</span>: [{ <span class="hljs-attr">required</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">message</span>: <span class="hljs-string">&quot;请选择博客类型&quot;</span> }],
+  <span class="hljs-attr">allowComment</span>: [{ <span class="hljs-attr">required</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">message</span>: <span class="hljs-string">&quot;请选择是否允许评论&quot;</span> }],
+  <span class="hljs-attr">reprintUrl</span>: [{ <span class="hljs-attr">required</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">message</span>: <span class="hljs-string">&quot;请输入原文地址&quot;</span> }],
+}
+
+<span class="hljs-comment">//博客设置</span>
+<span class="hljs-keyword">const</span> dialogConfig = <span class="hljs-title function_">reactive</span>({
+  <span class="hljs-attr">show</span>: <span class="hljs-literal">false</span>,
+  <span class="hljs-attr">title</span>: <span class="hljs-string">&quot;博客设置&quot;</span>,
+  <span class="hljs-attr">buttons</span>: [{
+    <span class="hljs-attr">type</span>: <span class="hljs-string">&quot;danger&quot;</span>,
+    <span class="hljs-attr">text</span>: <span class="hljs-string">&quot;确定&quot;</span>,
+    <span class="hljs-attr">click</span>: <span class="hljs-function">(<span class="hljs-params">e</span>) =&gt;</span> {
+      <span class="hljs-title function_">submitBlog</span>();
+    }
+  }]
+})
+<span class="hljs-comment">//博客分类</span>
+<span class="hljs-keyword">const</span> categoryList = <span class="hljs-title function_">ref</span>([]);
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">loadCategory</span> = <span class="hljs-keyword">async</span> (<span class="hljs-params"></span>) =&gt; {
+  <span class="hljs-keyword">let</span> result = <span class="hljs-keyword">await</span> proxy.<span class="hljs-title class_">Request</span>({
+    <span class="hljs-attr">url</span>: api.<span class="hljs-property">loadAllCategory4Blog</span>,
+  })
+  <span class="hljs-keyword">if</span> (!result) {
+    result
+  };
+  categoryList.<span class="hljs-property">value</span> = result.<span class="hljs-property">data</span>;
+}
+<span class="hljs-title function_">onMounted</span>(<span class="hljs-function">() =&gt;</span> {
+  <span class="hljs-title function_">loadCategory</span>();
+})
+
+<span class="hljs-title function_">onUnmounted</span>(<span class="hljs-function">() =&gt;</span> {
+  <span class="hljs-title function_">cleanTimer</span>();
+})
+
+<span class="hljs-comment">//删除标签</span>
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">closeTag</span> = (<span class="hljs-params">index</span>) =&gt; {
+  blogFormData.<span class="hljs-property">value</span>.<span class="hljs-property">tag</span>.<span class="hljs-title function_">splice</span>(index, <span class="hljs-number">1</span>);
+}
+
+<span class="hljs-comment">//是否显示tag输入框</span>
+<span class="hljs-keyword">const</span> showTagInput = <span class="hljs-title function_">ref</span>(<span class="hljs-literal">false</span>)
+
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">showTagInputHandler</span> = (<span class="hljs-params"></span>) =&gt; {
+  showTagInput.<span class="hljs-property">value</span> = <span class="hljs-literal">true</span>;
+}
+<span class="hljs-comment">//tag输入框的值</span>
+<span class="hljs-keyword">const</span> tagInputValue = <span class="hljs-title function_">ref</span>(<span class="hljs-literal">null</span>);
+
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">tagInputResult</span> = (<span class="hljs-params">e</span>) =&gt; {
+  <span class="hljs-keyword">if</span> (tagInputValue.<span class="hljs-property">value</span> == <span class="hljs-literal">undefined</span>) {
+    <span class="hljs-keyword">return</span>;
+  }
+  showTagInput.<span class="hljs-property">value</span> = <span class="hljs-literal">false</span>;
+  <span class="hljs-keyword">if</span> (blogFormData.<span class="hljs-property">value</span>.<span class="hljs-property">tag</span>.<span class="hljs-title function_">indexOf</span>(tagInputValue.<span class="hljs-property">value</span>) == -<span class="hljs-number">1</span>) {
+    blogFormData.<span class="hljs-property">value</span>.<span class="hljs-property">tag</span>.<span class="hljs-title function_">push</span>(tagInputValue.<span class="hljs-property">value</span>);
+  }
+  tagInputValue.<span class="hljs-property">value</span> = <span class="hljs-literal">undefined</span>;
+}
+
+<span class="hljs-keyword">const</span> settingsFormRef = <span class="hljs-title function_">ref</span>();
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">submitBlog</span> = (<span class="hljs-params"></span>) =&gt; {
+  settingsFormRef.<span class="hljs-property">value</span>.<span class="hljs-title function_">validate</span>(<span class="hljs-keyword">async</span> (valid) =&gt; {
+    <span class="hljs-keyword">if</span> (!valid) {
+      <span class="hljs-keyword">return</span>;
+    }
+    <span class="hljs-keyword">const</span> params = {
+    }
+    <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">assign</span>(params, blogFormData.<span class="hljs-property">value</span>);
+    params.<span class="hljs-property">tag</span> = params.<span class="hljs-property">tag</span>.<span class="hljs-title function_">join</span>(<span class="hljs-string">&quot;|&quot;</span>);
+    <span class="hljs-keyword">let</span> result = <span class="hljs-keyword">await</span> proxy.<span class="hljs-title class_">Request</span>({
+      <span class="hljs-attr">url</span>: api.<span class="hljs-property">saveBlog</span>,
+      params
+    });
+    <span class="hljs-keyword">if</span> (!result) {
+      <span class="hljs-keyword">return</span>;
+    }
+    proxy.<span class="hljs-property">Message</span>.<span class="hljs-title function_">success</span>(<span class="hljs-string">&quot;保存博客成功&quot;</span>);
+    dialogConfig.<span class="hljs-property">show</span> = <span class="hljs-literal">false</span>;
+    <span class="hljs-title function_">closeWindow</span>();
+  });
+}
+
+&lt;/script&gt;
+</code></pre>
+</div></div><h2 data-v-md-heading="css" data-v-md-line="354">css</h2>
+<div data-v-md-line="355"><div class="v-md-pre-wrapper v-md-pre-wrapper-css extra-class"><pre class="v-md-hljs-css"><code>&lt;style lang=&quot;scss&quot;&gt;
+<span class="hljs-selector-class">.is-error</span> <span class="hljs-selector-class">.title-input</span> <span class="hljs-selector-class">.el-input__wrapper</span> {
+  <span class="hljs-attribute">box-shadow</span>: none;
+}
+
+<span class="hljs-selector-class">.title-input</span> {
+  <span class="hljs-attribute">width</span>: <span class="hljs-number">100%</span>;
+  <span class="hljs-attribute">border-bottom</span>: <span class="hljs-number">1px</span> solid <span class="hljs-number">#ddd</span>;
+  <span class="hljs-selector-class">.el-input__wrapper</span> {
+    <span class="hljs-attribute">box-shadow</span>: none;
+  }
+
+  <span class="hljs-selector-class">.el-form-item</span><span class="hljs-selector-class">.is-error</span> <span class="hljs-selector-class">.el-input__wrapper</span> {
+    <span class="hljs-attribute">box-shadow</span>: none;
+  }
+
+  <span class="hljs-selector-tag">input</span> {
+    <span class="hljs-attribute">font-size</span>: <span class="hljs-number">18px</span>;
+  }
+}
+<span class="hljs-selector-class">.blog-setting-form</span> {
+  <span class="hljs-selector-class">.allow-comment</span> {
+    <span class="hljs-attribute">display</span>: flex;
+    <span class="hljs-selector-class">.info</span> {
+      <span class="hljs-attribute">margin-left</span>: <span class="hljs-number">10px</span>;
+      <span class="hljs-attribute">color</span>: <span class="hljs-built_in">rgb</span>(<span class="hljs-number">175</span>, <span class="hljs-number">175</span>, <span class="hljs-number">175</span>);
+      <span class="hljs-attribute">font-size</span>: <span class="hljs-number">13px</span>;
+    }
+  }
+
+  <span class="hljs-selector-class">.tag-input-panel</span> {
+    <span class="hljs-attribute">display</span>: flex;
+    <span class="hljs-attribute">align-items</span>: center;
+    <span class="hljs-selector-class">.tag-list</span> {
+      <span class="hljs-attribute">display</span>: flex;
+      <span class="hljs-selector-class">.tag-item</span> {
+        <span class="hljs-attribute">margin-right</span>: <span class="hljs-number">10px</span>;
+      }
+    }
+    <span class="hljs-selector-class">.info</span> {
+      <span class="hljs-attribute">color</span>: <span class="hljs-built_in">rgb</span>(<span class="hljs-number">175</span>, <span class="hljs-number">175</span>, <span class="hljs-number">175</span>);
+      <span class="hljs-attribute">font-size</span>: <span class="hljs-number">13px</span>;
+      <span class="hljs-attribute">margin-right</span>: <span class="hljs-number">10px</span>;
+    }
+    <span class="hljs-selector-class">.icon-add</span> {
+      <span class="hljs-attribute">color</span>: red;
+      <span class="hljs-attribute">margin-right</span>: <span class="hljs-number">10px</span>;
+      <span class="hljs-attribute">cursor</span>: pointer;
+    }
+    <span class="hljs-selector-class">.tag-input</span> {
+      <span class="hljs-attribute">width</span>: <span class="hljs-number">100px</span>;
+    }
+  }
+}
+&lt;/style&gt;
+</code></pre>
+</div></div><h2 data-v-md-heading="富文本编辑器" data-v-md-line="413">富文本编辑器</h2>
+<h3 data-v-md-heading="安装依赖" data-v-md-line="414">安装依赖</h3>
+<div data-v-md-line="415"><div class="v-md-pre-wrapper v-md-pre-wrapper-shell extra-class"><pre class="v-md-hljs-shell"><code>npm install @wangeditor/editor @wangeditor/editor-for-vue --save
+</code></pre>
+</div></div><h3 data-v-md-heading="封装组件" data-v-md-line="418">封装组件</h3>
+<p data-v-md-line="419">EditorHtml.vue</p>
+<div data-v-md-line="420"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code>&lt;template&gt;
+  <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;editor-html&quot;</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Toolbar</span> <span class="hljs-attr">style</span>=<span class="hljs-string">&quot;border-bottom: 1px solid #ccc&quot;</span>
+             <span class="hljs-attr">:editor</span>=<span class="hljs-string">&quot;editorRef&quot;</span>
+             <span class="hljs-attr">:defaultConfig</span>=<span class="hljs-string">&quot;toolbarConfig&quot;</span>
+             <span class="hljs-attr">:mode</span>=<span class="hljs-string">&quot;mode&quot;</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Editor</span> <span class="hljs-attr">:style</span>=<span class="hljs-string">&quot;{height: height+&#x27;px&#x27;,&#x27;overflow-y&#x27;: hidden}&quot;</span>
+            <span class="hljs-attr">v-model</span>=<span class="hljs-string">&quot;modelValue&quot;</span>
+            <span class="hljs-attr">:defaultConfig</span>=<span class="hljs-string">&quot;editorConfig&quot;</span>
+            <span class="hljs-attr">:mode</span>=<span class="hljs-string">&quot;mode&quot;</span>
+            @<span class="hljs-attr">onCreated</span>=<span class="hljs-string">&quot;handleCreated&quot;</span>
+            @<span class="hljs-attr">onChange</span>=<span class="hljs-string">&quot;onChange&quot;</span> /&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+&lt;/template&gt;
+
+<span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">setup</span>&gt;</span><span class="language-javascript">
+<span class="hljs-keyword">import</span> <span class="hljs-string">&#x27;@wangeditor/editor/dist/css/style.css&#x27;</span> <span class="hljs-comment">// 引入 css</span>
+<span class="hljs-keyword">import</span> { onBeforeUnmount, ref, shallowRef } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;vue&#x27;</span>
+<span class="hljs-keyword">import</span> { <span class="hljs-title class_">Editor</span>, <span class="hljs-title class_">Toolbar</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@wangeditor/editor-for-vue&#x27;</span>
+
+<span class="hljs-keyword">const</span> props = <span class="hljs-title function_">defineProps</span>({
+  <span class="hljs-attr">modelValue</span>: {
+    <span class="hljs-attr">type</span>: <span class="hljs-title class_">String</span>,
+    <span class="hljs-attr">default</span>: <span class="hljs-string">&quot;&quot;</span>,
+  },
+  <span class="hljs-attr">height</span>: {
+    <span class="hljs-attr">type</span>: <span class="hljs-title class_">Number</span>,
+    <span class="hljs-attr">default</span>: <span class="hljs-number">500</span>,
+  }
+})
+
+<span class="hljs-keyword">const</span> mode = <span class="hljs-title function_">ref</span>(<span class="hljs-string">&#x27;default&#x27;</span>);
+
+<span class="hljs-keyword">const</span> editorRef = <span class="hljs-title function_">shallowRef</span>()
+
+<span class="hljs-comment">// 内容 HTML</span>
+<span class="hljs-keyword">const</span> toolbarConfig = {}
+<span class="hljs-keyword">const</span> editorConfig = {
+  <span class="hljs-attr">placeholder</span>: <span class="hljs-string">&#x27;请输入内容...&#x27;</span>, <span class="hljs-attr">MENU_CONF</span>: {
+    <span class="hljs-attr">uploadImage</span>: {
+      <span class="hljs-attr">maxFileSize</span>: <span class="hljs-number">3</span> * <span class="hljs-number">1024</span> * <span class="hljs-number">1024</span>,
+      <span class="hljs-attr">server</span>: <span class="hljs-string">&quot;/api/file/uploadImage4WangEditor&quot;</span>,
+      customInsert (res, insertFn) {
+        <span class="hljs-title function_">insertFn</span>(res.<span class="hljs-property">data</span>.<span class="hljs-property">url</span>, <span class="hljs-string">&quot;&quot;</span>, <span class="hljs-string">&quot;&quot;</span>);
+      }
+    }
+  }
+}
+
+<span class="hljs-keyword">const</span> emit = <span class="hljs-title function_">defineEmits</span>();
+
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">onChange</span> = (<span class="hljs-params">editor</span>) =&gt; {
+  <span class="hljs-title function_">emit</span>(<span class="hljs-string">&quot;update:modelValue&quot;</span>, editor.<span class="hljs-title function_">getHtml</span>());
+}
+
+<span class="hljs-comment">// 组件销毁时，也及时销毁编辑器</span>
+<span class="hljs-title function_">onBeforeUnmount</span>(<span class="hljs-function">() =&gt;</span> {
+  <span class="hljs-keyword">const</span> editor = editorRef.<span class="hljs-property">value</span>
+  <span class="hljs-keyword">if</span> (editor == <span class="hljs-literal">null</span>) <span class="hljs-keyword">return</span>
+  editor.<span class="hljs-title function_">destroy</span>()
+})
+
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">handleCreated</span> = (<span class="hljs-params">editor</span>) =&gt; {
+  editorRef.<span class="hljs-property">value</span> = editor <span class="hljs-comment">// 记录 editor 实例，重要！</span>
+}
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></span>
+
+<span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">style</span> <span class="hljs-attr">lang</span>=<span class="hljs-string">&quot;scss&quot;</span>&gt;</span><span class="language-css">
+<span class="hljs-selector-class">.editor-html</span> {
+  <span class="hljs-attribute">border</span>: <span class="hljs-number">1px</span> solid <span class="hljs-number">#ddd</span>;
+}
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">style</span>&gt;</span></span>
+</code></pre>
+</div></div><h2 data-v-md-heading="markdown编辑器" data-v-md-line="495">markdown编辑器</h2>
+<h3 data-v-md-heading="安装依赖-1" data-v-md-line="496">安装依赖</h3>
+<div data-v-md-line="497"><div class="v-md-pre-wrapper v-md-pre-wrapper-shell extra-class"><pre class="v-md-hljs-shell"><code>npm install @kangc/v-md-editor --save
+</code></pre>
+</div></div><h3 data-v-md-heading="封装组件-1" data-v-md-line="500">封装组件</h3>
+<div data-v-md-line="501"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code>&lt;template&gt;
+  <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">v-md-editor</span> <span class="hljs-attr">v-model</span>=<span class="hljs-string">&quot;modelValue&quot;</span>
+                 <span class="hljs-attr">:height</span>=<span class="hljs-string">&quot;height+&#x27;px&#x27;&quot;</span>
+                 <span class="hljs-attr">:disabled-menus</span>=<span class="hljs-string">&quot;[]&quot;</span>
+                 <span class="hljs-attr">:include-level</span>=<span class="hljs-string">&quot;[1, 2, 3, 4, 5, 6]&quot;</span>
+                 @<span class="hljs-attr">upload-image</span>=<span class="hljs-string">&quot;handleUploadImage&quot;</span>
+                 @<span class="hljs-attr">change</span>=<span class="hljs-string">&quot;change&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">v-md-editor</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+&lt;/template&gt;
+
+<span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">setup</span>&gt;</span><span class="language-javascript">
+<span class="hljs-keyword">import</span> <span class="hljs-title class_">VMdEditor</span> <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@kangc/v-md-editor&#x27;</span>;
+<span class="hljs-keyword">import</span> <span class="hljs-string">&#x27;@kangc/v-md-editor/lib/style/base-editor.css&#x27;</span>;
+<span class="hljs-keyword">import</span> githubTheme <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@kangc/v-md-editor/lib/theme/github.js&#x27;</span>;
+<span class="hljs-keyword">import</span> <span class="hljs-string">&#x27;@kangc/v-md-editor/lib/theme/style/github.css&#x27;</span>;
+<span class="hljs-keyword">import</span> { getCurrentInstance } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;vue&#x27;</span>;
+
+<span class="hljs-keyword">const</span> { proxy } = <span class="hljs-title function_">getCurrentInstance</span>();
+
+<span class="hljs-comment">// highlightjs</span>
+<span class="hljs-keyword">import</span> hljs <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;highlight.js&#x27;</span>;
+
+<span class="hljs-title class_">VMdEditor</span>.<span class="hljs-title function_">use</span>(githubTheme, {
+  <span class="hljs-title class_">Hljs</span>: hljs,
+});
+
+<span class="hljs-keyword">const</span> props = <span class="hljs-title function_">defineProps</span>({
+  <span class="hljs-attr">modelValue</span>: {
+    <span class="hljs-attr">type</span>: <span class="hljs-title class_">String</span>,
+    <span class="hljs-attr">default</span>: <span class="hljs-string">&quot;&quot;</span>,
+  },
+  <span class="hljs-attr">height</span>: {
+    <span class="hljs-attr">type</span>: <span class="hljs-title class_">Number</span>,
+    <span class="hljs-attr">default</span>: <span class="hljs-number">500</span>,
+  }
+})
+
+<span class="hljs-keyword">const</span> emit = <span class="hljs-title function_">defineEmits</span>();
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">change</span> = (<span class="hljs-params">markdownContent, htmlContent</span>) =&gt; {
+  <span class="hljs-title function_">emit</span>(<span class="hljs-string">&quot;update:modelValue&quot;</span>, markdownContent);
+  <span class="hljs-title function_">emit</span>(<span class="hljs-string">&quot;htmlContent&quot;</span>, htmlContent);
+}
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">handleUploadImage</span> = <span class="hljs-keyword">async</span> (<span class="hljs-params">event, insertImage, files</span>) =&gt; {
+  <span class="hljs-keyword">let</span> result = <span class="hljs-keyword">await</span> proxy.<span class="hljs-title class_">Request</span>({
+    <span class="hljs-attr">url</span>: <span class="hljs-string">&quot;file/uploadImage&quot;</span>,
+    <span class="hljs-attr">dataType</span>: <span class="hljs-string">&quot;file&quot;</span>,
+    <span class="hljs-attr">params</span>: {
+      <span class="hljs-attr">file</span>: files[<span class="hljs-number">0</span>],
+      <span class="hljs-attr">type</span>: <span class="hljs-number">1</span>,
+    }
+  });
+
+  <span class="hljs-keyword">if</span> (!result) {
+    <span class="hljs-keyword">return</span>;
+  }
+
+  <span class="hljs-keyword">const</span> url = proxy.<span class="hljs-property">globalInfo</span>.<span class="hljs-property">imageUrl</span> + result.<span class="hljs-property">data</span>.<span class="hljs-property">fileName</span>;
+  <span class="hljs-title function_">insertImage</span>({
+    <span class="hljs-attr">url</span>: url,
+    <span class="hljs-attr">desc</span>: <span class="hljs-string">&#x27;图片&#x27;</span>,
+  });
+}
+
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></span>
+
+<span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">style</span> <span class="hljs-attr">lang</span>=<span class="hljs-string">&quot;scss&quot;</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">style</span>&gt;</span></span>
+</code></pre>
+</div></div><p data-v-md-line="571">最后记得将这两个组件定义为全局组件</p>
+</div>
+                </div>
+            </div>
+                <div class="container-comment">
+                    <div class="comment-title">评论</div>
+                    <div id="SOHUCS" sid="bFvFteyYlx"></div>
+                    <script charset="utf-8" type="text/javascript" src="https://cy-cdn.kuaizhan.com/upload/changyan.js"></script>
+                    <script type="text/javascript">
+                        window.changyan.api.config({
+                            appid: "cyvP1EXdR",
+                            conf: '0264664c4b9d1fb578d732b34abf3246'
+                        });
+                    </script>
+                </div>
+            <div id="right-container">
+                <div class="toc-title" id="toc-title">目录<span class="icon-arrow arrow-down"></span></div>
+                <div id="toc" class="toc"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+        <div class="footer">
+            <div>
+                <span>©2021-2022 www.wuhancoder.com All rights reserved. </span>
+                <a target="_blank" href="https://beian.miit.gov.cn/">鄂ICP备13017512号-3</a></div>
+            <div>
+                <img src="../resource/static/beian.png">
+                <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=42011502000890">
+                    鄂公网安备 42011502000890号
+                </a></div>
+        </div>
+    <script>
+        var _hmt = _hmt || [];
+        (function () {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?63b3f00d92dbfecbe9376c26282c2599";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+</body>
+</html>

@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>EasyBlog文档 - 接口文档 - 我是程序员</title>
-        <meta name="keywords" content="接口文档">
-        <meta name="description" content="接口文档,包含管理端和web端的接口">
+    <title>EasyBlog文档 - 博客详情 - 我是程序员</title>
+        <meta name="keywords" content="博客详情">
+        <meta name="description" content="博客详情就一个页面，封装为一个组件即可BlogDetail.vue主要代码template&lt;template&gt;&lt;div&gt;&lt;Window:show=&quot;windowConfig.show&quot;:buttons=&quot;windowConfig.buttons&quot;:showCancel=&quot;false&quot;@close=&quot;windowConfig.show=false&quot;&gt;&lt;divclass=&quot;my-title&quot;&gt;{{blog.title}}&lt;/div&gt;&lt;">
 
     <link rel="stylesheet" href="../resource/static/plugin/highlight/styles/github.min.css">
     <link rel="stylesheet" href="../resource/static/plugin/viewer/viewer.min.css">
@@ -263,18 +263,103 @@
         <div class="container">
             <div class="container-content">
                 <div>
-                    <div class="blog-title">接口文档</div>
+                    <div class="blog-title">博客详情</div>
                     <div class="blog-info">
-                        <div class="time">2022-09-21 09:28:18</div>
+                        <div class="time">2022-10-25 02:58:17</div>
                         <div class="nick-name">作者：<a href="../user.html#100000">程序员老罗</a></div>
                     </div>
-                    <div class="content" id="content"><p data-v-md-line="1">接口文档,包含管理端和web端的接口</p>
-</div>
+                    <div class="content" id="content"><p data-v-md-line="1">博客详情就一个页面，封装为一个组件即可<br>
+BlogDetail.vue</p>
+<h1 data-v-md-heading="主要代码" data-v-md-line="4">主要代码</h1>
+<h2 data-v-md-heading="template" data-v-md-line="5">template</h2>
+<div data-v-md-line="6"><div class="v-md-pre-wrapper v-md-pre-wrapper-html extra-class"><pre class="v-md-hljs-html"><code><span class="hljs-tag">&lt;<span class="hljs-name">template</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Window</span> <span class="hljs-attr">:show</span>=<span class="hljs-string">&quot;windowConfig.show&quot;</span>
+            <span class="hljs-attr">:buttons</span>=<span class="hljs-string">&quot;windowConfig.buttons&quot;</span>
+            <span class="hljs-attr">:showCancel</span>=<span class="hljs-string">&quot;false&quot;</span>
+            @<span class="hljs-attr">close</span>=<span class="hljs-string">&quot;windowConfig.show = false&quot;</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;my-title&quot;</span>&gt;</span> {{blog.title}}<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">v-html</span>=<span class="hljs-string">&quot;blog.content&quot;</span>
+           <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;blog-detail&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">Window</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+</code></pre>
+</div></div><h2 data-v-md-heading="js" data-v-md-line="20">js</h2>
+<div data-v-md-line="21"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code>
+&lt;script setup&gt;
+<span class="hljs-keyword">import</span> hljs <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;highlight.js&quot;</span>;
+<span class="hljs-keyword">import</span> <span class="hljs-string">&quot;highlight.js/styles/atom-one-light.css&quot;</span>; <span class="hljs-comment">//样式</span>
+
+<span class="hljs-keyword">import</span> { getCurrentInstance, ref, reactive, nextTick } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;vue&quot;</span>
+<span class="hljs-keyword">const</span> { proxy } = <span class="hljs-title function_">getCurrentInstance</span>();
+
+<span class="hljs-keyword">const</span> api = {
+  <span class="hljs-attr">getBlogDetail</span>: <span class="hljs-string">&quot;/blog/getBlogById&quot;</span>,
+}
+
+<span class="hljs-keyword">const</span> windowConfig = <span class="hljs-title function_">reactive</span>({
+  <span class="hljs-attr">show</span>: <span class="hljs-literal">false</span>,
+  <span class="hljs-attr">buttons</span>: [{
+    <span class="hljs-attr">type</span>: <span class="hljs-string">&quot;danger&quot;</span>,
+    <span class="hljs-attr">text</span>: <span class="hljs-string">&quot;确定&quot;</span>,
+    <span class="hljs-attr">click</span>: <span class="hljs-function">(<span class="hljs-params">e</span>) =&gt;</span> {
+      windowConfig.<span class="hljs-property">show</span> = <span class="hljs-literal">false</span>;
+    }
+  }]
+})
+
+<span class="hljs-keyword">const</span> blog = <span class="hljs-title function_">ref</span>({});
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">showDetail</span> = <span class="hljs-keyword">async</span> (<span class="hljs-params">blogId</span>) =&gt; {
+  windowConfig.<span class="hljs-property">show</span> = <span class="hljs-literal">true</span>;
+  <span class="hljs-keyword">let</span> result = <span class="hljs-keyword">await</span> proxy.<span class="hljs-title class_">Request</span>({
+    <span class="hljs-attr">url</span>: api.<span class="hljs-property">getBlogDetail</span>,
+    <span class="hljs-attr">params</span>: {
+      <span class="hljs-attr">blogId</span>: blogId
+    }
+  })
+  <span class="hljs-keyword">if</span> (!result) {
+    <span class="hljs-keyword">return</span>;
+  }
+  blog.<span class="hljs-property">value</span> = result.<span class="hljs-property">data</span>;
+  <span class="hljs-title function_">nextTick</span>(<span class="hljs-function">() =&gt;</span> {
+    <span class="hljs-comment">//高亮显示</span>
+    <span class="hljs-keyword">let</span> blocks = <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">querySelectorAll</span>(<span class="hljs-string">&quot;pre code&quot;</span>);
+    blocks.<span class="hljs-title function_">forEach</span>(<span class="hljs-function">(<span class="hljs-params">block</span>) =&gt;</span> {
+      hljs.<span class="hljs-title function_">highlightBlock</span>(block);
+    });
+  });
+}
+
+<span class="hljs-title function_">defineExpose</span>({ showDetail })
+&lt;/script&gt;
+</code></pre>
+</div></div><h2 data-v-md-heading="css" data-v-md-line="71">css</h2>
+<div data-v-md-line="72"><div class="v-md-pre-wrapper v-md-pre-wrapper-css extra-class"><pre class="v-md-hljs-css"><code>
+&lt;style lang=&quot;scss&quot;&gt;
+<span class="hljs-selector-class">.my-title</span> {
+  <span class="hljs-attribute">font-size</span>: <span class="hljs-number">18px</span>;
+}
+
+<span class="hljs-selector-class">.blog-detail</span> {
+  <span class="hljs-selector-tag">blockquote</span> {
+    <span class="hljs-attribute">padding</span>: <span class="hljs-number">0</span> <span class="hljs-number">1em</span>;
+    <span class="hljs-attribute">color</span>: <span class="hljs-number">#6a737d</span>;
+    <span class="hljs-attribute">border-left</span>: <span class="hljs-number">0.25em</span> solid <span class="hljs-number">#dfe2e5</span>;
+  }
+
+  <span class="hljs-selector-tag">img</span> {
+    <span class="hljs-attribute">max-width</span>: <span class="hljs-number">80%</span>;
+  }
+}
+&lt;/style&gt;
+</code></pre>
+</div></div></div>
                 </div>
             </div>
                 <div class="container-comment">
                     <div class="comment-title">评论</div>
-                    <div id="SOHUCS" sid="azvNIIFQCy"></div>
+                    <div id="SOHUCS" sid="bLIAnUNUdx"></div>
                     <script charset="utf-8" type="text/javascript" src="https://cy-cdn.kuaizhan.com/upload/changyan.js"></script>
                     <script type="text/javascript">
                         window.changyan.api.config({
