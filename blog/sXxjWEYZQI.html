@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>自己封装一个Vue 弹窗 - 我是程序员</title>
+        <meta name="keywords" content="vue3弹窗">
+        <meta name="description" content="我们在开发的时候很多组件都带有弹窗，但是有时候，我们不想用组件，但是需要用到弹窗，是否可以自己封装一个呢？那么我们就自己封装一个效果图弹窗是支持拖拽的思路写这么一个弹窗不复杂，复杂的是拖拽的逻辑，在点击标题栏的时候，我们通过鼠标按下事件记录鼠标已经按下，同时记录鼠标点在弹窗的位置，在鼠标移动的时候，判断鼠标是否已经点在标题上，鼠标移动的过程中用鼠标的位置减去初始鼠标点在弹窗的位置，就可以实现拖动。">
+
+    <link rel="stylesheet" href="../resource/static/plugin/highlight/styles/github.min.css">
+    <link rel="stylesheet" href="../resource/static/plugin/viewer/viewer.min.css">
+    <script src="../resource/static/plugin/highlight/highlight.min.js"></script>
+    <script src="../resource/static/plugin/jquery/jquery.min.js"></script>
+    <script src="../resource/static/plugin/viewer/viewer-jquery.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <link rel="stylesheet" href="../resource/static/css/blog.detail.css">
+    <script>
+        $(document).ready(function (e) {
+            createToc();
+            $("#content").viewer({
+                navbar: false
+            });
+
+            $("#content a").each(function (index, element) {
+                $(element).attr("target", "_blank");
+            })
+
+            $(".icon-arrow").click(function () {
+                let nextLiDom = $(this).parent().next("div").eq(0)
+                if ($(this).hasClass("arrow-down")) {
+                    $(this).removeClass("arrow-down");
+                    $(this).addClass("arrow-right");
+                    nextLiDom.hide();
+                } else {
+                    $(this).removeClass("arrow-right");
+                    $(this).addClass("arrow-down");
+                    nextLiDom.show();
+                }
+            });
+
+            //目录展开收齐
+            $("#toc-title").click(function () {
+                let spanDom = $(this).find(".icon-arrow")
+                if (spanDom.hasClass("arrow-down")) {
+                    spanDom.removeClass("arrow-down");
+                    spanDom.addClass("arrow-right");
+                    $("#toc").hide();
+                } else {
+                    spanDom.removeClass("arrow-right");
+                    spanDom.addClass("arrow-down");
+                    $("#toc").show();
+                }
+            });
+        });
+
+        const createToc = () => {
+            const hTagList = ["h1", "h2", "h3", "h4", "h5", "h6", "h7"]
+            const children = document.querySelector("#content").children;
+            const hList = [];
+            for (let i = 0; i < children.length; i++) {
+                const node = children[i];
+                let tagName = node.tagName;
+                tagName = tagName == undefined ? "" : tagName.toLowerCase();
+                if (hTagList.indexOf(tagName) != -1) {
+                    const id = "hash-node-" + i;
+                    node.setAttribute("id", id);
+                    hList.push({
+                        pId: "0",
+                        id: id,
+                        level: Number.parseInt(tagName.substring(1, 2)),
+                        name: node.innerText,
+                    });
+                }
+            }
+            for (let i = 0; i < hList.length; i++) {
+                findParentId(hList, hList[i], i);
+            }
+            const newDataList = convertLine2Tree(hList, "0");
+            if (newDataList.length == 0) {
+                $("<div class='no-data'>暂无目录信息</div>").appendTo($("#toc"));
+                return;
+            }
+            newDataList.forEach(element => {
+                createTree($("#toc"), element);
+            })
+        }
+
+        const createTree = (pNode, data) => {
+            const currentNode = $("<div></div>").appendTo(pNode);
+            let extPadding = 26;
+            if (data.children.length > 0) {
+                extPadding = 10
+            }
+            const paddingLeft = (data.level - 1) * 16 + extPadding;
+            const titleNode = $("<div class='title' style='padding-left:" + paddingLeft + "px'></div>").appendTo(currentNode);
+            if (data.children.length > 0) {
+                $("<span class='icon-arrow arrow-down'></span>").appendTo(titleNode);
+            }
+            $("<a href='#" + data.id + "' title='" + data.name + "'>" + data.name + "</a>").appendTo(titleNode);
+
+            if (data.children.length > 0) {
+                let subNode = $("<div class='sub-title'></div>").appendTo(currentNode);
+                data.children.forEach(item => {
+                    createTree(subNode, item);
+                })
+            }
+        }
+
+        //查找父级节点
+        const findParentId = (hList, item, index) => {
+            for (let i = index - 1; i >= 0; i--) {
+                const pNode = hList[i];
+                if (pNode.level < item.level) {
+                    item.pId = pNode.id;
+                    break;
+                }
+            }
+        }
+
+        //将数据转换为树形
+        const convertLine2Tree = (hList, pId) => {
+            const children = [];
+            hList.forEach(element => {
+                if (element.pId === pId) {
+                    children.push(element);
+                    element.children = convertLine2Tree(hList, element.id);
+                }
+            });
+            return children;
+        }
+
+        $(window).scroll(function () {
+            //console.log($(document).scrollTop());
+            $("#right-container").css("top", $(document).scrollTop() + "px");
+        });
+
+        function scroll(markId) {
+            let url = document.location.href;
+            if (url.indexOf("#") == -1) {
+                document.location.href = url + "#" + markId;
+            } else {
+                document.location.href = url.substring(0, url.indexOf("#") + 1) + markId;
+            }
+            $("html,body").animate({scrollTop: $("#" + markId).offset().top - 80}, 100);
+        }
+    </script>
+</head>
+<body>
+    <div class="top">
+        <div class="top-container">
+            <div class="logo">
+                    <a href="../index.html">我是程序员</a>
+            </div>
+                <a href="../index.html" class="nav active">博客</a>
+                <a href="../category.html" class="nav ">分类专栏</a>
+                <a href="../special.html" class="nav ">专题</a>
+                <a href="../user.html" class="nav ">成员</a>
+                <a href="../comment.html" class="nav ">留言板</a>
+        </div>
+    </div>
+<div class="body-container">
+    <div class="blog-detail">
+        <div class="container">
+            <div class="container-content">
+                <div>
+                    <div class="blog-title">自己封装一个Vue 弹窗</div>
+                    <div class="blog-info">
+                        <div class="time">2022-11-01 03:16:24</div>
+                        <div class="nick-name">作者：<a href="../user.html#100000">程序员老罗</a></div>
+                        <div class="category">分类专栏：<a href="../category/10003.html">Vue3</a></div>
+
+                    </div>
+                    <div class="content" id="content"><p data-v-md-line="1">我们在开发的时候很多组件都带有弹窗，但是有时候，我们不想用组件，但是需要用到弹窗，是否可以自己封装一个呢？<br>
+那么我们就自己封装一个</p>
+<h1 data-v-md-heading="效果图" data-v-md-line="3">效果图</h1>
+<p data-v-md-line="4"><img src="../resource/image/202211/CnOgFpQyMFIZHLhnVjTUkCGUUoyxUr.png" alt="图片"><br>
+弹窗是支持拖拽的</p>
+<h1 data-v-md-heading="思路" data-v-md-line="7">思路</h1>
+<p data-v-md-line="8">写这么一个弹窗不复杂，复杂的是拖拽的逻辑，在点击标题栏的时候，我们通过鼠标按下事件记录鼠标已经按下，同时记录 鼠标点在 弹窗的位置，在鼠标移动的时候，判断鼠标是否已经点在标题上，鼠标移动的过程中用鼠标的位置减去初始鼠标点在弹窗的位置，就可以实现拖动。</p>
+<h1 data-v-md-heading="主要代码" data-v-md-line="10">主要代码</h1>
+<h2 data-v-md-heading="template" data-v-md-line="11">template</h2>
+<div data-v-md-line="12"><div class="v-md-pre-wrapper v-md-pre-wrapper-html extra-class"><pre class="v-md-hljs-html"><code><span class="hljs-tag">&lt;<span class="hljs-name">template</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">v-if</span>=<span class="hljs-string">&quot;show&quot;</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span>
+      <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;easy-mask&quot;</span>
+      <span class="hljs-attr">:style</span>=<span class="hljs-string">&quot;{ &#x27;z-index&#x27;: zIndex - 1 }&quot;</span>
+      <span class="hljs-attr">v-if</span>=<span class="hljs-string">&quot;showMask&quot;</span>
+    &gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span>
+      <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;easy-dialog&quot;</span>
+      <span class="hljs-attr">:style</span>=<span class="hljs-string">&quot;{
+        &#x27;z-index&#x27;: zIndex,
+        width: width + &#x27;px&#x27;,
+        left: dialogPosition.left + &#x27;px&#x27;,
+        top: dialogPosition.top + &#x27;px&#x27;,
+      }&quot;</span>
+    &gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;header&quot;</span> @<span class="hljs-attr">mousedown</span>=<span class="hljs-string">&quot;mounseDownHandler&quot;</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;title&quot;</span>&gt;</span>{{ title }}<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;close&quot;</span> @<span class="hljs-attr">click</span>=<span class="hljs-string">&quot;close&quot;</span>&gt;</span>x<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;body&quot;</span> <span class="hljs-attr">:style</span>=<span class="hljs-string">&quot;{ &#x27;max-height&#x27;: bodyMaxHeight + &#x27;px&#x27; }&quot;</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">slot</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">slot</span>&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;footer&quot;</span> <span class="hljs-attr">v-if</span>=<span class="hljs-string">&quot;buttons.length &gt; 0 || showCancel&quot;</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;javascript:void(0)&quot;</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;btn cancel&quot;</span> @<span class="hljs-attr">click</span>=<span class="hljs-string">&quot;close&quot;</span>&gt;</span>取消<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">a</span>
+          <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;javascript:void(0)&quot;</span>
+          <span class="hljs-attr">v-for</span>=<span class="hljs-string">&quot;btn in buttons&quot;</span>
+          <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;btn&quot;</span>
+          @<span class="hljs-attr">click</span>=<span class="hljs-string">&quot;btn.click&quot;</span>
+        &gt;</span>
+          {{ btn.text }}
+        <span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+
+</code></pre>
+</div></div><h2 data-v-md-heading="js" data-v-md-line="53">js</h2>
+<div data-v-md-line="54"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code>&lt;script setup&gt;
+<span class="hljs-keyword">import</span> { reactive, ref, onMounted, watch, nextTick } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;vue&quot;</span>;
+
+<span class="hljs-keyword">const</span> props = <span class="hljs-title function_">defineProps</span>({
+  <span class="hljs-attr">show</span>: {
+    <span class="hljs-attr">type</span>: <span class="hljs-title class_">Boolean</span>,
+    <span class="hljs-attr">default</span>: <span class="hljs-literal">false</span>,
+  },
+  <span class="hljs-attr">showMask</span>: {
+    <span class="hljs-attr">type</span>: <span class="hljs-title class_">Boolean</span>,
+    <span class="hljs-attr">default</span>: <span class="hljs-literal">true</span>,
+  },
+  <span class="hljs-attr">title</span>: {
+    <span class="hljs-attr">type</span>: <span class="hljs-title class_">String</span>,
+    <span class="hljs-attr">default</span>: <span class="hljs-string">&quot;&quot;</span>,
+  },
+  <span class="hljs-attr">showClose</span>: {
+    <span class="hljs-attr">type</span>: <span class="hljs-title class_">Boolean</span>,
+    <span class="hljs-attr">default</span>: <span class="hljs-literal">true</span>,
+  },
+  <span class="hljs-attr">buttons</span>: {
+    <span class="hljs-attr">type</span>: <span class="hljs-title class_">Array</span>,
+    <span class="hljs-attr">default</span>: [],
+  },
+  <span class="hljs-attr">showCancel</span>: {
+    <span class="hljs-attr">type</span>: <span class="hljs-title class_">Boolean</span>,
+    <span class="hljs-attr">default</span>: <span class="hljs-literal">true</span>,
+  },
+  <span class="hljs-attr">width</span>: {
+    <span class="hljs-attr">type</span>: <span class="hljs-title class_">Number</span>,
+    <span class="hljs-attr">default</span>: <span class="hljs-number">500</span>,
+  },
+  <span class="hljs-attr">top</span>: {
+    <span class="hljs-attr">type</span>: <span class="hljs-title class_">Number</span>,
+    <span class="hljs-attr">default</span>: <span class="hljs-number">50</span>,
+  },
+});
+
+<span class="hljs-keyword">const</span> initZIndex = <span class="hljs-number">100</span>;
+<span class="hljs-keyword">const</span> zIndex = <span class="hljs-title function_">ref</span>(initZIndex);
+
+<span class="hljs-comment">//body最大高度   标题栏 高度40  底部按钮40 距离底部距离10</span>
+<span class="hljs-keyword">const</span> bodyMaxHeight = <span class="hljs-variable language_">window</span>.<span class="hljs-property">innerHeight</span> - props.<span class="hljs-property">top</span> - <span class="hljs-number">40</span> - <span class="hljs-number">40</span> - <span class="hljs-number">10</span>;
+<span class="hljs-comment">//定义拖动效果</span>
+<span class="hljs-keyword">const</span> emit = <span class="hljs-title function_">defineEmits</span>([<span class="hljs-string">&quot;close&quot;</span>]);
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">close</span> = (<span class="hljs-params"></span>) =&gt; {
+  <span class="hljs-title function_">emit</span>(<span class="hljs-string">&quot;close&quot;</span>);
+};
+
+<span class="hljs-keyword">const</span> dialogPosition = <span class="hljs-title function_">reactive</span>({
+  <span class="hljs-attr">top</span>: props.<span class="hljs-property">top</span>,
+  <span class="hljs-attr">left</span>: (<span class="hljs-variable language_">window</span>.<span class="hljs-property">innerWidth</span> - props.<span class="hljs-property">width</span>) / <span class="hljs-number">2</span>,
+});
+<span class="hljs-keyword">const</span> monseDown = <span class="hljs-title function_">ref</span>(<span class="hljs-literal">false</span>);
+<span class="hljs-comment">//鼠标点击弹窗初始位置</span>
+<span class="hljs-keyword">const</span> initX = <span class="hljs-title function_">ref</span>(<span class="hljs-number">0</span>);
+<span class="hljs-keyword">const</span> initY = <span class="hljs-title function_">ref</span>(<span class="hljs-number">0</span>);
+<span class="hljs-comment">//最大left</span>
+<span class="hljs-keyword">const</span> maxLeft = <span class="hljs-variable language_">window</span>.<span class="hljs-property">innerWidth</span> - props.<span class="hljs-property">width</span> - <span class="hljs-number">2</span>;
+<span class="hljs-comment">//鼠标点下</span>
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">mounseDownHandler</span> = (<span class="hljs-params">e</span>) =&gt; {
+  monseDown.<span class="hljs-property">value</span> = <span class="hljs-literal">true</span>;
+  <span class="hljs-comment">//记录初始 鼠标点击弹窗的位置</span>
+  initX.<span class="hljs-property">value</span> = e.<span class="hljs-property">clientX</span> - dialogPosition.<span class="hljs-property">left</span>;
+  initY.<span class="hljs-property">value</span> = e.<span class="hljs-property">clientY</span> - dialogPosition.<span class="hljs-property">top</span>;
+};
+
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">init</span> = (<span class="hljs-params"></span>) =&gt; {
+  <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">addEventListener</span>(<span class="hljs-string">&quot;mouseup&quot;</span>, <span class="hljs-function">(<span class="hljs-params">e</span>) =&gt;</span> {
+    monseDown.<span class="hljs-property">value</span> = <span class="hljs-literal">false</span>;
+  });
+
+  <span class="hljs-comment">//解决拖拽过程中 无法监听到 mouseUp事件</span>
+  <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">addEventListener</span>(<span class="hljs-string">&quot;dragstart&quot;</span>, <span class="hljs-function">(<span class="hljs-params">e</span>) =&gt;</span> {
+    e.<span class="hljs-title function_">preventDefault</span>();
+  });
+
+  <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">addEventListener</span>(<span class="hljs-string">&quot;dragend&quot;</span>, <span class="hljs-function">(<span class="hljs-params">e</span>) =&gt;</span> {
+    e.<span class="hljs-title function_">preventDefault</span>();
+  });
+
+  <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">addEventListener</span>(<span class="hljs-string">&quot;mousemove&quot;</span>, <span class="hljs-function">(<span class="hljs-params">e</span>) =&gt;</span> {
+    <span class="hljs-keyword">if</span> (!monseDown.<span class="hljs-property">value</span>) {
+      <span class="hljs-keyword">return</span>;
+    }
+    <span class="hljs-keyword">let</span> currentTop = e.<span class="hljs-property">clientY</span> - initY.<span class="hljs-property">value</span>;
+    <span class="hljs-keyword">let</span> currentLeft = e.<span class="hljs-property">clientX</span> - initX.<span class="hljs-property">value</span>;
+    <span class="hljs-keyword">if</span> (currentTop &lt;= <span class="hljs-number">0</span>) {
+      currentTop = <span class="hljs-number">0</span>;
+    }
+    <span class="hljs-keyword">if</span> (currentLeft &lt;= <span class="hljs-number">0</span>) {
+      currentLeft = <span class="hljs-number">0</span>;
+    }
+    <span class="hljs-keyword">if</span> (currentLeft &gt;= maxLeft) {
+      currentLeft = maxLeft;
+    }
+    dialogPosition.<span class="hljs-property">top</span> = currentTop;
+    dialogPosition.<span class="hljs-property">left</span> = currentLeft;
+  });
+};
+
+<span class="hljs-title function_">onMounted</span>(<span class="hljs-function">() =&gt;</span> {
+  <span class="hljs-title function_">init</span>();
+});
+
+<span class="hljs-comment">//监听弹窗数量，修改zindex</span>
+<span class="hljs-title function_">watch</span>(
+  <span class="hljs-function">() =&gt;</span> props.<span class="hljs-property">show</span>,
+  <span class="hljs-function">(<span class="hljs-params">oldVal, newVal</span>) =&gt;</span> {
+    <span class="hljs-keyword">if</span> (oldVal) {
+      <span class="hljs-title function_">nextTick</span>(<span class="hljs-function">() =&gt;</span> {
+        <span class="hljs-keyword">let</span> easyDialogCount = <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">querySelectorAll</span>(<span class="hljs-string">&quot;.easy-dialog&quot;</span>).<span class="hljs-property">length</span>;
+        zIndex.<span class="hljs-property">value</span> = initZIndex + easyDialogCount;
+        <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(zIndex.<span class="hljs-property">value</span>);
+      });
+    }
+  },
+  { <span class="hljs-attr">immediate</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">deep</span>: <span class="hljs-literal">true</span> }
+);
+&lt;/script&gt;
+
+</code></pre>
+</div></div><h2 data-v-md-heading="css" data-v-md-line="177">css</h2>
+<div data-v-md-line="178"><div class="v-md-pre-wrapper v-md-pre-wrapper-css extra-class"><pre class="v-md-hljs-css"><code>&lt;style lang=&quot;scss&quot; scoped&gt;
+<span class="hljs-selector-class">.easy-mask</span> {
+  <span class="hljs-attribute">position</span>: fixed;
+  <span class="hljs-attribute">left</span>: <span class="hljs-number">0px</span>;
+  <span class="hljs-attribute">top</span>: <span class="hljs-number">0px</span>;
+  <span class="hljs-attribute">width</span>: <span class="hljs-number">100%</span>;
+  <span class="hljs-attribute">height</span>: <span class="hljs-built_in">calc</span>(<span class="hljs-number">100vh</span>);
+  <span class="hljs-attribute">background</span>: <span class="hljs-built_in">rgba</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0.5</span>);
+}
+<span class="hljs-selector-class">.easy-dialog</span> {
+  <span class="hljs-attribute">background</span>: <span class="hljs-number">#fff</span>;
+  <span class="hljs-attribute">position</span>: absolute;
+  <span class="hljs-attribute">top</span>: <span class="hljs-number">50px</span>;
+  <span class="hljs-attribute">left</span>: <span class="hljs-number">30px</span>;
+  <span class="hljs-attribute">border</span>: <span class="hljs-number">1px</span> solid <span class="hljs-number">#ddd</span>;
+  <span class="hljs-selector-tag">div</span> {
+    <span class="hljs-attribute">box-sizing</span>: border-box;
+  }
+  <span class="hljs-selector-class">.header</span> {
+    <span class="hljs-attribute">height</span>: <span class="hljs-number">40px</span>;
+    <span class="hljs-attribute">display</span>: flex;
+    <span class="hljs-attribute">align-items</span>: center;
+    <span class="hljs-attribute">justify-content</span>: center;
+    <span class="hljs-attribute">padding</span>: <span class="hljs-number">10px</span> <span class="hljs-number">10px</span>;
+    <span class="hljs-attribute">border-bottom</span>: <span class="hljs-number">1px</span> solid <span class="hljs-number">#ddd</span>;
+    <span class="hljs-attribute">cursor</span>: move;
+    <span class="hljs-selector-class">.title</span> {
+      <span class="hljs-attribute">font-size</span>: <span class="hljs-number">14px</span>;
+      <span class="hljs-attribute">flex</span>: <span class="hljs-number">1</span>;
+      <span class="hljs-attribute">overflow</span>: auto;
+    }
+    <span class="hljs-selector-class">.close</span> {
+      <span class="hljs-attribute">width</span>: <span class="hljs-number">10px</span>;
+      <span class="hljs-attribute">margin-left</span>: <span class="hljs-number">5px</span>;
+      <span class="hljs-attribute">color</span>: <span class="hljs-built_in">rgb</span>(<span class="hljs-number">133</span>, <span class="hljs-number">133</span>, <span class="hljs-number">133</span>);
+      <span class="hljs-attribute">cursor</span>: pointer;
+    }
+    <span class="hljs-selector-class">.close</span><span class="hljs-selector-pseudo">:hover</span> {
+      <span class="hljs-attribute">color</span>: <span class="hljs-number">#060606</span>;
+    }
+  }
+  <span class="hljs-selector-class">.body</span> {
+    <span class="hljs-attribute">padding</span>: <span class="hljs-number">10px</span>;
+    <span class="hljs-attribute">min-height</span>: <span class="hljs-number">50px</span>;
+    <span class="hljs-attribute">overflow</span>: auto;
+  }
+  <span class="hljs-selector-class">.footer</span> {
+    <span class="hljs-attribute">border-top</span>: <span class="hljs-number">1px</span> solid <span class="hljs-number">#ddd</span>;
+    <span class="hljs-attribute">text-align</span>: right;
+    <span class="hljs-attribute">height</span>: <span class="hljs-number">40px</span>;
+    <span class="hljs-attribute">line-height</span>: <span class="hljs-number">40px</span>;
+    <span class="hljs-selector-class">.btn</span> {
+      <span class="hljs-attribute">font-size</span>: <span class="hljs-number">14px</span>;
+      <span class="hljs-attribute">text-decoration</span>: none;
+      <span class="hljs-attribute">display</span>: inline-block;
+      <span class="hljs-attribute">margin-right</span>: <span class="hljs-number">10px</span>;
+      <span class="hljs-attribute">background</span>: <span class="hljs-built_in">rgb</span>(<span class="hljs-number">5</span>, <span class="hljs-number">172</span>, <span class="hljs-number">244</span>);
+      <span class="hljs-attribute">color</span>: <span class="hljs-number">#fff</span>;
+      <span class="hljs-attribute">border-radius</span>: <span class="hljs-number">5px</span>;
+      <span class="hljs-attribute">padding</span>: <span class="hljs-number">5px</span> <span class="hljs-number">15px</span>;
+      <span class="hljs-attribute">line-height</span>: normal;
+    }
+    <span class="hljs-selector-class">.btn</span><span class="hljs-selector-pseudo">:hover</span> {
+      <span class="hljs-attribute">opacity</span>: <span class="hljs-number">0.8</span>;
+    }
+    <span class="hljs-selector-class">.cancel</span> {
+      <span class="hljs-attribute">color</span>: <span class="hljs-built_in">rgb</span>(<span class="hljs-number">18</span>, <span class="hljs-number">157</span>, <span class="hljs-number">243</span>);
+      <span class="hljs-attribute">background</span>: none;
+    }
+  }
+}
+&lt;/style&gt;
+</code></pre>
+</div></div></div>
+                </div>
+            </div>
+                <div class="container-comment">
+                    <div class="comment-title">评论</div>
+                    <div id="SOHUCS" sid="sXxjWEYZQI"></div>
+                    <script charset="utf-8" type="text/javascript" src="https://cy-cdn.kuaizhan.com/upload/changyan.js"></script>
+                    <script type="text/javascript">
+                        window.changyan.api.config({
+                            appid: "cyvP1EXdR",
+                            conf: '0264664c4b9d1fb578d732b34abf3246'
+                        });
+                    </script>
+                </div>
+        </div>
+        <div class="right">
+            <div class="container" id="right-container">
+                <div class="right-title toc-title">目录结构</div>
+                <div id="toc"></div>
+
+                <div class="right-title category-title">
+                    <span>分类专栏</span>
+                    <a href="../category.html" class="more">更多>></a>
+                </div>
+                    <a href="../category/10000.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/image/202112/EFUgXqXkPTFORpHpeTTnbLTTMVsJgf.png">
+                        </span>
+                        <span class="category-name" title="EasyBlog">EasyBlog</span>
+                        <span class="blog-count">0篇</span>
+                    </a>
+                    <a href="../category/10001.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/image/202210/kIPHrBlMBEwhLHsMAYliJIynVhjOBt.png">
+                        </span>
+                        <span class="category-name" title="Java">Java</span>
+                        <span class="blog-count">7篇</span>
+                    </a>
+                    <a href="../category/10002.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/image/202210/KLVzFxgplZnrPWnIOtSrqrnHmIJiJy.png">
+                        </span>
+                        <span class="category-name" title="electron">electron</span>
+                        <span class="blog-count">2篇</span>
+                    </a>
+                    <a href="../category/10003.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/image/202210/VnyCajSlCNLCbrCxSNAGDIUNIelrUS.png">
+                        </span>
+                        <span class="category-name" title="Vue3">Vue3</span>
+                        <span class="blog-count">4篇</span>
+                    </a>
+                    <a href="../category/10005.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/image/202210/LpocFdzOXwynTWDrmiAUkxSIESWYus.png">
+                        </span>
+                        <span class="category-name" title="编程小技巧">编程小技巧</span>
+                        <span class="blog-count">3篇</span>
+                    </a>
+            </div>
+        </div>
+    </div>
+</div>
+        <div class="footer">
+            <div>
+                <span>©2021-2022 www.wuhancoder.com All rights reserved. </span>
+                <a target="_blank" href="https://beian.miit.gov.cn/">鄂ICP备13017512号-3</a></div>
+            <div>
+                <img src="../resource/static/beian.png">
+                <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=42011502000890">
+                    鄂公网安备 42011502000890号
+                </a></div>
+        </div>
+    <script>
+        var _hmt = _hmt || [];
+        (function () {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?63b3f00d92dbfecbe9376c26282c2599";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+</body>
+</html>
