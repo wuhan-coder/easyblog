@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>electron 初体验 - 我是程序员</title>
-        <meta name="keywords" content="electron">
-        <meta name="description" content="electron初体验">
+    <title>测试 - 我是程序员</title>
+        <meta name="keywords" content="测试">
+        <meta name="description" content="测试测试测试测试测试测试测试测试测试">
 
     <link rel="stylesheet" href="../resource/static/plugin/highlight/styles/github.min.css">
     <link rel="stylesheet" href="../resource/static/plugin/viewer/viewer.min.css">
@@ -162,81 +162,25 @@
         <div class="container">
             <div class="container-content">
                 <div>
-                    <div class="blog-title">electron 初体验</div>
+                    <div class="blog-title">测试</div>
                     <div class="blog-info">
-                        <div class="time">2022-05-21 03:23:14</div>
+                        <div class="time">2022-11-05 05:36:54</div>
                         <div class="nick-name">作者：<a href="../user.html#100000">程序员老罗</a></div>
-                        <div class="category">分类专栏：<a href="../category/10002.html">electron</a></div>
+                        <div class="category">分类专栏：<a href="../category/10000.html">EasyBlog</a></div>
 
                     </div>
-                    <div class="content" id="content"><h1 data-v-md-heading="一些初始化问题" data-v-md-line="1">一些初始化问题</h1>
-<h2 data-v-md-heading="渲染进程使用node-js-模块" data-v-md-line="2">渲染进程使用node.js 模块</h2>
-<div data-v-md-line="3"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code><span class="hljs-keyword">const</span> mainWindow = <span class="hljs-keyword">new</span> <span class="hljs-title class_">BrowserWindow</span>({
-        <span class="hljs-attr">width</span>: <span class="hljs-number">600</span>,
-        <span class="hljs-attr">height</span>: <span class="hljs-number">400</span>,
-        <span class="hljs-attr">icon</span>: <span class="hljs-string">&#x27;icon.ico&#x27;</span>,
-        <span class="hljs-attr">webPreferences</span>: {
-            <span class="hljs-attr">nodeIntegration</span>: <span class="hljs-literal">true</span>, <span class="hljs-comment">//允许渲染进程使用nodejs</span>
-            <span class="hljs-attr">contextIsolation</span>: <span class="hljs-literal">false</span> <span class="hljs-comment">//允许渲染进程使用nodejs</span>
-        }
-    });
-</code></pre>
-</div></div><h2 data-v-md-heading="中文乱码解决" data-v-md-line="15">中文乱码解决</h2>
-<p data-v-md-line="16">在package.json中的启动脚本中添加 chcp 65001</p>
-<div data-v-md-line="17"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code><span class="hljs-string">&quot;scripts&quot;</span>: {
-    <span class="hljs-string">&quot;start&quot;</span>: <span class="hljs-string">&quot;chcp 65001 &amp;&amp; electron .&quot;</span>,
-    <span class="hljs-string">&quot;test&quot;</span>: <span class="hljs-string">&quot;echo \&quot;Error: no test specified\&quot; &amp;&amp; exit 1&quot;</span>
-  },
-</code></pre>
-</div></div><h2 data-v-md-heading="使用remote" data-v-md-line="24">使用remote</h2>
-<p data-v-md-line="25">remote可以用于主线程，渲染线程通讯，渲染线程创建窗口等操作，使的渲染线程可以调用主线程方法<br>
-高版本的remote被独立成第三方包，使用需要单独引入</p>
-<div data-v-md-line="27"><div class="v-md-pre-wrapper v-md-pre-wrapper-shell extra-class"><pre class="v-md-hljs-shell"><code>npm install --save @electron/remote
-</code></pre>
-</div></div><p data-v-md-line="30">主线程中配置</p>
-<div data-v-md-line="31"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code>
-<span class="hljs-keyword">const</span> remote = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;@electron/remote/main&#x27;</span>);
-remote.<span class="hljs-title function_">initialize</span>()
-
-<span class="hljs-keyword">const</span> mainWindow = <span class="hljs-keyword">new</span> <span class="hljs-title class_">BrowserWindow</span>({
-        <span class="hljs-attr">width</span>: <span class="hljs-number">600</span>,
-        <span class="hljs-attr">height</span>: <span class="hljs-number">400</span>,
-        <span class="hljs-attr">icon</span>: <span class="hljs-string">&#x27;icon.ico&#x27;</span>,
-        <span class="hljs-attr">webPreferences</span>: {
-            <span class="hljs-attr">nodeIntegration</span>: <span class="hljs-literal">true</span>, <span class="hljs-comment">//允许渲染进程使用nodejs</span>
-            <span class="hljs-attr">contextIsolation</span>: <span class="hljs-literal">false</span> <span class="hljs-comment">//允许渲染进程使用nodejs</span>
-        }
-    });
-   remote.<span class="hljs-title function_">enable</span>(mainWindow.<span class="hljs-property">webContents</span>);
-</code></pre>
-</div></div><h1 data-v-md-heading="窗口参数" data-v-md-line="49">窗口参数</h1>
-<h2 data-v-md-heading="获取屏幕大小" data-v-md-line="50">获取屏幕大小</h2>
-<div data-v-md-line="51"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code><span class="hljs-keyword">const</span> {screen} = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;electron&quot;</span>);
-
-<span class="hljs-keyword">let</span> screenWidth = screen.<span class="hljs-title function_">getPrimaryDisplay</span>().<span class="hljs-property">workAreaSize</span>.<span class="hljs-property">width</span>;
-<span class="hljs-keyword">let</span> screenHeight = screen.<span class="hljs-title function_">getPrimaryDisplay</span>().<span class="hljs-property">workAreaSize</span>.<span class="hljs-property">height</span>;
-
-</code></pre>
-</div></div><h2 data-v-md-heading="设置窗口位置" data-v-md-line="58">设置窗口位置</h2>
-<div data-v-md-line="59"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code>
-    <span class="hljs-keyword">const</span> mainWindow = <span class="hljs-keyword">new</span> <span class="hljs-title class_">BrowserWindow</span>({
-        <span class="hljs-attr">width</span>: <span class="hljs-number">600</span>,
-        <span class="hljs-attr">height</span>: <span class="hljs-number">400</span>,
-        <span class="hljs-attr">icon</span>: <span class="hljs-string">&#x27;icon.ico&#x27;</span>,
-        <span class="hljs-attr">webPreferences</span>: {
-            <span class="hljs-attr">nodeIntegration</span>: <span class="hljs-literal">true</span>, <span class="hljs-comment">//允许渲染进程使用nodejs</span>
-            <span class="hljs-attr">contextIsolation</span>: <span class="hljs-literal">false</span> <span class="hljs-comment">//允许渲染进程使用nodejs</span>
-        }
-    });
-   mainWindow.<span class="hljs-title function_">setPostion</span>(x,y)
-
-</code></pre>
-</div></div></div>
+                    <div class="content" id="content"><p data-v-md-line="1">测试测试测试测试<br>
+测试<br>
+测试测试<br>
+测试<br>
+测试<br>
+<img src="../resource/image/202211/lIcHHJTCmYAYPVSMeToQzOlaUUjIIV.png" alt="图片"></p>
+</div>
                 </div>
             </div>
                 <div class="container-comment">
                     <div class="comment-title">评论</div>
-                    <div id="SOHUCS" sid="tOcwQysMig"></div>
+                    <div id="SOHUCS" sid="AvtXNzGSiP"></div>
                     <script charset="utf-8" type="text/javascript" src="https://cy-cdn.kuaizhan.com/upload/changyan.js"></script>
                     <script type="text/javascript">
                         window.changyan.api.config({

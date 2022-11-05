@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>推荐两个好用的VSCode UI插件 - 我是程序员</title>
-        <meta name="keywords" content="vscode,vscode主题,vscode 图标">
-        <meta name="description" content="推荐两个好用的VSCode UI插件">
+    <title>测试专题 - 一级标题 - 我是程序员</title>
+        <meta name="keywords" content="一级标题">
+        <meta name="description" content="一级标题一级标题一级标题">
 
     <link rel="stylesheet" href="../resource/static/plugin/highlight/styles/github.min.css">
     <link rel="stylesheet" href="../resource/static/plugin/viewer/viewer.min.css">
@@ -12,7 +12,7 @@
     <script src="../resource/static/plugin/jquery/jquery.min.js"></script>
     <script src="../resource/static/plugin/viewer/viewer-jquery.min.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
-    <link rel="stylesheet" href="../resource/static/css/blog.detail.css">
+    <link rel="stylesheet" href="../resource/static/css/special.detail.css">
     <script>
         $(document).ready(function (e) {
             createToc();
@@ -50,6 +50,10 @@
                     $("#toc").show();
                 }
             });
+
+            let currentUrl = document.location.href;
+            currentUrl = currentUrl.substring(currentUrl.lastIndexOf("/") + 1, currentUrl.lastIndexOf("."));
+            $("#" + currentUrl).addClass("active");
         });
 
         const createToc = () => {
@@ -95,7 +99,7 @@
             if (data.children.length > 0) {
                 $("<span class='icon-arrow arrow-down'></span>").appendTo(titleNode);
             }
-            $("<a href='#" + data.id + "' title='" + data.name + "'>" + data.name + "</a>").appendTo(titleNode);
+            $("<a href='#" + data.id + "'  title='" + data.name + "'>" + data.name + "</a>").appendTo(titleNode);
 
             if (data.children.length > 0) {
                 let subNode = $("<div class='sub-title'></div>").appendTo(currentNode);
@@ -150,45 +154,71 @@
             <div class="logo">
                     <a href="../index.html">我是程序员</a>
             </div>
-                <a href="../index.html" class="nav active">博客</a>
+                <a href="../index.html" class="nav ">博客</a>
                 <a href="../category.html" class="nav ">分类专栏</a>
-                <a href="../special.html" class="nav ">专题</a>
+                <a href="../special.html" class="nav active">专题</a>
                 <a href="../user.html" class="nav ">成员</a>
                 <a href="../comment.html" class="nav ">留言板</a>
         </div>
     </div>
 <div class="body-container">
     <div class="blog-detail">
+        <div class="blog-special-list">
+            <div class="blog-special">
+                <div class="category-image">
+                        <img src="../resource/image/202211/gbafaTuFcegwXuKpxQdMvuSrPiWBAp.jpg">
+                </div>
+                <div class="category-info">
+                    <div class="category-title" title="测试专题">测试专题</div>
+                    <div class="blog-count">文章数：4</div>
+                </div>
+            </div>
+            <div class="category-desc" title="测试专题">简介：测试专题</div>
+            <div class="blog-list toc">
+        <div>
+            <div class="title" style="padding-left:10px" id="KDHIYyqxBk">
+                    <span class="icon-arrow arrow-down"></span>
+                <a href="KDHIYyqxBk.html" title="一级标题">一级标题</a>
+            </div>
+                <div class="sub-title">
+        <div>
+            <div class="title" style="padding-left:26px" id="AENqbDdXzN">
+                    <span class="icon-arrow arrow-down"></span>
+                <a href="AENqbDdXzN.html" title="二级文章">二级文章</a>
+            </div>
+                <div class="sub-title">
+        <div>
+            <div class="title" style="padding-left:58px" id="qgvCIGiYhS">
+                <a href="qgvCIGiYhS.html" title="一级下级文章">一级下级文章</a>
+            </div>
+        </div>
+                </div>
+        </div>
+                </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:26px" id="XngRlmtEVy">
+                <a href="XngRlmtEVy.html" title="二级文章">二级文章</a>
+            </div>
+        </div>
+            </div>
+
+        </div>
         <div class="container">
             <div class="container-content">
                 <div>
-                    <div class="blog-title">推荐两个好用的VSCode UI插件</div>
+                    <div class="blog-title">一级标题</div>
                     <div class="blog-info">
-                        <div class="time">2022-05-28 10:52:12</div>
+                        <div class="time">2022-11-05 05:38:30</div>
                         <div class="nick-name">作者：<a href="../user.html#100000">程序员老罗</a></div>
-                        <div class="category">分类专栏：<a href="../category/10005.html">编程小技巧</a></div>
-
                     </div>
-                    <div class="content" id="content"><h1 data-v-md-heading="vscode-ui-插件推荐" data-v-md-line="1">VSCode UI 插件推荐</h1>
-<h2 data-v-md-heading="图标插件" data-v-md-line="2">图标插件</h2>
-<p data-v-md-line="3">我们普通的文件树图标是这样的<br>
-<img src="../resource/image/202205/xLBVBPkKocEpATesBFLkCkyRZpRuQq.png" alt="image.png"></p>
-<p data-v-md-line="6">安装 vscode-icons-mac 后是这样的<br>
-<img src="../resource/image/202205/zwtmrjcWPVIigPAPGojoGwJkJCcCuj.png" alt="image.png"></p>
-<h2 data-v-md-heading="主体风格" data-v-md-line="9">主体风格</h2>
-<p data-v-md-line="10">默认的是这样的<br>
-<img src="../resource/image/202205/rzxpLCeIZEIKeCJBAPUuzfIaCpDwsf.png" alt="image.png"></p>
-<p data-v-md-line="13">安装 Snazzy plus 后是这样的<br>
-<img src="../resource/image/202205/pNZAQrREhmcXgAYOHRxiAeyIEqZdVr.png" alt="image.png"></p>
-<p data-v-md-line="16">修改图标和修改主题都是在这里需改<br>
-<img src="../resource/image/202205/WgARqIIshMmleDyWubCBrTVURsrPNR.png" alt="image.png"></p>
-<p data-v-md-line="19">One dark pro 这个主体也不错</p>
+                    <div class="content" id="content"><p data-v-md-line="1">一级标题一级标题一级标题</p>
 </div>
                 </div>
             </div>
                 <div class="container-comment">
                     <div class="comment-title">评论</div>
-                    <div id="SOHUCS" sid="NKElgWXQOn"></div>
+                    <div id="SOHUCS" sid="KDHIYyqxBk"></div>
                     <script charset="utf-8" type="text/javascript" src="https://cy-cdn.kuaizhan.com/upload/changyan.js"></script>
                     <script type="text/javascript">
                         window.changyan.api.config({
@@ -197,54 +227,13 @@
                         });
                     </script>
                 </div>
-        </div>
-        <div class="right">
-            <div class="container" id="right-container">
-                <div class="right-title toc-title">目录结构</div>
-                <div id="toc"></div>
-
-                <div class="right-title category-title">
-                    <span>分类专栏</span>
-                    <a href="../category.html" class="more">更多>></a>
-                </div>
-                    <a href="../category/10000.html" class="category-item">
-                        <span class="category-icon">
-                                <img src="../resource/image/202112/EFUgXqXkPTFORpHpeTTnbLTTMVsJgf.png">
-                        </span>
-                        <span class="category-name" title="EasyBlog">EasyBlog</span>
-                        <span class="blog-count">1篇</span>
-                    </a>
-                    <a href="../category/10001.html" class="category-item">
-                        <span class="category-icon">
-                                <img src="../resource/image/202210/kIPHrBlMBEwhLHsMAYliJIynVhjOBt.png">
-                        </span>
-                        <span class="category-name" title="Java">Java</span>
-                        <span class="blog-count">7篇</span>
-                    </a>
-                    <a href="../category/10002.html" class="category-item">
-                        <span class="category-icon">
-                                <img src="../resource/image/202210/KLVzFxgplZnrPWnIOtSrqrnHmIJiJy.png">
-                        </span>
-                        <span class="category-name" title="electron">electron</span>
-                        <span class="blog-count">2篇</span>
-                    </a>
-                    <a href="../category/10003.html" class="category-item">
-                        <span class="category-icon">
-                                <img src="../resource/image/202210/VnyCajSlCNLCbrCxSNAGDIUNIelrUS.png">
-                        </span>
-                        <span class="category-name" title="Vue3">Vue3</span>
-                        <span class="blog-count">4篇</span>
-                    </a>
-                    <a href="../category/10005.html" class="category-item">
-                        <span class="category-icon">
-                                <img src="../resource/image/202210/LpocFdzOXwynTWDrmiAUkxSIESWYus.png">
-                        </span>
-                        <span class="category-name" title="编程小技巧">编程小技巧</span>
-                        <span class="blog-count">3篇</span>
-                    </a>
+            <div id="right-container">
+                <div class="toc-title" id="toc-title">目录<span class="icon-arrow arrow-down"></span></div>
+                <div id="toc" class="toc"></div>
             </div>
         </div>
     </div>
+
 </div>
         <div class="footer">
             <div>
