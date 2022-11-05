@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>EasyBlog文档 - 博客管理 - 我是程序员</title>
-        <meta name="keywords" content="博客管理">
-        <meta name="description" content="博客管理主要博客博客列表、新增、修改博客">
+    <title>test - 我是程序员</title>
+        <meta name="keywords" content="测试">
+        <meta name="description" content="这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介">
 
     <link rel="stylesheet" href="../resource/static/plugin/highlight/styles/github.min.css">
     <link rel="stylesheet" href="../resource/static/plugin/viewer/viewer.min.css">
@@ -12,7 +12,7 @@
     <script src="../resource/static/plugin/jquery/jquery.min.js"></script>
     <script src="../resource/static/plugin/viewer/viewer-jquery.min.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
-    <link rel="stylesheet" href="../resource/static/css/special.detail.css">
+    <link rel="stylesheet" href="../resource/static/css/blog.detail.css">
     <script>
         $(document).ready(function (e) {
             createToc();
@@ -50,10 +50,6 @@
                     $("#toc").show();
                 }
             });
-
-            let currentUrl = document.location.href;
-            currentUrl = currentUrl.substring(currentUrl.lastIndexOf("/") + 1, currentUrl.lastIndexOf("."));
-            $("#" + currentUrl).addClass("active");
         });
 
         const createToc = () => {
@@ -99,7 +95,7 @@
             if (data.children.length > 0) {
                 $("<span class='icon-arrow arrow-down'></span>").appendTo(titleNode);
             }
-            $("<a href='#" + data.id + "'  title='" + data.name + "'>" + data.name + "</a>").appendTo(titleNode);
+            $("<a href='#" + data.id + "' title='" + data.name + "'>" + data.name + "</a>").appendTo(titleNode);
 
             if (data.children.length > 0) {
                 let subNode = $("<div class='sub-title'></div>").appendTo(currentNode);
@@ -154,180 +150,37 @@
             <div class="logo">
                     <a href="../index.html">我是程序员</a>
             </div>
-                <a href="../index.html" class="nav ">博客</a>
+                <a href="../index.html" class="nav active">博客</a>
                 <a href="../category.html" class="nav ">分类专栏</a>
-                <a href="../special.html" class="nav active">专题</a>
+                <a href="../special.html" class="nav ">专题</a>
                 <a href="../user.html" class="nav ">成员</a>
                 <a href="../comment.html" class="nav ">留言板</a>
         </div>
     </div>
 <div class="body-container">
     <div class="blog-detail">
-        <div class="blog-special-list">
-            <div class="blog-special">
-                <div class="category-image">
-                        <img src="../resource/image/202209/qmHjiTxzjtapHaOojwciCzTlqCPFWs.jpg">
-                </div>
-                <div class="category-info">
-                    <div class="category-title" title="EasyBlog文档">EasyBlog文档</div>
-                    <div class="blog-count">文章数：23</div>
-                </div>
-            </div>
-            <div class="category-desc" title="EasyBlog 相关文档，接口，环境搭建">简介：EasyBlog 相关文档，接口，环境搭建</div>
-            <div class="blog-list toc">
-        <div>
-            <div class="title" style="padding-left:26px" id="DEdkCxjkqy">
-                <a href="DEdkCxjkqy.html" title="简介">简介</a>
-            </div>
-        </div>
-        <div>
-            <div class="title" style="padding-left:10px" id="gTvGKLsNNZ">
-                    <span class="icon-arrow arrow-down"></span>
-                <a href="gTvGKLsNNZ.html" title="后端服务部署">后端服务部署</a>
-            </div>
-                <div class="sub-title">
-        <div>
-            <div class="title" style="padding-left:42px" id="vbbStsCMXs">
-                <a href="vbbStsCMXs.html" title="安装后端程序">安装后端程序</a>
-            </div>
-        </div>
-                </div>
-        </div>
-        <div>
-            <div class="title" style="padding-left:10px" id="azvNIIFQCy">
-                    <span class="icon-arrow arrow-down"></span>
-                <a href="azvNIIFQCy.html" title="接口文档">接口文档</a>
-            </div>
-                <div class="sub-title">
-        <div>
-            <div class="title" style="padding-left:42px" id="cqzKWftzyr">
-                <a href="cqzKWftzyr.html" title="管理端">管理端</a>
-            </div>
-        </div>
-        <div>
-            <div class="title" style="padding-left:42px" id="wBURpKFtiT">
-                <a href="wBURpKFtiT.html" title="web端">web端</a>
-            </div>
-        </div>
-                </div>
-        </div>
-        <div>
-            <div class="title" style="padding-left:10px" id="rTZtGSfpKO">
-                    <span class="icon-arrow arrow-down"></span>
-                <a href="rTZtGSfpKO.html" title="管理端">管理端</a>
-            </div>
-                <div class="sub-title">
-        <div>
-            <div class="title" style="padding-left:42px" id="ReLhoidFfc">
-                <a href="ReLhoidFfc.html" title="前端项目构建">前端项目构建</a>
-            </div>
-        </div>
-        <div>
-            <div class="title" style="padding-left:42px" id="yZiEkYlOaT">
-                <a href="yZiEkYlOaT.html" title="登录">登录</a>
-            </div>
-        </div>
-        <div>
-            <div class="title" style="padding-left:42px" id="QYdGDDRMGU">
-                <a href="QYdGDDRMGU.html" title="博客分类">博客分类</a>
-            </div>
-        </div>
-        <div>
-            <div class="title" style="padding-left:26px" id="uWueRbkwnp">
-                    <span class="icon-arrow arrow-down"></span>
-                <a href="uWueRbkwnp.html" title="博客管理">博客管理</a>
-            </div>
-                <div class="sub-title">
-        <div>
-            <div class="title" style="padding-left:58px" id="IgizsOFvBL">
-                <a href="IgizsOFvBL.html" title="博客列表">博客列表</a>
-            </div>
-        </div>
-        <div>
-            <div class="title" style="padding-left:58px" id="bFvFteyYlx">
-                <a href="bFvFteyYlx.html" title="新增、修改博客">新增、修改博客</a>
-            </div>
-        </div>
-        <div>
-            <div class="title" style="padding-left:58px" id="bLIAnUNUdx">
-                <a href="bLIAnUNUdx.html" title="博客详情">博客详情</a>
-            </div>
-        </div>
-                </div>
-        </div>
-        <div>
-            <div class="title" style="padding-left:26px" id="LdgbxmwFeg">
-                    <span class="icon-arrow arrow-down"></span>
-                <a href="LdgbxmwFeg.html" title="专题管理">专题管理</a>
-            </div>
-                <div class="sub-title">
-        <div>
-            <div class="title" style="padding-left:58px" id="BkQtkMEqYv">
-                <a href="BkQtkMEqYv.html" title="专题列表">专题列表</a>
-            </div>
-        </div>
-        <div>
-            <div class="title" style="padding-left:58px" id="hwjDGsEGxu">
-                <a href="hwjDGsEGxu.html" title="专题文章管理">专题文章管理</a>
-            </div>
-        </div>
-        <div>
-            <div class="title" style="padding-left:58px" id="zkAAjqsOgD">
-                <a href="zkAAjqsOgD.html" title="专题文章详情">专题文章详情</a>
-            </div>
-        </div>
-                </div>
-        </div>
-        <div>
-            <div class="title" style="padding-left:26px" id="rbnEacItvQ">
-                    <span class="icon-arrow arrow-down"></span>
-                <a href="rbnEacItvQ.html" title="设置">设置</a>
-            </div>
-                <div class="sub-title">
-        <div>
-            <div class="title" style="padding-left:58px" id="VHuGhkzHgc">
-                <a href="VHuGhkzHgc.html" title="个人信息设置">个人信息设置</a>
-            </div>
-        </div>
-        <div>
-            <div class="title" style="padding-left:58px" id="viNtWrqfmA">
-                <a href="viNtWrqfmA.html" title="博客成员">博客成员</a>
-            </div>
-        </div>
-        <div>
-            <div class="title" style="padding-left:58px" id="DPaRkrTvOD">
-                <a href="DPaRkrTvOD.html" title="系统设置">系统设置</a>
-            </div>
-        </div>
-                </div>
-        </div>
-        <div>
-            <div class="title" style="padding-left:42px" id="wRTzeGZyls">
-                <a href="wRTzeGZyls.html" title="回收站">回收站</a>
-            </div>
-        </div>
-                </div>
-        </div>
-            </div>
-
-        </div>
         <div class="container">
             <div class="container-content">
                 <div>
-                    <div class="blog-title">博客管理</div>
+                    <div class="blog-title">test</div>
                     <div class="blog-info">
-                        <div class="time">2022-10-25 02:48:06</div>
+                        <div class="time">2022-11-05 04:18:45</div>
                         <div class="nick-name">作者：<a href="../user.html#100000">程序员老罗</a></div>
+                        <div class="category">分类专栏：<a href="../category/10000.html">EasyBlog</a></div>
+
                     </div>
-                    <div class="content" id="content"><p data-v-md-line="1">博客管理主要博客 博客列表、新增、修改博客<br>
-来个效果图<br>
-<img src="../resource/image/202210/FFqDFtMiSLxOkVNoCiXpNaWpgJeAxN.png" alt="图片"></p>
+                    <div class="content" id="content"><h1 data-v-md-heading="test" data-v-md-line="1">test</h1>
+<h2 data-v-md-heading="test-1" data-v-md-line="2">test</h2>
+<p data-v-md-line="3">测试内容</p>
+<h1 data-v-md-heading="测试2" data-v-md-line="4">测试2</h1>
+<h2 data-v-md-heading="测试2-1" data-v-md-line="5">测试2</h2>
+<p data-v-md-line="6">测试测试</p>
 </div>
                 </div>
             </div>
                 <div class="container-comment">
                     <div class="comment-title">评论</div>
-                    <div id="SOHUCS" sid="uWueRbkwnp"></div>
+                    <div id="SOHUCS" sid="ZqIYMShCqS"></div>
                     <script charset="utf-8" type="text/javascript" src="https://cy-cdn.kuaizhan.com/upload/changyan.js"></script>
                     <script type="text/javascript">
                         window.changyan.api.config({
@@ -336,13 +189,54 @@
                         });
                     </script>
                 </div>
-            <div id="right-container">
-                <div class="toc-title" id="toc-title">目录<span class="icon-arrow arrow-down"></span></div>
-                <div id="toc" class="toc"></div>
+        </div>
+        <div class="right">
+            <div class="container" id="right-container">
+                <div class="right-title toc-title">目录结构</div>
+                <div id="toc"></div>
+
+                <div class="right-title category-title">
+                    <span>分类专栏</span>
+                    <a href="../category.html" class="more">更多>></a>
+                </div>
+                    <a href="../category/10000.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/image/202112/EFUgXqXkPTFORpHpeTTnbLTTMVsJgf.png">
+                        </span>
+                        <span class="category-name" title="EasyBlog">EasyBlog</span>
+                        <span class="blog-count">1篇</span>
+                    </a>
+                    <a href="../category/10001.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/image/202210/kIPHrBlMBEwhLHsMAYliJIynVhjOBt.png">
+                        </span>
+                        <span class="category-name" title="Java">Java</span>
+                        <span class="blog-count">7篇</span>
+                    </a>
+                    <a href="../category/10002.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/image/202210/KLVzFxgplZnrPWnIOtSrqrnHmIJiJy.png">
+                        </span>
+                        <span class="category-name" title="electron">electron</span>
+                        <span class="blog-count">2篇</span>
+                    </a>
+                    <a href="../category/10003.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/image/202210/VnyCajSlCNLCbrCxSNAGDIUNIelrUS.png">
+                        </span>
+                        <span class="category-name" title="Vue3">Vue3</span>
+                        <span class="blog-count">4篇</span>
+                    </a>
+                    <a href="../category/10005.html" class="category-item">
+                        <span class="category-icon">
+                                <img src="../resource/image/202210/LpocFdzOXwynTWDrmiAUkxSIESWYus.png">
+                        </span>
+                        <span class="category-name" title="编程小技巧">编程小技巧</span>
+                        <span class="blog-count">3篇</span>
+                    </a>
             </div>
         </div>
     </div>
-
 </div>
         <div class="footer">
             <div>
