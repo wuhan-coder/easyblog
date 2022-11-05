@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>electron 初体验 - 我是程序员</title>
-        <meta name="keywords" content="electron">
-        <meta name="description" content="electron初体验">
+    <title>测试博客 - 我是程序员</title>
+        <meta name="keywords" content="test">
+        <meta name="description" content="测试博客测试博客测试博客测试博客测试博客二级标题当地时间11月3日，彭博社报道称，苹果公司目前已经暂停招聘除研发部门以外的许多职位，此举是对一项旨在缩减明年预算的计划所进行的进一步升级。彭博社援引知情人士消息表示，暂停招聘的除研发以外的“许多岗位”，包括专注于标准硬件或软件工程的职位，但不涉及偏向苹果长期性的一些事业。据报道，苹果是在上月底公布第四财季财报前宣布的上述措施。苹果曾在财报业绩会上表示，公司在假日季度的增长将放缓。与许多科技公司一样，苹果公司要应对消费者支出疲软和利率上升的问题，虽然苹果公司今年的表现好于许多科技同行，但它仍面临智能手机和电脑行业的整体放缓。无独有偶。当地时间11月">
 
     <link rel="stylesheet" href="../resource/static/plugin/highlight/styles/github.min.css">
     <link rel="stylesheet" href="../resource/static/plugin/viewer/viewer.min.css">
@@ -162,81 +162,39 @@
         <div class="container">
             <div class="container-content">
                 <div>
-                    <div class="blog-title">electron 初体验</div>
+                    <div class="blog-title">测试博客</div>
                     <div class="blog-info">
-                        <div class="time">2022-05-21 03:23:14</div>
+                        <div class="time">2022-11-05 04:50:56</div>
                         <div class="nick-name">作者：<a href="../user.html#100000">程序员老罗</a></div>
-                        <div class="category">分类专栏：<a href="../category/10002.html">electron</a></div>
+                        <div class="category">分类专栏：<a href="../category/10000.html">EasyBlog</a></div>
 
                     </div>
-                    <div class="content" id="content"><h1 data-v-md-heading="一些初始化问题" data-v-md-line="1">一些初始化问题</h1>
-<h2 data-v-md-heading="渲染进程使用node-js-模块" data-v-md-line="2">渲染进程使用node.js 模块</h2>
-<div data-v-md-line="3"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code><span class="hljs-keyword">const</span> mainWindow = <span class="hljs-keyword">new</span> <span class="hljs-title class_">BrowserWindow</span>({
-        <span class="hljs-attr">width</span>: <span class="hljs-number">600</span>,
-        <span class="hljs-attr">height</span>: <span class="hljs-number">400</span>,
-        <span class="hljs-attr">icon</span>: <span class="hljs-string">&#x27;icon.ico&#x27;</span>,
-        <span class="hljs-attr">webPreferences</span>: {
-            <span class="hljs-attr">nodeIntegration</span>: <span class="hljs-literal">true</span>, <span class="hljs-comment">//允许渲染进程使用nodejs</span>
-            <span class="hljs-attr">contextIsolation</span>: <span class="hljs-literal">false</span> <span class="hljs-comment">//允许渲染进程使用nodejs</span>
-        }
-    });
-</code></pre>
-</div></div><h2 data-v-md-heading="中文乱码解决" data-v-md-line="15">中文乱码解决</h2>
-<p data-v-md-line="16">在package.json中的启动脚本中添加 chcp 65001</p>
-<div data-v-md-line="17"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code><span class="hljs-string">&quot;scripts&quot;</span>: {
-    <span class="hljs-string">&quot;start&quot;</span>: <span class="hljs-string">&quot;chcp 65001 &amp;&amp; electron .&quot;</span>,
-    <span class="hljs-string">&quot;test&quot;</span>: <span class="hljs-string">&quot;echo \&quot;Error: no test specified\&quot; &amp;&amp; exit 1&quot;</span>
-  },
-</code></pre>
-</div></div><h2 data-v-md-heading="使用remote" data-v-md-line="24">使用remote</h2>
-<p data-v-md-line="25">remote可以用于主线程，渲染线程通讯，渲染线程创建窗口等操作，使的渲染线程可以调用主线程方法<br>
-高版本的remote被独立成第三方包，使用需要单独引入</p>
-<div data-v-md-line="27"><div class="v-md-pre-wrapper v-md-pre-wrapper-shell extra-class"><pre class="v-md-hljs-shell"><code>npm install --save @electron/remote
-</code></pre>
-</div></div><p data-v-md-line="30">主线程中配置</p>
-<div data-v-md-line="31"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code>
-<span class="hljs-keyword">const</span> remote = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;@electron/remote/main&#x27;</span>);
-remote.<span class="hljs-title function_">initialize</span>()
-
-<span class="hljs-keyword">const</span> mainWindow = <span class="hljs-keyword">new</span> <span class="hljs-title class_">BrowserWindow</span>({
-        <span class="hljs-attr">width</span>: <span class="hljs-number">600</span>,
-        <span class="hljs-attr">height</span>: <span class="hljs-number">400</span>,
-        <span class="hljs-attr">icon</span>: <span class="hljs-string">&#x27;icon.ico&#x27;</span>,
-        <span class="hljs-attr">webPreferences</span>: {
-            <span class="hljs-attr">nodeIntegration</span>: <span class="hljs-literal">true</span>, <span class="hljs-comment">//允许渲染进程使用nodejs</span>
-            <span class="hljs-attr">contextIsolation</span>: <span class="hljs-literal">false</span> <span class="hljs-comment">//允许渲染进程使用nodejs</span>
-        }
-    });
-   remote.<span class="hljs-title function_">enable</span>(mainWindow.<span class="hljs-property">webContents</span>);
-</code></pre>
-</div></div><h1 data-v-md-heading="窗口参数" data-v-md-line="49">窗口参数</h1>
-<h2 data-v-md-heading="获取屏幕大小" data-v-md-line="50">获取屏幕大小</h2>
-<div data-v-md-line="51"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code><span class="hljs-keyword">const</span> {screen} = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;electron&quot;</span>);
-
-<span class="hljs-keyword">let</span> screenWidth = screen.<span class="hljs-title function_">getPrimaryDisplay</span>().<span class="hljs-property">workAreaSize</span>.<span class="hljs-property">width</span>;
-<span class="hljs-keyword">let</span> screenHeight = screen.<span class="hljs-title function_">getPrimaryDisplay</span>().<span class="hljs-property">workAreaSize</span>.<span class="hljs-property">height</span>;
-
-</code></pre>
-</div></div><h2 data-v-md-heading="设置窗口位置" data-v-md-line="58">设置窗口位置</h2>
-<div data-v-md-line="59"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code>
-    <span class="hljs-keyword">const</span> mainWindow = <span class="hljs-keyword">new</span> <span class="hljs-title class_">BrowserWindow</span>({
-        <span class="hljs-attr">width</span>: <span class="hljs-number">600</span>,
-        <span class="hljs-attr">height</span>: <span class="hljs-number">400</span>,
-        <span class="hljs-attr">icon</span>: <span class="hljs-string">&#x27;icon.ico&#x27;</span>,
-        <span class="hljs-attr">webPreferences</span>: {
-            <span class="hljs-attr">nodeIntegration</span>: <span class="hljs-literal">true</span>, <span class="hljs-comment">//允许渲染进程使用nodejs</span>
-            <span class="hljs-attr">contextIsolation</span>: <span class="hljs-literal">false</span> <span class="hljs-comment">//允许渲染进程使用nodejs</span>
-        }
-    });
-   mainWindow.<span class="hljs-title function_">setPostion</span>(x,y)
-
-</code></pre>
-</div></div></div>
+                    <div class="content" id="content"><p data-v-md-line="1">测试博客<br>
+测试博客<br>
+测试博客</p>
+<h1 data-v-md-heading="测试博客" data-v-md-line="4">测试博客</h1>
+<h2 data-v-md-heading="测试博客二级标题" data-v-md-line="5">测试博客二级标题</h2>
+<p data-v-md-line="6">当地时间11月3日，彭博社报道称，苹果公司目前已经暂停招聘除研发部门以外的许多职位，此举是对一项旨在缩减明年预算的计划所进行的进一步升级。</p>
+<p data-v-md-line="8">彭博社援引知情人士消息表示，暂停招聘的除研发以外的“许多岗位”，包括专注于标准硬件或软件工程的职位，但不涉及偏向苹果长期性的一些事业。</p>
+<p data-v-md-line="10">据报道，苹果是在上月底公布第四财季财报前宣布的上述措施。苹果曾在财报业绩会上表示，公司在假日季度的增长将放缓。与许多科技公司一样，苹果公司要应对消费者支出疲软和利率上升的问题，虽然苹果公司今年的表现好于许多科技同行，但它仍面临智能手机和电脑行业的整体放缓。</p>
+<p data-v-md-line="12">无独有偶。当地时间11月3日，全球最大的在线零售商亚马逊宣布，因宏观经济前景恶化，公司已经决定暂停招聘新的员工。上月初，该公司才刚刚宣布将冻结其零售业务的招聘。</p>
+<p data-v-md-line="14">亚马逊高级副总裁Beth Galetti在公司官网发文表示，由于宏观经济正处于较高不确定性的境地，并且前几年已经快速扩员，公司决定暂停增加新的招聘岗位。Galetti表示，亚马逊正面临着一个不同寻常的宏观经济，公司希望招聘、投资能与外部环境取得平衡。她预计该决定将持续数月，在此期间，管理层会将密切关注宏观经济和公司业务的表现，并在合理的时间点重新调整招聘计划。</p>
+<p data-v-md-line="16">亚马逊在疫情期间曾进行过大规模招聘，当时其电商业务在疫情的驱动下迅猛发展。然而近期消费者重返实体店，其零售业务增速开始放缓。同时，出于对经济衰退的担忧，亚马逊已经削减了整个公司的开支，包括缩减仓储面积、叫停部分实验项目等。</p>
+<p data-v-md-line="18">科技巨头纷纷削减人力成本</p>
+<p data-v-md-line="20">放缓招聘工作的科技巨头远不止苹果和亚马逊。</p>
+<p data-v-md-line="22">9月底，脸书母公司Meta宣布冻结招聘，计划解雇员工并重组部分团队，以便削减开支并调整优先事项。扎克伯格还表示，大多数团队的预算将被缩减，即使是业务正在发展的团队也可能面临裁员，“到2023年底，Meta的规模将会略微缩小。”</p>
+<p data-v-md-line="24">和其他科技巨头一样，微软也在不断削减人力成本。10月18日，微软被曝正在计划裁员，但并没有透露具体人数。而今年7月，微软曾表示计划削减20多万员工中的1%。</p>
+<p data-v-md-line="26">谷歌母公司Alphabet并未提出裁员计划，但已决定放慢招聘速度。当地时间10月25日，Alphabet首席财务官Ruth Porat表示，第四季度新增员工人数将“降至第三季度新增人数的一半以下”，不过她补充说，“我们将继续招聘关键岗位，特别是侧重于顶尖工程和技术人才。”据《纽约时报》报道，谷歌已经削减了内部孵化器Area 120部门的岗位和资金，还取消了员工不必要的商务旅行，但尚未进行大规模裁员。</p>
+<p data-v-md-line="28">10月28日，芯片巨头英特尔CEO Pat Gelsinger确认，公司将对全球启动大规模、“有针对性的”裁员，涉及销售与市场等部门，包括中国市场。有市场传言称，英特尔裁员约占全球12.1万名员工的20%，即2.4万人。</p>
+<p data-v-md-line="30">被特斯拉CEO埃隆·马斯克收入囊中的推特也未能幸免。据《纽约时报》当地时间11月3日消息，在发给员工的邮件中，推特已经证实将于当地时间周五开始在全公司范围裁员。据报道，在入主社交媒体推特之后，马斯克计划在推特裁撤大约3700个岗位，约占该公司员工总数的一半，以降低成本。</p>
+<p data-v-md-line="32">网约车企业Lyft在3日表示，公司计划裁减13%的员工，近700个工作岗位。Lyft创始人在内部通知中强调了或出现经济衰退的可能性，并表示预计网约车保险成本将会上<br>
+<img src="../resource/image/202211/hCcCBBHqwajFnYvouoghLFJmYAbFVq.png" alt="图片"></p>
+</div>
                 </div>
             </div>
                 <div class="container-comment">
                     <div class="comment-title">评论</div>
-                    <div id="SOHUCS" sid="tOcwQysMig"></div>
+                    <div id="SOHUCS" sid="tsPSHYBBon"></div>
                     <script charset="utf-8" type="text/javascript" src="https://cy-cdn.kuaizhan.com/upload/changyan.js"></script>
                     <script type="text/javascript">
                         window.changyan.api.config({
