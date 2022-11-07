@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Vue3 prototype使用 - 我是程序员</title>
-        <meta name="keywords" content="Vue3 prototype">
-        <meta name="description" content="Vue3 prototype使用 vue2可以用派生，Vue3 没有this对象，无法派生">
+    <title>Vite+Vue3 环境变量使用 - 我是程序员</title>
+        <meta name="keywords" content="vue配置文件">
+        <meta name="description" content="我们在开发VUE的过程中经常要用到环境变量，直接在根目录下新建对应环境的配置文件。定义配置文件然后再package.json中最对应的配置配置文件啊后缀要跟--mode后面保持一致定义的内容必须要VITE开头,如下VITE_SERVER_URL=http://localhost:8070/VITE_TITLE=easyblog使用配置文件在vite.config.js中使用如图：import{fileURLToPath,URL}from&#x27;node:url&#x27;import{defineConfig,loadEnv}from&#x27;vite&#x27;importvuefro">
 
     <link rel="stylesheet" href="../resource/static/plugin/highlight/styles/github.min.css">
     <link rel="stylesheet" href="../resource/static/plugin/viewer/viewer.min.css">
@@ -162,48 +162,71 @@
         <div class="container">
             <div class="container-content">
                 <div>
-                    <div class="blog-title">Vue3 prototype使用</div>
+                    <div class="blog-title">Vite+Vue3 环境变量使用</div>
                     <div class="blog-info">
-                        <div class="time">2022-05-29 01:27:03</div>
+                        <div class="time">2022-11-07 05:30:52</div>
                         <div class="nick-name">作者：<a href="../user.html#100000">程序员老罗</a></div>
                         <div class="category">分类专栏：<a href="../category/10003.html">Vue3</a></div>
 
                     </div>
-                    <div class="content" id="content"><h1 data-v-md-heading="vue3-prototype使用" data-v-md-line="1">Vue3 prototype使用</h1>
-<h2 data-v-md-heading="vue2-x-中使用" data-v-md-line="2">Vue2.x 中使用</h2>
-<p data-v-md-line="3">先说 Vue2.x 中我们可以直接派生vue对象<br>
-比如<br>
-在main.js中配置</p>
-<div data-v-md-line="6"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code><span class="hljs-title class_">Vue</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>.<span class="hljs-property">$echarts</span> = echarts
+                    <div class="content" id="content"><p data-v-md-line="1">我们在开发VUE的过程中经常要用到环境变量，直接在根目录下新建对应环境的配置文件。</p>
+<h1 data-v-md-heading="定义配置文件" data-v-md-line="2">定义配置文件</h1>
+<p data-v-md-line="3"><img src="../resource/image/202211/TLbeYmrUYWbDttfGYnuQwCFpgmQjcJ.png" alt="图片"><br>
+然后再package.json中最对应的配置<br>
+<img src="../resource/image/202211/sHNMjYbvvbwCVNyYyVxnQLTjePkTDH.png" alt="图片"><br>
+配置文件啊后缀要跟 --mode 后面保持一致<br>
+定义的内容必须要VITE开头,如下</p>
+<div data-v-md-line="8"><div class="v-md-pre-wrapper v-md-pre-wrapper-shell extra-class"><pre class="v-md-hljs-shell"><code>VITE_SERVER_URL=http://localhost:8070/
+VITE_TITLE=easyblog
 </code></pre>
-</div></div><p data-v-md-line="9">然后使用就直接 this.$echarts 就可以了</p>
-<h2 data-v-md-heading="vue3-x-中使用" data-v-md-line="11">Vue3.x 中使用</h2>
-<p data-v-md-line="12">在main.js中配置</p>
-<div data-v-md-line="13"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code><span class="hljs-keyword">const</span> app = <span class="hljs-title function_">createApp</span>(<span class="hljs-title class_">App</span>)
-app.<span class="hljs-property">config</span>.<span class="hljs-property">globalProperties</span>.<span class="hljs-property">$echarts</span>= echarts
-app.<span class="hljs-title function_">use</span>(router)
-app.<span class="hljs-title function_">mount</span>(<span class="hljs-string">&#x27;#app&#x27;</span>)
-</code></pre>
-</div></div><h3 data-v-md-heading="申明式-api-使用" data-v-md-line="19">申明式 Api 使用</h3>
-<p data-v-md-line="20">就是跟vue2一样的 使用 data()  methods 这样的，用法就跟vue2一样直接this.$echats</p>
-<h3 data-v-md-heading="组合式api" data-v-md-line="22">组合式Api</h3>
-<div data-v-md-line="23"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code><span class="hljs-keyword">import</span> {  getCurrentInstance } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;vue&#x27;</span>
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> {
-    setup () {
-        <span class="hljs-keyword">let</span> { proxy } = <span class="hljs-title function_">getCurrentInstance</span>();
-        <span class="hljs-comment">// 这样使用 proxy.$echarts</span>
-        <span class="hljs-keyword">return</span> {
+</div></div><h1 data-v-md-heading="使用配置文件" data-v-md-line="12">使用配置文件</h1>
+<h2 data-v-md-heading="在vite-config-js中使用" data-v-md-line="13">在vite.config.js中使用</h2>
+<p data-v-md-line="14">如图：</p>
+<div data-v-md-line="15"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code><span class="hljs-keyword">import</span> { fileURLToPath, <span class="hljs-variable constant_">URL</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;node:url&#x27;</span>
+<span class="hljs-keyword">import</span> { defineConfig, loadEnv } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;vite&#x27;</span>
+<span class="hljs-keyword">import</span> vue <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@vitejs/plugin-vue&#x27;</span>
 
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-title function_">defineConfig</span>(<span class="hljs-function">(<span class="hljs-params">{ mode }</span>) =&gt;</span> {
+  <span class="hljs-keyword">const</span> env = <span class="hljs-title function_">loadEnv</span>(mode, process.<span class="hljs-title function_">cwd</span>());
+  <span class="hljs-keyword">return</span> {
+    <span class="hljs-attr">plugins</span>: [<span class="hljs-title function_">vue</span>()],
+    <span class="hljs-attr">resolve</span>: {
+      <span class="hljs-attr">alias</span>: {
+        <span class="hljs-string">&#x27;@&#x27;</span>: <span class="hljs-title function_">fileURLToPath</span>(<span class="hljs-keyword">new</span> <span class="hljs-title function_">URL</span>(<span class="hljs-string">&#x27;./src&#x27;</span>, <span class="hljs-keyword">import</span>.<span class="hljs-property">meta</span>.<span class="hljs-property">url</span>))
+      }
+    },
+    <span class="hljs-attr">server</span>: {
+      <span class="hljs-attr">hmr</span>: <span class="hljs-literal">true</span>,
+      <span class="hljs-attr">port</span>: <span class="hljs-number">3002</span>,
+      <span class="hljs-attr">proxy</span>: {
+        <span class="hljs-string">&#x27;/api&#x27;</span>: {
+          <span class="hljs-attr">target</span>: env.<span class="hljs-property">VITE_SERVER_URL</span>,
+          <span class="hljs-attr">changeOrigin</span>: <span class="hljs-literal">true</span>,
+          <span class="hljs-attr">pathRewrite</span>: {
+            <span class="hljs-string">&quot;^api&quot;</span>: <span class="hljs-string">&quot;/api&quot;</span>
+          }
         }
+      }
     }
-}
+  }
+})
+
+</code></pre>
+</div></div><p data-v-md-line="46">引入 loadEnv<br>
+通过</p>
+<div data-v-md-line="48"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code><span class="hljs-keyword">const</span> env = <span class="hljs-title function_">loadEnv</span>(mode, process.<span class="hljs-title function_">cwd</span>()); 
+</code></pre>
+</div></div><p data-v-md-line="51">获取env对象，就可以直接调用了</p>
+<h2 data-v-md-heading="在vue中使用" data-v-md-line="53">在vue中使用</h2>
+<p data-v-md-line="54">在vue中使用就简单了,直接通过 import.meta.env 就可以获取到想要的属性</p>
+<div data-v-md-line="55"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code><span class="hljs-keyword">const</span> title = <span class="hljs-title function_">ref</span>(<span class="hljs-keyword">import</span>.<span class="hljs-property">meta</span>.<span class="hljs-property">env</span>.<span class="hljs-property">VITE_TITLE</span>);
 </code></pre>
 </div></div></div>
                 </div>
             </div>
                 <div class="container-comment">
                     <div class="comment-title">评论</div>
-                    <div id="SOHUCS" sid="FpBIgZPiSV"></div>
+                    <div id="SOHUCS" sid="KnSNtrHamr"></div>
                     <script charset="utf-8" type="text/javascript" src="https://cy-cdn.kuaizhan.com/upload/changyan.js"></script>
                     <script type="text/javascript">
                         window.changyan.api.config({
