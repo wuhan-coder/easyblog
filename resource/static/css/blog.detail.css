@@ -239,6 +239,26 @@ a {
   font-size: 14px;
 }
 
+.container-comment {
+  margin-top: 20px;
+  background: #fff;
+  padding: 10px;
+  text-align: center;
+}
+.container-comment .comment-title {
+  font-size: 20px;
+  padding-left: 10px;
+  text-align: left;
+}
+.container-comment a.comment-btn {
+  margin: 40px auto 20px auto;
+  background: #e74851;
+  color: #fff;
+  text-decoration: none;
+  padding: 10px 15px;
+  display: inline-block;
+}
+
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -348,15 +368,6 @@ a {
   padding: 0 1em;
   color: #6a737d;
   border-left: 0.25em solid #dfe2e5;
-}
-.blog-detail .container .container-comment {
-  margin-top: 20px;
-  background: #fff;
-  padding: 10px;
-}
-.blog-detail .container .container-comment .comment-title {
-  font-size: 20px;
-  padding-left: 10px;
 }
 .blog-detail .right {
   width: 300px;

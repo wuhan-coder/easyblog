@@ -154,10 +154,10 @@ body .user-item {
   align-items: center;
 }
 body .user-item .user-icon {
-  width: 80px;
-  height: 80px;
+  width: 60px;
+  height: 60px;
   background: #ddd;
-  border-radius: 40px;
+  border-radius: 30px;
   display: flex;
   align-items: center;
   overflow: hidden;
@@ -197,7 +197,7 @@ body .no-data {
   color: #939393;
   text-align: center;
 }
-body .team-user-title {
+body .team-user-title, body .special-title {
   margin-top: 20px;
 }
 body .footer {
@@ -237,6 +237,26 @@ a {
   color: #1890ff;
   text-decoration: none;
   font-size: 14px;
+}
+
+.container-comment {
+  margin-top: 20px;
+  background: #fff;
+  padding: 10px;
+  text-align: center;
+}
+.container-comment .comment-title {
+  font-size: 20px;
+  padding-left: 10px;
+  text-align: left;
+}
+.container-comment a.comment-btn {
+  margin: 40px auto 20px auto;
+  background: #e74851;
+  color: #fff;
+  text-decoration: none;
+  padding: 10px 15px;
+  display: inline-block;
 }
 
 ::-webkit-scrollbar {
