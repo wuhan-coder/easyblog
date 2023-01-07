@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>vscode 开发vue3环境配置 - 我是程序员</title>
-        <meta name="keywords" content="vscode 开发vue3环境配置">
+    <title>vscode 开发vue3环境配置 配置好这些写代码不快你来打我 - 我是程序员</title>
+        <meta name="keywords" content="vscode 开发vue3环境配置 配置好这些写代码不快你来打我">
         <meta name="description" content="vscode 开发vue3环境配置">
 
     <link rel="stylesheet" href="../resource/static/plugin/highlight/styles/github.min.css">
@@ -162,7 +162,7 @@
         <div class="container">
             <div class="container-content">
                 <div>
-                    <div class="blog-title">vscode 开发vue3环境配置</div>
+                    <div class="blog-title">vscode 开发vue3环境配置 配置好这些写代码不快你来打我</div>
                     <div class="blog-info">
                         <div class="time">2022-06-11 11:37:44</div>
                         <div class="nick-name">作者：<a href="../user.html#100000">程序员老罗</a></div>
@@ -177,29 +177,211 @@
 vue3 snippets 安装后 css 会有提示 js 的一些常用函数也有提示，这个是必须的<br>
 vetur 和 volar 这两个需要安装一个，否则vscode 不识别vue。我发现使用volar 很多提示都没有，css,和js都没有了，所以推荐使用  vetur+vue3 snippets</p>
 <h2 data-v-md-heading="配置vue模板" data-v-md-line="9">配置vue模板</h2>
-<p data-v-md-line="10">vscode -&gt;设置-&gt;代码片段-&gt;输入vue搜索 然后输入配置</p>
-<div data-v-md-line="11"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
-	<span class="hljs-attr">&quot;vue模板&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
-		<span class="hljs-attr">&quot;prefix&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;vue&quot;</span><span class="hljs-punctuation">,</span>
-		<span class="hljs-attr">&quot;body&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
-			<span class="hljs-string">&quot;&lt;202209late&gt;&quot;</span><span class="hljs-punctuation">,</span>
+<h3 data-v-md-heading="效果展示" data-v-md-line="10">效果展示</h3>
+<p data-v-md-line="11">1、构建一个页面，可以很快速构建一个vue3的页面<br>
+<img src="../resource/image/202301/XlvhaTnKLjrOWJoQsNFCJQNcmuKhfi.gif" alt="图片"></p>
+<p data-v-md-line="14">2、快速构建一个el-form表单<br>
+<img src="../resource/image/202301/XlRVEfNNuUkTyQkEZtjkImsTBhodeY.gif" alt="图片"></p>
+<p data-v-md-line="17">3、插入js代码<br>
+<img src="../resource/image/202301/tpasaplJvzSDTRuMbsxqQffTDZRarn.gif" alt="图片"></p>
+<p data-v-md-line="20">有了这个是不是我们可以把经常用到的一些组件写成代码块，这样就不用每次去翻文档了</p>
+<h3 data-v-md-heading="配置方法" data-v-md-line="21">配置方法</h3>
+<p data-v-md-line="22">vscode -&gt;文件-&gt;首选项-&gt;配置用户代码片段<br>
+输入 vue<br>
+<img src="../resource/image/202301/mTlAhQmpAWghuqySYxWoeofqFyzNSW.png" alt="图片"></p>
+<p data-v-md-line="26">这里要区分一下<br>
+括号里面(Vue)那个是全局的，通常用于快速构建一个文件，比如一个vue3的模板<br>
+vue-html的 通常是用于在html标签内快速构建html<br>
+在js里面传入代码，就需要输入 javascript<br>
+<img src="../resource/image/202301/glyecVlbntoJpSfLiNNQXJlBWmyLHd.png" alt="图片"><br>
+选中后都是下面的json，大家按照需求配置即可<br>
+这样会对应生成三个问题件<br>
+<img src="../resource/image/202301/mhowYwMaulIvTHxmQzaEmhOEEUgfvF.png" alt="图片"><br>
+路径会在磁盘下，分别对应三个文件<br>
+javascript.json这个是js代码块<br>
+vue-html.json是模板html代码块<br>
+vue.json是全局的，就是构建初始化页面的</p>
+<p data-v-md-line="39">文件类型基本都是这样的</p>
+<div data-v-md-line="40"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+	<span class="hljs-attr">&quot;vue3模板&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-comment">//快捷输入的时候显示的提示</span>
+		<span class="hljs-attr">&quot;prefix&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;vue&quot;</span><span class="hljs-punctuation">,</span><span class="hljs-comment">//输入的前缀，就是输入这个会有提示</span>
+		<span class="hljs-attr">&quot;description&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;vue3模板&quot;</span><span class="hljs-punctuation">,</span><span class="hljs-comment">//描述</span>
+		<span class="hljs-attr">&quot;body&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-comment">//这个是一个字符串数组，就是会输出的内容，如果内容含有 双引号，需要转义，比如最下面的lang=\&quot;scss\&quot;</span>
+			<span class="hljs-string">&quot;&lt;template&gt;&quot;</span><span class="hljs-punctuation">,</span>
 			<span class="hljs-string">&quot;  &lt;div&gt;&lt;/div&gt;&quot;</span><span class="hljs-punctuation">,</span>
-			<span class="hljs-string">&quot;&lt;/202209late&gt;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;&lt;/template&gt;&quot;</span><span class="hljs-punctuation">,</span>
 			<span class="hljs-string">&quot;&quot;</span><span class="hljs-punctuation">,</span>
 			<span class="hljs-string">&quot;&lt;script setup&gt;&quot;</span><span class="hljs-punctuation">,</span>
 			<span class="hljs-string">&quot;&quot;</span><span class="hljs-punctuation">,</span>
 			<span class="hljs-string">&quot;&lt;/script&gt;&quot;</span><span class="hljs-punctuation">,</span>
 			<span class="hljs-string">&quot;&quot;</span><span class="hljs-punctuation">,</span>
-			<span class="hljs-string">&quot;&lt;style lang=\&quot;scss\&quot;&gt;&quot;</span><span class="hljs-punctuation">,</span>
-			<span class="hljs-string">&quot;&lt;/style&gt;&quot;</span>
-		<span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;&lt;style lang=\&quot;scss\&quot; scoped&gt;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;&lt;/style&gt;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;&quot;</span>
+		<span class="hljs-punctuation">]</span>
+	<span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+</div></div><p data-v-md-line="62">把我用的几个模板提供给大家，可以根据自己的需求自己定制化</p>
+<p data-v-md-line="64">vue.json</p>
+<div data-v-md-line="65"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+	<span class="hljs-attr">&quot;vue3模板&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-comment">//快捷输入的时候显示的提示</span>
+		<span class="hljs-attr">&quot;prefix&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;vue&quot;</span><span class="hljs-punctuation">,</span><span class="hljs-comment">//输入的前缀，就是输入这个会有提示</span>
+		<span class="hljs-attr">&quot;description&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;vue3模板&quot;</span><span class="hljs-punctuation">,</span><span class="hljs-comment">//描述</span>
+		<span class="hljs-attr">&quot;body&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-comment">//这个是一个字符串数组，就是会输出的内容，如果内容含有 双引号，需要转义，比如最下面的lang=\&quot;scss\&quot;</span>
+			<span class="hljs-string">&quot;&lt;template&gt;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;  &lt;div&gt;&lt;/div&gt;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;&lt;/template&gt;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;&lt;script setup&gt;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;&lt;/script&gt;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;&lt;style lang=\&quot;scss\&quot; scoped&gt;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;&lt;/style&gt;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;&quot;</span>
+		<span class="hljs-punctuation">]</span>
+	<span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+</div></div><p data-v-md-line="86">vue-html.json</p>
+<div data-v-md-line="87"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+	<span class="hljs-attr">&quot;el-form模板&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+		<span class="hljs-attr">&quot;prefix&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;el-form&quot;</span><span class="hljs-punctuation">,</span>
+		<span class="hljs-attr">&quot;description&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;创建el-form&quot;</span><span class="hljs-punctuation">,</span>
+		<span class="hljs-attr">&quot;body&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+			<span class="hljs-string">&quot;&lt;el-form&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;  :model=\&quot;formData\&quot;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;  :rules=\&quot;rules\&quot;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;  ref=\&quot;formDataRef\&quot;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;  label-width=\&quot;80px\&quot;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;&gt;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;&lt;!--input输入--&gt;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;  &lt;el-form-item label=\&quot;\&quot; prop=\&quot;\&quot; &gt;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;    &lt;el-input clearable placeholder=\&quot;提示信息\&quot; v-model=\&quot;formData.\&quot;&gt;&lt;/el-input&gt;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;  &lt;/el-form-item&gt;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;&lt;!--textarea输入--&gt;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;  &lt;el-form-item&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;    label=\&quot;\&quot;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;    prop=\&quot;\&quot;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;    clearable&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;    placeholder=\&quot;提示信息\&quot;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;    type=\&quot;textarea\&quot;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;    :rows=\&quot;5\&quot;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;    :maxlength=\&quot;150\&quot;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;    resize=\&quot;none\&quot;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;    show-word-limit&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;    v-model=\&quot;formData.\&quot;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;  &gt;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;  &lt;/el-form-item&gt;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;&lt;!-- 单选 --&gt;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;  &lt;el-form-item label=\&quot;\&quot; prop=\&quot;\&quot; &gt;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;    &lt;el-radio-group v-model=\&quot;formData.\&quot;&gt;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;      &lt;el-radio :label=\&quot;值1\&quot;&gt;显示信息&lt;/el-radio&gt;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;      &lt;el-radio :label=\&quot;值2\&quot;&gt;显示信息&lt;/el-radio&gt;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;    &lt;/el-radio-group&gt;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;  &lt;/el-form-item&gt;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;&lt;!-- 下拉框 --&gt;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;  &lt;el-form-item label=\&quot;\&quot; prop=\&quot;\&quot; &gt;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;    &lt;el-select clearable  placeholder=\&quot;提示信息\&quot; v-model=\&quot;formData.\&quot; ,&gt;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;      &lt;el-option :value=\&quot;值1\&quot; label=\&quot;显示信息\&quot;&gt;&lt;/el-option&gt;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;      &lt;el-option :value=\&quot;值2\&quot; label=\&quot;显示信息\&quot;&gt;&lt;/el-option&gt;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;    &lt;/el-select&gt;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;  &lt;/el-form-item&gt;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;&lt;/el-form&gt;&quot;</span><span class="hljs-punctuation">,</span>
+		<span class="hljs-punctuation">]</span>
+	<span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+	<span class="hljs-attr">&quot;el-input模板&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+		<span class="hljs-attr">&quot;prefix&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;el-input&quot;</span><span class="hljs-punctuation">,</span>
+		<span class="hljs-attr">&quot;description&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;创建el-input&quot;</span><span class="hljs-punctuation">,</span>
+		<span class="hljs-attr">&quot;body&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+			<span class="hljs-string">&quot;&lt;!--input输入--&gt;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;  &lt;el-form-item label=\&quot;\&quot; prop=\&quot;\&quot; &gt;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;    &lt;el-input clearable placeholder=\&quot;提示信息\&quot; v-model=\&quot;formData.\&quot;&gt;&lt;/el-input&gt;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;  &lt;/el-form-item&gt;&quot;</span><span class="hljs-punctuation">,</span>
+		<span class="hljs-punctuation">]</span>
+	<span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+	<span class="hljs-attr">&quot;el-textarea模板&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+		<span class="hljs-attr">&quot;prefix&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;el-textarea&quot;</span><span class="hljs-punctuation">,</span>
+		<span class="hljs-attr">&quot;description&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;创建el-input&quot;</span><span class="hljs-punctuation">,</span>
+		<span class="hljs-attr">&quot;body&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+			<span class="hljs-string">&quot;&lt;!--textarea输入--&gt;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;&lt;el-form-item&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;   label=\&quot;\&quot;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;   prop=\&quot;\&quot;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;   clearable&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;   placeholder=\&quot;提示信息\&quot;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;   type=\&quot;textarea\&quot;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;   :rows=\&quot;5\&quot;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;   :maxlength=\&quot;150\&quot;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;   resize=\&quot;none\&quot;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;   show-word-limit&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;   v-model=\&quot;formData.\&quot;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot; &gt;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;&lt;/el-form-item&gt;&quot;</span><span class="hljs-punctuation">,</span>
+		<span class="hljs-punctuation">]</span>
+	<span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+	<span class="hljs-attr">&quot;el-radio模板&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+		<span class="hljs-attr">&quot;prefix&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;el-radio&quot;</span><span class="hljs-punctuation">,</span>
+		<span class="hljs-attr">&quot;description&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;创建el-radio&quot;</span><span class="hljs-punctuation">,</span>
+		<span class="hljs-attr">&quot;body&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+			<span class="hljs-string">&quot;&lt;!-- 单选 --&gt;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;  &lt;el-form-item label=\&quot;\&quot; prop=\&quot;\&quot; &gt;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;    &lt;el-radio-group v-model=\&quot;formData.\&quot;&gt;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;      &lt;el-radio :label=\&quot;值1\&quot;&gt;显示信息&lt;/el-radio&gt;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;      &lt;el-radio :label=\&quot;值2\&quot;&gt;显示信息&lt;/el-radio&gt;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;    &lt;/el-radio-group&gt;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;  &lt;/el-form-item&gt;&quot;</span><span class="hljs-punctuation">,</span>
+		<span class="hljs-punctuation">]</span>
+	<span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+	<span class="hljs-attr">&quot;el-select模板&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+		<span class="hljs-attr">&quot;prefix&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;el-select&quot;</span><span class="hljs-punctuation">,</span>
+		<span class="hljs-attr">&quot;description&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;创建el-select模板&quot;</span><span class="hljs-punctuation">,</span>
+		<span class="hljs-attr">&quot;body&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+			<span class="hljs-string">&quot;&lt;!-- 下拉框 --&gt;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;  &lt;el-form-item label=\&quot;\&quot; prop=\&quot;\&quot; &gt;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;    &lt;el-select clearable  placeholder=\&quot;提示信息\&quot; v-model=\&quot;formData.\&quot; ,&gt;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;      &lt;el-option :value=\&quot;值1\&quot; label=\&quot;显示信息\&quot;&gt;&lt;/el-option&gt;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;      &lt;el-option :value=\&quot;值2\&quot; label=\&quot;显示信息\&quot;&gt;&lt;/el-option&gt;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;    &lt;/el-select&gt;&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;  &lt;/el-form-item&gt;&quot;</span><span class="hljs-punctuation">,</span>
+		<span class="hljs-punctuation">]</span>
+	<span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+</div></div><p data-v-md-line="193">javascript.json</p>
+<div data-v-md-line="194"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code><span class="hljs-punctuation">{</span>
+	<span class="hljs-attr">&quot;dialog弹窗配置&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+		<span class="hljs-attr">&quot;prefix&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;dialogConfig&quot;</span><span class="hljs-punctuation">,</span>
+		<span class="hljs-attr">&quot;description&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;弹窗config配置&quot;</span><span class="hljs-punctuation">,</span>
+		<span class="hljs-attr">&quot;body&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+			<span class="hljs-string">&quot;const dialogConfig = reactive({&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;  show: false,&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;  title: \&quot;标题\&quot;,&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;  buttons: [&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;   {&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;    type: \&quot;danger\&quot;,&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;    text: \&quot;确定\&quot;,&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;    click: (e) =&gt; {&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;      submitForm();&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;    },&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;  },&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot; ],&quot;</span><span class="hljs-punctuation">,</span>
+			<span class="hljs-string">&quot;});&quot;</span>
+		<span class="hljs-punctuation">]</span>
+	<span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+	<span class="hljs-attr">&quot;watch使用&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+		<span class="hljs-attr">&quot;prefix&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;watch&quot;</span><span class="hljs-punctuation">,</span>
+		<span class="hljs-attr">&quot;description&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;快速实现watch&quot;</span><span class="hljs-punctuation">,</span>
+		<span class="hljs-attr">&quot;body&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+			<span class="hljs-string">&quot;watch(() =&gt; (newVal, oldVal) =&gt; {}, { immediate: true, deep: true });&quot;</span><span class="hljs-punctuation">,</span>
+		<span class="hljs-punctuation">]</span>
 	<span class="hljs-punctuation">}</span>
 <span class="hljs-punctuation">}</span>
 </code></pre>
-</div></div><p data-v-md-line="30">此时新建vue文件后，直接输入 vue就有提示，可以快速构建vue模板<br>
-<img src="../resource/image/202206/wmYsyLotZoDeNNVpkjjBWoXgfYWmIp.png" alt="image.png"></p>
-<h2 data-v-md-heading="提示快捷键" data-v-md-line="33">提示快捷键</h2>
-<p data-v-md-line="34">vscode  设置-&gt;键盘快捷方式-&gt;触发建议 设置快捷键</p>
+</div></div><p data-v-md-line="224">有了这个开发代码是不是就快的飞起了</p>
+<h2 data-v-md-heading="提示快捷键" data-v-md-line="226">提示快捷键</h2>
+<p data-v-md-line="227">vscode  设置-&gt;键盘快捷方式-&gt;触发建议 设置快捷键</p>
 </div>
                 </div>
             </div>
@@ -258,7 +440,7 @@ vetur 和 volar 这两个需要安装一个，否则vscode 不识别vue。我发
 </div>
         <div class="footer">
             <div>
-                <span>©2021-2022 www.wuhancoder.com All rights reserved. </span>
+                <span>©2021-2023 www.wuhancoder.com All rights reserved. </span>
                 <a target="_blank" href="https://beian.miit.gov.cn/">鄂ICP备13017512号-3</a></div>
             <div>
                 <img src="../resource/static/beian.png">
