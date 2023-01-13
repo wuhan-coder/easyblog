@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Easybbs相关文档 - 用户中心 - 我是程序员</title>
+        <meta name="keywords" content="用户中心">
+        <meta name="description" content="说明这里主要是个人中心的接口，包括用户信息修改，头像上传，消息获取等接口列表获取文章评论接口地址/ucenter/getUserInfo请求参数参数名说明是否必填userId用户ID是返回{&quot;status&quot;:&quot;success&quot;,&quot;code&quot;:200,&quot;info&quot;:&quot;请求成功&quot;,&quot;data&quot;:{&quot;userId&quot;:&quot;7966890361&quot;,//用户ID&quot;nickName&quot;:&quot;程序员老罗&quot;,//昵称&q">
+
+    <link rel="stylesheet" href="../resource/static/plugin/highlight/styles/github.min.css">
+    <link rel="stylesheet" href="../resource/static/plugin/viewer/viewer.min.css">
+    <script src="../resource/static/plugin/highlight/highlight.min.js"></script>
+    <script src="../resource/static/plugin/jquery/jquery.min.js"></script>
+    <script src="../resource/static/plugin/viewer/viewer-jquery.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <link rel="stylesheet" href="../resource/static/css/special.detail.css">
+    <script>
+        $(document).ready(function (e) {
+            createToc();
+            $("#content").viewer({
+                navbar: false
+            });
+
+            $("#content a").each(function (index, element) {
+                $(element).attr("target", "_blank");
+            })
+
+            $(".icon-arrow").click(function () {
+                let nextLiDom = $(this).parent().next("div").eq(0)
+                if ($(this).hasClass("arrow-down")) {
+                    $(this).removeClass("arrow-down");
+                    $(this).addClass("arrow-right");
+                    nextLiDom.hide();
+                } else {
+                    $(this).removeClass("arrow-right");
+                    $(this).addClass("arrow-down");
+                    nextLiDom.show();
+                }
+            });
+
+            //目录展开收齐
+            $("#toc-title").click(function () {
+                let spanDom = $(this).find(".icon-arrow")
+                if (spanDom.hasClass("arrow-down")) {
+                    spanDom.removeClass("arrow-down");
+                    spanDom.addClass("arrow-right");
+                    $("#toc").hide();
+                } else {
+                    spanDom.removeClass("arrow-right");
+                    spanDom.addClass("arrow-down");
+                    $("#toc").show();
+                }
+            });
+
+            let currentUrl = document.location.href;
+            currentUrl = currentUrl.substring(currentUrl.lastIndexOf("/") + 1, currentUrl.lastIndexOf("."));
+            $("#" + currentUrl).addClass("active");
+        });
+
+        const createToc = () => {
+            const hTagList = ["h1", "h2", "h3", "h4", "h5", "h6", "h7"]
+            const children = document.querySelector("#content").children;
+            const hList = [];
+            for (let i = 0; i < children.length; i++) {
+                const node = children[i];
+                let tagName = node.tagName;
+                tagName = tagName == undefined ? "" : tagName.toLowerCase();
+                if (hTagList.indexOf(tagName) != -1) {
+                    const id = "hash-node-" + i;
+                    node.setAttribute("id", id);
+                    hList.push({
+                        pId: "0",
+                        id: id,
+                        level: Number.parseInt(tagName.substring(1, 2)),
+                        name: node.innerText,
+                    });
+                }
+            }
+            for (let i = 0; i < hList.length; i++) {
+                findParentId(hList, hList[i], i);
+            }
+            const newDataList = convertLine2Tree(hList, "0");
+            if (newDataList.length == 0) {
+                $("<div class='no-data'>暂无目录信息</div>").appendTo($("#toc"));
+                return;
+            }
+            newDataList.forEach(element => {
+                createTree($("#toc"), element);
+            })
+        }
+
+        const createTree = (pNode, data) => {
+            const currentNode = $("<div></div>").appendTo(pNode);
+            let extPadding = 26;
+            if (data.children.length > 0) {
+                extPadding = 10
+            }
+            const paddingLeft = (data.level - 1) * 16 + extPadding;
+            const titleNode = $("<div class='title' style='padding-left:" + paddingLeft + "px'></div>").appendTo(currentNode);
+            if (data.children.length > 0) {
+                $("<span class='icon-arrow arrow-down'></span>").appendTo(titleNode);
+            }
+            $("<a href='#" + data.id + "'  title='" + data.name + "'>" + data.name + "</a>").appendTo(titleNode);
+
+            if (data.children.length > 0) {
+                let subNode = $("<div class='sub-title'></div>").appendTo(currentNode);
+                data.children.forEach(item => {
+                    createTree(subNode, item);
+                })
+            }
+        }
+
+        //查找父级节点
+        const findParentId = (hList, item, index) => {
+            for (let i = index - 1; i >= 0; i--) {
+                const pNode = hList[i];
+                if (pNode.level < item.level) {
+                    item.pId = pNode.id;
+                    break;
+                }
+            }
+        }
+
+        //将数据转换为树形
+        const convertLine2Tree = (hList, pId) => {
+            const children = [];
+            hList.forEach(element => {
+                if (element.pId === pId) {
+                    children.push(element);
+                    element.children = convertLine2Tree(hList, element.id);
+                }
+            });
+            return children;
+        }
+
+        $(window).scroll(function () {
+            //console.log($(document).scrollTop());
+            $("#right-container").css("top", $(document).scrollTop() + "px");
+        });
+
+        function scroll(markId) {
+            let url = document.location.href;
+            if (url.indexOf("#") == -1) {
+                document.location.href = url + "#" + markId;
+            } else {
+                document.location.href = url.substring(0, url.indexOf("#") + 1) + markId;
+            }
+            $("html,body").animate({scrollTop: $("#" + markId).offset().top - 80}, 100);
+        }
+    </script>
+</head>
+<body>
+    <div class="top">
+        <div class="top-container">
+            <div class="logo">
+                    <a href="../index.html">我是程序员</a>
+            </div>
+                <a href="../index.html" class="nav ">博客</a>
+                <a href="../category.html" class="nav ">分类专栏</a>
+                <a href="../special.html" class="nav active">专题</a>
+                <a href="../user.html" class="nav ">成员</a>
+                <a href="../comment.html" class="nav ">留言板</a>
+        </div>
+    </div>
+<div class="body-container">
+    <div class="blog-detail">
+        <div class="blog-special-list">
+            <div class="blog-special">
+                <div class="category-image">
+                        <img src="../resource/image/202301/sDNbgxWNhuZFZZVjANPBPCaHeDFVAR.png">
+                </div>
+                <div class="category-info">
+                    <div class="category-title" title="Easybbs相关文档">Easybbs相关文档</div>
+                    <div class="blog-count">文章数：11</div>
+                </div>
+            </div>
+            <div class="category-desc" title="Easybbs 部署，接口文档">简介：Easybbs 部署，接口文档</div>
+            <div class="blog-list toc">
+        <div>
+            <div class="title" style="padding-left:26px" id="GcxtPagbfQ">
+                <a href="GcxtPagbfQ.html" title="项目简介">项目简介</a>
+            </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:10px" id="hKnmOrfhnP">
+                    <span class="icon-arrow arrow-down"></span>
+                <a href="hKnmOrfhnP.html" title="后端服务安装">后端服务安装</a>
+            </div>
+                <div class="sub-title">
+        <div>
+            <div class="title" style="padding-left:42px" id="mvIbjMcpDO">
+                <a href="mvIbjMcpDO.html" title="后端程序部署">后端程序部署</a>
+            </div>
+        </div>
+                </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:10px" id="pFGkmMLIzh">
+                    <span class="icon-arrow arrow-down"></span>
+                <a href="pFGkmMLIzh.html" title="访客端接口文档">访客端接口文档</a>
+            </div>
+                <div class="sub-title">
+        <div>
+            <div class="title" style="padding-left:42px" id="mzoxfWykbA">
+                <a href="mzoxfWykbA.html" title="登录注册">登录注册</a>
+            </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:42px" id="SkWFOwCzOU">
+                <a href="SkWFOwCzOU.html" title="板块信息">板块信息</a>
+            </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:42px" id="gtvNILLCnN">
+                <a href="gtvNILLCnN.html" title="图片文件相关">图片文件相关</a>
+            </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:42px" id="fKSevjLNeo">
+                <a href="fKSevjLNeo.html" title="帖子文章接口">帖子文章接口</a>
+            </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:42px" id="eJIqjPOlIa">
+                <a href="eJIqjPOlIa.html" title="评论接口">评论接口</a>
+            </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:42px" id="vlHgmgWDsu">
+                <a href="vlHgmgWDsu.html" title="用户中心">用户中心</a>
+            </div>
+        </div>
+                </div>
+        </div>
+        <div>
+            <div class="title" style="padding-left:26px" id="tXPoluHbmV">
+                <a href="tXPoluHbmV.html" title="管理端接口文档">管理端接口文档</a>
+            </div>
+        </div>
+            </div>
+
+        </div>
+        <div class="container">
+            <div class="container-content">
+                <div>
+                    <div class="blog-title">用户中心</div>
+                    <div class="blog-info">
+                        <div class="time">2023-01-13 09:51:28</div>
+                        <div class="nick-name">作者：<a href="../user.html#100000">程序员老罗</a></div>
+                    </div>
+                    <div class="content" id="content"><h1 data-v-md-heading="说明" data-v-md-line="1">说明</h1>
+<p data-v-md-line="2">这里主要是个人中心的接口，包括用户信息修改，头像上传，消息获取等</p>
+<h1 data-v-md-heading="接口列表" data-v-md-line="4">接口列表</h1>
+<h2 data-v-md-heading="获取文章评论" data-v-md-line="5">获取文章评论</h2>
+<ul data-v-md-line="6">
+<li>
+<p data-v-md-line="6">接口地址 /ucenter/getUserInfo</p>
+</li>
+<li>
+<p data-v-md-line="8">请求参数</p>
+<table data-v-md-line="9">
+<thead>
+<tr>
+<th>参数名</th>
+<th>说明</th>
+<th>是否必填</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>userId</td>
+<td>用户ID</td>
+<td>是</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p data-v-md-line="13">返回</p>
+<div data-v-md-line="14"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code>  <span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;info&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;请求成功&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;userId&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;7966890361&quot;</span><span class="hljs-punctuation">,</span><span class="hljs-comment">//用户ID</span>
+          <span class="hljs-attr">&quot;nickName&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;程序员老罗&quot;</span><span class="hljs-punctuation">,</span><span class="hljs-comment">//昵称</span>
+          <span class="hljs-attr">&quot;sex&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">1</span><span class="hljs-punctuation">,</span><span class="hljs-comment">//性别  0:女 1:男</span>
+          <span class="hljs-attr">&quot;personDescription&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;会写前端的后端程序员&quot;</span><span class="hljs-punctuation">,</span><span class="hljs-comment">//个人描述</span>
+          <span class="hljs-attr">&quot;joinTime&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;2023-01-02&quot;</span><span class="hljs-punctuation">,</span><span class="hljs-comment">//加入日期</span>
+          <span class="hljs-attr">&quot;lastLoginTime&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;2023-01-12&quot;</span><span class="hljs-punctuation">,</span><span class="hljs-comment">//最后登录日期</span>
+          <span class="hljs-attr">&quot;postCount&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">3</span><span class="hljs-punctuation">,</span><span class="hljs-comment">//发帖数</span>
+          <span class="hljs-attr">&quot;likeCount&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">10</span><span class="hljs-comment">//收到的点赞数</span>
+      <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span>   
+</code></pre>
+</div></div></li>
+</ul>
+<h2 data-v-md-heading="修改个人信息" data-v-md-line="32">修改个人信息</h2>
+<ul data-v-md-line="33">
+<li>
+<p data-v-md-line="33">接口地址 /ucenter/updateUserInfo</p>
+</li>
+<li>
+<p data-v-md-line="35">请求参数</p>
+<table data-v-md-line="36">
+<thead>
+<tr>
+<th>参数名</th>
+<th>说明</th>
+<th>是否必填</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>sex</td>
+<td>性别 0:女 1:男</td>
+<td>否</td>
+</tr>
+<tr>
+<td>personDescription</td>
+<td>个人描述</td>
+<td>否</td>
+</tr>
+<tr>
+<td>avatar</td>
+<td>头像 图片文件流</td>
+<td>否</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p data-v-md-line="42">返回</p>
+<div data-v-md-line="43"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code>  <span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;info&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;请求成功&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">null</span></span>
+  <span class="hljs-punctuation">}</span>   
+</code></pre>
+</div></div></li>
+</ul>
+<h2 data-v-md-heading="获取用户发帖" data-v-md-line="52">获取用户发帖</h2>
+<ul data-v-md-line="53">
+<li>
+<p data-v-md-line="53">接口地址 /ucenter/loadUserArticle</p>
+</li>
+<li>
+<p data-v-md-line="55">请求参数</p>
+<table data-v-md-line="56">
+<thead>
+<tr>
+<th>参数名</th>
+<th>说明</th>
+<th>是否必填</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>userId</td>
+<td>用户ID</td>
+<td>是</td>
+</tr>
+<tr>
+<td>type</td>
+<td>类型 0:发帖 1:评论过的文章  2:点赞过的文章</td>
+<td>是</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p data-v-md-line="61">返回</p>
+<div data-v-md-line="62"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code>  <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;info&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;请求成功&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;totalCount&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">3</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;pageSize&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">15</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;pageNo&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;pageTotal&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;list&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-punctuation">[</span>
+              <span class="hljs-punctuation">{</span>
+                  <span class="hljs-attr">&quot;articleId&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;5S7nyQHe6RPax6I&quot;</span><span class="hljs-punctuation">,</span><span class="hljs-comment">//文章ID</span>
+                  <span class="hljs-attr">&quot;boardId&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">10006</span><span class="hljs-punctuation">,</span><span class="hljs-comment">//板块ID</span>
+                  <span class="hljs-attr">&quot;boardName&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;Vue&quot;</span><span class="hljs-punctuation">,</span><span class="hljs-comment">//板块名称</span>
+                  <span class="hljs-attr">&quot;pBoardId&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">10003</span><span class="hljs-punctuation">,</span><span class="hljs-comment">//父级板块</span>
+                  <span class="hljs-attr">&quot;pBoardName&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;前端&quot;</span><span class="hljs-punctuation">,</span><span class="hljs-comment">//父级板块名称</span>
+                  <span class="hljs-attr">&quot;userId&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;7966890361&quot;</span><span class="hljs-punctuation">,</span><span class="hljs-comment">//用户ID</span>
+                  <span class="hljs-attr">&quot;nickName&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;程序员老罗&quot;</span><span class="hljs-punctuation">,</span><span class="hljs-comment">//昵称</span>
+                  <span class="hljs-attr">&quot;userIpAddress&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;湖北省&quot;</span><span class="hljs-punctuation">,</span><span class="hljs-comment">//所在地</span>
+                  <span class="hljs-attr">&quot;title&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;vscode配置好这些，写代码不起飞你来打我&quot;</span><span class="hljs-punctuation">,</span><span class="hljs-comment">//标题</span>
+                  <span class="hljs-attr">&quot;cover&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;202301/d3QQeA298E4IBAT.png&quot;</span><span class="hljs-punctuation">,</span><span class="hljs-comment">//封面</span>
+                  <span class="hljs-attr">&quot;content&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span><span class="hljs-comment">//内容 列表内容为空</span>
+                  <span class="hljs-attr">&quot;summary&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;vscode代码块配置，配置好这些，可以提高写代码的效率，而且可以避免出错&quot;</span><span class="hljs-punctuation">,</span><span class="hljs-comment">//简介</span>
+                  <span class="hljs-attr">&quot;postTime&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;2023-01-07 14:16:00&quot;</span><span class="hljs-punctuation">,</span><span class="hljs-comment">//发布时间</span>
+                  <span class="hljs-attr">&quot;readCount&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">64</span><span class="hljs-punctuation">,</span><span class="hljs-comment">//阅读数</span>
+                  <span class="hljs-attr">&quot;goodCount&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">1</span><span class="hljs-punctuation">,</span><span class="hljs-comment">//点赞数</span>
+                  <span class="hljs-attr">&quot;commentCount&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">1</span><span class="hljs-punctuation">,</span><span class="hljs-comment">//评论数</span>
+                  <span class="hljs-attr">&quot;topType&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">1</span><span class="hljs-punctuation">,</span><span class="hljs-comment">//置顶类型 0:未置顶 1:已置顶</span>
+                  <span class="hljs-attr">&quot;attachmentType&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">1</span><span class="hljs-punctuation">,</span><span class="hljs-comment">//附件类型 0:没附件 1:有附件</span>
+                  <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">1</span><span class="hljs-comment">//状态 1 已审核 </span>
+              <span class="hljs-punctuation">}</span>
+          <span class="hljs-punctuation">]</span>
+      <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span>    
+</code></pre>
+</div></div></li>
+</ul>
+<h2 data-v-md-heading="获取用户发帖-1" data-v-md-line="99">获取用户发帖</h2>
+<ul data-v-md-line="100">
+<li>
+<p data-v-md-line="100">接口地址 /ucenter/getMessageCount</p>
+</li>
+<li>
+<p data-v-md-line="102">请求参数<br>
+无（后台从登录信息中获取）</p>
+</li>
+<li>
+<p data-v-md-line="105">返回</p>
+<div data-v-md-line="106"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code>  <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;info&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;请求成功&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;total&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">3</span><span class="hljs-punctuation">,</span><span class="hljs-comment">//总数</span>
+          <span class="hljs-attr">&quot;sys&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">15</span><span class="hljs-punctuation">,</span><span class="hljs-comment">//系统消息数</span>
+          <span class="hljs-attr">&quot;reply&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">1</span><span class="hljs-punctuation">,</span><span class="hljs-comment">//评论消息数</span>
+          <span class="hljs-attr">&quot;likePost&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">1</span><span class="hljs-punctuation">,</span><span class="hljs-comment">//文章点赞数</span>
+          <span class="hljs-attr">&quot;likeComment&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">1</span><span class="hljs-punctuation">,</span><span class="hljs-comment">//评论点赞数</span>
+      <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span>    
+</code></pre>
+</div></div></li>
+</ul>
+<h2 data-v-md-heading="获取用户发帖-2" data-v-md-line="121">获取用户发帖</h2>
+<ul data-v-md-line="122">
+<li>
+<p data-v-md-line="122">接口地址 /ucenter/loadMessageList</p>
+</li>
+<li>
+<p data-v-md-line="124">请求参数</p>
+<table data-v-md-line="125">
+<thead>
+<tr>
+<th>参数名</th>
+<th>说明</th>
+<th>是否必填</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>code</td>
+<td>编号 sys:系统消息 reply:评论消息 likePost:文章点赞数 likeComment:评论点赞数</td>
+<td>是</td>
+</tr>
+<tr>
+<td>pageNo</td>
+<td>页码</td>
+<td>否 默认1</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p data-v-md-line="130">返回</p>
+<div data-v-md-line="131"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code>  <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">200</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;info&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;请求成功&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;totalCount&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">3</span><span class="hljs-punctuation">,</span> <span class="hljs-comment">//总记录数</span>
+          <span class="hljs-attr">&quot;pageSize&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">50</span><span class="hljs-punctuation">,</span><span class="hljs-comment">//分页大小</span>
+          <span class="hljs-attr">&quot;pageNo&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">1</span><span class="hljs-punctuation">,</span><span class="hljs-comment">//页码</span>
+          <span class="hljs-attr">&quot;pageTotal&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">1</span><span class="hljs-punctuation">,</span><span class="hljs-comment">//总页数</span>
+          <span class="hljs-attr">&quot;list&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-punctuation">[</span>
+              <span class="hljs-punctuation">{</span>
+                  <span class="hljs-attr">&quot;messageId&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">10003</span><span class="hljs-punctuation">,</span><span class="hljs-comment">//消息ID</span>
+                  <span class="hljs-attr">&quot;articleId&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;a7x6Ebr5AQkwLL2&quot;</span><span class="hljs-punctuation">,</span><span class="hljs-comment">//消息ID</span>
+                  <span class="hljs-attr">&quot;articleTitle&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;第一个帖子&quot;</span><span class="hljs-punctuation">,</span><span class="hljs-comment">//消息ID</span>
+                  <span class="hljs-attr">&quot;commentId&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">10003</span><span class="hljs-punctuation">,</span><span class="hljs-comment">//评论ID</span>
+                  <span class="hljs-attr">&quot;sendUserId&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;1877685590&quot;</span><span class="hljs-punctuation">,</span><span class="hljs-comment">//发送人ID</span>
+                  <span class="hljs-attr">&quot;sendNickName&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;lomo&quot;</span><span class="hljs-punctuation">,</span><span class="hljs-comment">//发送人昵称</span>
+                  <span class="hljs-attr">&quot;messageType&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">1</span><span class="hljs-punctuation">,</span><span class="hljs-comment">//消息类型 0:系统消息 1:评论 2:文章点赞  3:评论点赞</span>
+                  <span class="hljs-attr">&quot;messageContent&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;真·福利&quot;</span><span class="hljs-punctuation">,</span><span class="hljs-comment">//消息内容</span>
+                  <span class="hljs-attr">&quot;createTime&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;2023-01-02 15:34:07&quot;</span><span class="hljs-comment">//创建时间</span>
+              <span class="hljs-punctuation">}</span>
+          <span class="hljs-punctuation">]</span>
+      <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span> 
+</code></pre>
+</div></div></li>
+</ul>
+</div>
+                </div>
+            </div>
+                <div class="container-comment">
+                    <div class="comment-title">评论</div>
+                        <div><a class="comment-btn" target="_blank" href="https://support.qq.com/product/455208">我要评论</a></div>
+                </div>
+            <div id="right-container">
+                <div class="toc-title" id="toc-title">目录<span class="icon-arrow arrow-down"></span></div>
+                <div id="toc" class="toc"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+        <div class="footer">
+            <div>
+                <span>©2021-2023 www.wuhancoder.com All rights reserved. </span>
+                <a target="_blank" href="https://beian.miit.gov.cn/">鄂ICP备13017512号-3</a></div>
+            <div>
+                <img src="../resource/static/beian.png">
+                <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=42011502000890">
+                    鄂公网安备 42011502000890号
+                </a></div>
+        </div>
+    <script>
+        var _hmt = _hmt || [];
+        (function () {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?63b3f00d92dbfecbe9376c26282c2599";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+</body>
+</html>
