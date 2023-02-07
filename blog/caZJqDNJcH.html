@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Vue3 prototype使用 - 我是程序员</title>
-        <meta name="keywords" content="Vue3 prototype">
-        <meta name="description" content="Vue3 prototype使用 vue2可以用派生，Vue3 没有this对象，无法派生">
+    <title>vue devtools 安装 - 我是程序员</title>
+        <meta name="keywords" content="vue devtools 安装">
+        <meta name="description" content="1、下载地址：https://wwur.lanzout.com/i23eZ0mt58mh密码:gyts2、google浏览器打开chrome://extensions/3、将文件拖入，启用插件4、控制台就可以看到插件">
 
     <link rel="stylesheet" href="../resource/static/plugin/highlight/styles/github.min.css">
     <link rel="stylesheet" href="../resource/static/plugin/viewer/viewer.min.css">
@@ -162,45 +162,21 @@
         <div class="container">
             <div class="container-content">
                 <div>
-                    <div class="blog-title">Vue3 prototype使用</div>
+                    <div class="blog-title">vue devtools 安装</div>
                     <div class="blog-info">
-                        <div class="time">2022-05-29 01:27:03</div>
+                        <div class="time">2023-02-07 09:36:17</div>
                         <div class="nick-name">作者：<a href="../user.html#100000">程序员老罗</a></div>
                         <div class="category">分类专栏：
                                 <a href="../category/10003.html">Vue3</a>
                         </div>
 
                     </div>
-                    <div class="content" id="content"><h1 data-v-md-heading="vue3-prototype使用" data-v-md-line="1">Vue3 prototype使用</h1>
-<h2 data-v-md-heading="vue2-x-中使用" data-v-md-line="2">Vue2.x 中使用</h2>
-<p data-v-md-line="3">先说 Vue2.x 中我们可以直接派生vue对象<br>
-比如<br>
-在main.js中配置</p>
-<div data-v-md-line="6"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code><span class="hljs-title class_">Vue</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>.<span class="hljs-property">$echarts</span> = echarts
-</code></pre>
-</div></div><p data-v-md-line="9">然后使用就直接 this.$echarts 就可以了</p>
-<h2 data-v-md-heading="vue3-x-中使用" data-v-md-line="11">Vue3.x 中使用</h2>
-<p data-v-md-line="12">在main.js中配置</p>
-<div data-v-md-line="13"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code><span class="hljs-keyword">const</span> app = <span class="hljs-title function_">createApp</span>(<span class="hljs-title class_">App</span>)
-app.<span class="hljs-property">config</span>.<span class="hljs-property">globalProperties</span>.<span class="hljs-property">$echarts</span>= echarts
-app.<span class="hljs-title function_">use</span>(router)
-app.<span class="hljs-title function_">mount</span>(<span class="hljs-string">&#x27;#app&#x27;</span>)
-</code></pre>
-</div></div><h3 data-v-md-heading="申明式-api-使用" data-v-md-line="19">申明式 Api 使用</h3>
-<p data-v-md-line="20">就是跟vue2一样的 使用 data()  methods 这样的，用法就跟vue2一样直接this.$echats</p>
-<h3 data-v-md-heading="组合式api" data-v-md-line="22">组合式Api</h3>
-<div data-v-md-line="23"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code><span class="hljs-keyword">import</span> {  getCurrentInstance } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;vue&#x27;</span>
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> {
-    setup () {
-        <span class="hljs-keyword">let</span> { proxy } = <span class="hljs-title function_">getCurrentInstance</span>();
-        <span class="hljs-comment">// 这样使用 proxy.$echarts</span>
-        <span class="hljs-keyword">return</span> {
-
-        }
-    }
-}
-</code></pre>
-</div></div></div>
+                    <div class="content" id="content"><p data-v-md-line="2">1、下载地址：https://wwur.lanzout.com/i23eZ0mt58mh 密码:gyts<br>
+2、google浏览器打开  chrome://extensions/<br>
+3、将文件拖入，启用插件<br>
+4、控制台就可以看到插件<br>
+<img src="../resource/image/202302/fahEatGKesUmTHdRMEjaKQFByDVCqc.png" alt="图片"></p>
+</div>
                 </div>
             </div>
                 <div class="container-comment">
