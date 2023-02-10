@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Vue3 prototype使用 - 我是程序员</title>
-        <meta name="keywords" content="Vue3 prototype">
-        <meta name="description" content="Vue3 prototype使用 vue2可以用派生，Vue3 没有this对象，无法派生">
+    <title>Vue3切换风格 - 我是程序员</title>
+        <meta name="keywords" content="Vue3切换风格">
+        <meta name="description" content="我们想要实现风格切换，基本思路就是定制一套基本的样式，然后不同的风格，我们使用不同的颜色，通过最外层添加clas选择器来进行覆盖，达到切换风格效果。">
 
     <link rel="stylesheet" href="../resource/static/plugin/highlight/styles/github.min.css">
     <link rel="stylesheet" href="../resource/static/plugin/viewer/viewer.min.css">
@@ -162,43 +162,143 @@
         <div class="container">
             <div class="container-content">
                 <div>
-                    <div class="blog-title">Vue3 prototype使用</div>
+                    <div class="blog-title">Vue3切换风格</div>
                     <div class="blog-info">
-                        <div class="time">2022-05-29 01:27:03</div>
+                        <div class="time">2023-02-10 03:55:23</div>
                         <div class="nick-name">作者：<a href="../user.html#100000">程序员老罗</a></div>
                         <div class="category">分类专栏：
                                 <a href="../category/10003.html">Vue3</a>
                         </div>
 
                     </div>
-                    <div class="content" id="content"><h1 data-v-md-heading="vue3-prototype使用" data-v-md-line="1">Vue3 prototype使用</h1>
-<h2 data-v-md-heading="vue2-x-中使用" data-v-md-line="2">Vue2.x 中使用</h2>
-<p data-v-md-line="3">先说 Vue2.x 中我们可以直接派生vue对象<br>
-比如<br>
-在main.js中配置</p>
-<div data-v-md-line="6"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code><span class="hljs-title class_">Vue</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>.<span class="hljs-property">$echarts</span> = echarts
-</code></pre>
-</div></div><p data-v-md-line="9">然后使用就直接 this.$echarts 就可以了</p>
-<h2 data-v-md-heading="vue3-x-中使用" data-v-md-line="11">Vue3.x 中使用</h2>
-<p data-v-md-line="12">在main.js中配置</p>
-<div data-v-md-line="13"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code><span class="hljs-keyword">const</span> app = <span class="hljs-title function_">createApp</span>(<span class="hljs-title class_">App</span>)
-app.<span class="hljs-property">config</span>.<span class="hljs-property">globalProperties</span>.<span class="hljs-property">$echarts</span>= echarts
-app.<span class="hljs-title function_">use</span>(router)
-app.<span class="hljs-title function_">mount</span>(<span class="hljs-string">&#x27;#app&#x27;</span>)
-</code></pre>
-</div></div><h3 data-v-md-heading="申明式-api-使用" data-v-md-line="19">申明式 Api 使用</h3>
-<p data-v-md-line="20">就是跟vue2一样的 使用 data()  methods 这样的，用法就跟vue2一样直接this.$echats</p>
-<h3 data-v-md-heading="组合式api" data-v-md-line="22">组合式Api</h3>
-<div data-v-md-line="23"><div class="v-md-pre-wrapper v-md-pre-wrapper-js extra-class"><pre class="v-md-hljs-js"><code><span class="hljs-keyword">import</span> {  getCurrentInstance } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;vue&#x27;</span>
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> {
-    setup () {
-        <span class="hljs-keyword">let</span> { proxy } = <span class="hljs-title function_">getCurrentInstance</span>();
-        <span class="hljs-comment">// 这样使用 proxy.$echarts</span>
-        <span class="hljs-keyword">return</span> {
+                    <div class="content" id="content"><p data-v-md-line="1">我们想要实现风格切换，基本思路就是定制一套基本的样式，然后不同的风格，我们使用不同的颜色，通过最外层添加clas选择器来进行覆盖，达到切换风格效果。</p>
+<h1 data-v-md-heading="获取风格" data-v-md-line="2">获取风格</h1>
+<p data-v-md-line="3">在最外层的app.vue中，从本地存储中获取风格样式，vue的最外层会有一个#app的id，我们改变这个dom的class<br>
+App.vue</p>
+<div data-v-md-line="5"><div class="v-md-pre-wrapper v-md-pre-wrapper-html extra-class"><pre class="v-md-hljs-html"><code><span class="hljs-tag">&lt;<span class="hljs-name">template</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">router-view</span> /&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
 
-        }
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">setup</span>&gt;</span><span class="language-javascript">
+<span class="hljs-keyword">import</span> { onMounted } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;vue&quot;</span>;
+
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">init</span> = (<span class="hljs-params"></span>) =&gt; {
+  <span class="hljs-keyword">let</span> theme = <span class="hljs-variable language_">localStorage</span>.<span class="hljs-title function_">getItem</span>(<span class="hljs-string">&quot;theme&quot;</span>);
+  <span class="hljs-keyword">if</span> (theme == <span class="hljs-literal">null</span> || theme == <span class="hljs-string">&quot;base&quot;</span>) {
+    theme = <span class="hljs-string">&quot;base&quot;</span>;
+  } <span class="hljs-keyword">else</span> {
+    theme = <span class="hljs-string">&quot;base &quot;</span> + theme;
+  }
+  <span class="hljs-keyword">const</span> parentNode = <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">querySelector</span>(<span class="hljs-string">&quot;#app&quot;</span>);
+  parentNode.<span class="hljs-title function_">setAttribute</span>(<span class="hljs-string">&quot;class&quot;</span>, theme);
+};
+
+<span class="hljs-title function_">onMounted</span>(<span class="hljs-function">() =&gt;</span> {
+  <span class="hljs-title function_">init</span>();
+});
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">style</span> <span class="hljs-attr">lang</span>=<span class="hljs-string">&quot;scss&quot;</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">style</span>&gt;</span>
+
+</code></pre>
+</div></div><h1 data-v-md-heading="定义多套风格样式" data-v-md-line="36">定义多套风格样式</h1>
+<div data-v-md-line="37"><div class="v-md-pre-wrapper v-md-pre-wrapper-css extra-class"><pre class="v-md-hljs-css"><code><span class="hljs-selector-pseudo">:root</span> {
+    <span class="hljs-attr">--background-base</span>: <span class="hljs-number">#409eff</span>;
+    <span class="hljs-attr">--background-green</span>: <span class="hljs-number">#67c23a</span>;
+    <span class="hljs-attr">--background-red</span>: <span class="hljs-number">#f56c6c</span>;
+
+    <span class="hljs-attr">--font-color-base</span>: <span class="hljs-number">#fff</span>;
+    <span class="hljs-attr">--font-color-green</span>: <span class="hljs-number">#fff</span>;
+    <span class="hljs-attr">--font-color-red</span>: <span class="hljs-number">#fff</span>;
+}
+
+<span class="hljs-selector-class">.base</span> {
+    <span class="hljs-selector-class">.el-button</span> {
+        <span class="hljs-attribute">background</span>: <span class="hljs-built_in">var</span>(--background-base);
+        <span class="hljs-attribute">color</span>: <span class="hljs-built_in">var</span>(--font-color-base)
     }
 }
+
+<span class="hljs-selector-class">.green</span> {
+    <span class="hljs-selector-class">.el-button</span> {
+        <span class="hljs-attribute">background</span>: <span class="hljs-built_in">var</span>(--background-green);
+        <span class="hljs-attribute">color</span>: <span class="hljs-built_in">var</span>(--font-color-green)
+    }
+
+}
+
+<span class="hljs-selector-class">.red</span> {
+    <span class="hljs-selector-class">.el-button</span> {
+        <span class="hljs-attribute">background</span>: <span class="hljs-built_in">var</span>(--background-red);
+        <span class="hljs-attribute">color</span>: <span class="hljs-built_in">var</span>(--font-color-red)
+    }
+
+}
+</code></pre>
+</div></div><h1 data-v-md-heading="切换风格" data-v-md-line="72">切换风格</h1>
+<p data-v-md-line="73">注意这里只是简单的演示下切换风格，我们引入element-plus，切换风格来切换按钮的颜色。<br>
+ChangeTheme.vue</p>
+<div data-v-md-line="75"><div class="v-md-pre-wrapper v-md-pre-wrapper-html extra-class"><pre class="v-md-hljs-html"><code><span class="hljs-tag">&lt;<span class="hljs-name">template</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;theme-list&quot;</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">span</span>
+        <span class="hljs-attr">v-for</span>=<span class="hljs-string">&quot;item in themeList&quot;</span>
+        <span class="hljs-attr">:style</span>=<span class="hljs-string">&quot;{ background: item.color }&quot;</span>
+        @<span class="hljs-attr">click</span>=<span class="hljs-string">&quot;changeTheme(item)&quot;</span>
+      &gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;content-list&quot;</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">el-button</span>&gt;</span>按钮<span class="hljs-tag">&lt;/<span class="hljs-name">el-button</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">setup</span>&gt;</span><span class="language-javascript">
+<span class="hljs-keyword">import</span> { ref, reactive, getCurrentInstance, nextTick } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;vue&quot;</span>;
+<span class="hljs-keyword">const</span> { proxy } = <span class="hljs-title function_">getCurrentInstance</span>();
+
+<span class="hljs-keyword">const</span> themeList = [
+  {
+    <span class="hljs-attr">className</span>: <span class="hljs-string">&quot;base&quot;</span>,
+    <span class="hljs-attr">color</span>: <span class="hljs-string">&quot;#409eff&quot;</span>,
+  },
+  {
+    <span class="hljs-attr">className</span>: <span class="hljs-string">&quot;green&quot;</span>,
+    <span class="hljs-attr">color</span>: <span class="hljs-string">&quot;#67c23a&quot;</span>,
+  },
+  {
+    <span class="hljs-attr">className</span>: <span class="hljs-string">&quot;red&quot;</span>,
+    <span class="hljs-attr">color</span>: <span class="hljs-string">&quot;#f56c6c&quot;</span>,
+  },
+];
+
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">changeTheme</span> = (<span class="hljs-params">item</span>) =&gt; {
+  <span class="hljs-variable language_">localStorage</span>.<span class="hljs-title function_">setItem</span>(<span class="hljs-string">&quot;theme&quot;</span>, item.<span class="hljs-property">className</span>);
+  <span class="hljs-keyword">let</span> theme = <span class="hljs-string">&quot;base &quot;</span> + (item.<span class="hljs-property">className</span> == <span class="hljs-string">&quot;base&quot;</span> ? <span class="hljs-string">&quot;&quot;</span> : item.<span class="hljs-property">className</span>);
+  <span class="hljs-keyword">const</span> parentNode = <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">querySelector</span>(<span class="hljs-string">&quot;#app&quot;</span>);
+  parentNode.<span class="hljs-title function_">setAttribute</span>(<span class="hljs-string">&quot;class&quot;</span>, theme);
+};
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">style</span> <span class="hljs-attr">lang</span>=<span class="hljs-string">&quot;scss&quot;</span> <span class="hljs-attr">scoped</span>&gt;</span><span class="language-css">
+<span class="hljs-selector-class">.theme-list</span> {
+  <span class="hljs-attribute">display</span>: flex;
+  <span class="hljs-selector-tag">span</span> {
+    <span class="hljs-attribute">cursor</span>: pointer;
+    <span class="hljs-attribute">width</span>: <span class="hljs-number">30px</span>;
+    <span class="hljs-attribute">height</span>: <span class="hljs-number">30px</span>;
+    <span class="hljs-attribute">display</span>: block;
+  }
+}
+<span class="hljs-selector-class">.content-list</span> {
+  <span class="hljs-attribute">margin-top</span>: <span class="hljs-number">10px</span>;
+}
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">style</span>&gt;</span>
+
 </code></pre>
 </div></div></div>
                 </div>
