@@ -171,11 +171,13 @@
                         </div>
 
                     </div>
-                    <div class="content" id="content"><p data-v-md-line="1">我们想要实现风格切换，基本思路就是定制一套基本的样式，然后不同的风格，我们使用不同的颜色，通过最外层添加clas选择器来进行覆盖，达到切换风格效果。</p>
-<h1 data-v-md-heading="获取风格" data-v-md-line="2">获取风格</h1>
-<p data-v-md-line="3">在最外层的app.vue中，从本地存储中获取风格样式，vue的最外层会有一个#app的id，我们改变这个dom的class<br>
+                    <div class="content" id="content"><p data-v-md-line="1">我们想要实现风格切换，基本思路就是定制一套基本的样式，然后不同的风格，我们使用不同的颜色，通过最外层添加class选择器来进行覆盖，达到切换风格效果。</p>
+<h1 data-v-md-heading="演示" data-v-md-line="2">演示</h1>
+<p data-v-md-line="3"><img src="../resource/image/202302/gdATWEHgLnBfFKWvNiDIXcupJhSgPC.gif" alt="图片"></p>
+<h1 data-v-md-heading="获取风格" data-v-md-line="5">获取风格</h1>
+<p data-v-md-line="6">在最外层的app.vue中，从本地存储中获取风格样式，vue的最外层会有一个#app的id，我们改变这个dom的class<br>
 App.vue</p>
-<div data-v-md-line="5"><div class="v-md-pre-wrapper v-md-pre-wrapper-html extra-class"><pre class="v-md-hljs-html"><code><span class="hljs-tag">&lt;<span class="hljs-name">template</span>&gt;</span>
+<div data-v-md-line="8"><div class="v-md-pre-wrapper v-md-pre-wrapper-html extra-class"><pre class="v-md-hljs-html"><code><span class="hljs-tag">&lt;<span class="hljs-name">template</span>&gt;</span>
   <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">router-view</span> /&gt;</span>
   <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
@@ -204,8 +206,8 @@ App.vue</p>
 <span class="hljs-tag">&lt;/<span class="hljs-name">style</span>&gt;</span>
 
 </code></pre>
-</div></div><h1 data-v-md-heading="定义多套风格样式" data-v-md-line="36">定义多套风格样式</h1>
-<div data-v-md-line="37"><div class="v-md-pre-wrapper v-md-pre-wrapper-css extra-class"><pre class="v-md-hljs-css"><code><span class="hljs-selector-pseudo">:root</span> {
+</div></div><h1 data-v-md-heading="定义多套风格样式" data-v-md-line="39">定义多套风格样式</h1>
+<div data-v-md-line="40"><div class="v-md-pre-wrapper v-md-pre-wrapper-css extra-class"><pre class="v-md-hljs-css"><code><span class="hljs-selector-pseudo">:root</span> {
     <span class="hljs-attr">--background-base</span>: <span class="hljs-number">#409eff</span>;
     <span class="hljs-attr">--background-green</span>: <span class="hljs-number">#67c23a</span>;
     <span class="hljs-attr">--background-red</span>: <span class="hljs-number">#f56c6c</span>;
@@ -238,10 +240,10 @@ App.vue</p>
 
 }
 </code></pre>
-</div></div><h1 data-v-md-heading="切换风格" data-v-md-line="72">切换风格</h1>
-<p data-v-md-line="73">注意这里只是简单的演示下切换风格，我们引入element-plus，切换风格来切换按钮的颜色。<br>
+</div></div><h1 data-v-md-heading="切换风格" data-v-md-line="75">切换风格</h1>
+<p data-v-md-line="76">注意这里只是简单的演示下切换风格，我们引入element-plus，切换风格来切换按钮的颜色。<br>
 ChangeTheme.vue</p>
-<div data-v-md-line="75"><div class="v-md-pre-wrapper v-md-pre-wrapper-html extra-class"><pre class="v-md-hljs-html"><code><span class="hljs-tag">&lt;<span class="hljs-name">template</span>&gt;</span>
+<div data-v-md-line="78"><div class="v-md-pre-wrapper v-md-pre-wrapper-html extra-class"><pre class="v-md-hljs-html"><code><span class="hljs-tag">&lt;<span class="hljs-name">template</span>&gt;</span>
   <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;theme-list&quot;</span>&gt;</span>
       <span class="hljs-tag">&lt;<span class="hljs-name">span</span>
