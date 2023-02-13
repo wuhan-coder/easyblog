@@ -320,26 +320,23 @@
                         <div class="nick-name">作者：<a href="../user.html#100000">程序员老罗</a></div>
                     </div>
                     <div class="content" id="content"><h1 data-v-md-heading="后端程序下载" data-v-md-line="1">后端程序下载</h1>
-<p data-v-md-line="2">添加老罗微信，进群获取后端程序<br>
+<p data-v-md-line="2">添加老罗微信，进群免费获取后端程序<br>
 <img src="../resource/image/202302/KRSLRSzdSEfDThuWUeuJyoJgGNMhOI.png" alt="图片"></p>
-<blockquote data-v-md-line="5">
-<p data-v-md-line="5">大家下载最新的那个版本哈</p>
-</blockquote>
-<p data-v-md-line="7">解压之后:<br>
+<p data-v-md-line="6">解压之后:<br>
 <img src="../resource/image/202209/eztPqkzqMPFhCEPjAMZCopnNOIZwlm.png" alt="图片"><br>
 包含一个配置文件，一个数据库脚本，一个java后端程序的jar包</p>
-<h1 data-v-md-heading="导入数据库脚本" data-v-md-line="11">导入数据库脚本</h1>
-<p data-v-md-line="12">右键 navicat中的 localhost，选择新建数据库<br>
+<h1 data-v-md-heading="导入数据库脚本" data-v-md-line="10">导入数据库脚本</h1>
+<p data-v-md-line="11">右键 navicat中的 localhost，选择新建数据库<br>
 <img src="../resource/image/202209/NSRyMURRAonXETDRAAlbyXWrpLmIkr.png" alt="图片"></p>
-<p data-v-md-line="15"><img src="../resource/image/202209/TbmUnySstwkArahrJMwdqPRXBBLHdw.png" alt="图片"></p>
-<p data-v-md-line="17">双击 easyblog 打开数据库连接，然后右键<br>
+<p data-v-md-line="14"><img src="../resource/image/202209/TbmUnySstwkArahrJMwdqPRXBBLHdw.png" alt="图片"></p>
+<p data-v-md-line="16">双击 easyblog 打开数据库连接，然后右键<br>
 <img src="../resource/image/202209/zMPCtEjVToyfnCELlwIIBoQyvQDPpV.png" alt="图片"></p>
-<p data-v-md-line="20">选择easyblog.sql文件进行导入<br>
+<p data-v-md-line="19">选择easyblog.sql文件进行导入<br>
 导入后刷新就会看到表了<br>
 <img src="../resource/image/202209/IgOQsqqHLNpqLDFYzLfMdATvwstTeb.png" alt="图片"></p>
-<h1 data-v-md-heading="运行后端程序" data-v-md-line="24">运行后端程序</h1>
-<p data-v-md-line="25">如果按照视频中的没有修改用户名和数据库的账号密码，端口，那么数据库就不用修改</p>
-<div data-v-md-line="26"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code>#服务端口
+<h1 data-v-md-heading="运行后端程序" data-v-md-line="23">运行后端程序</h1>
+<p data-v-md-line="24">如果按照视频中的没有修改用户名和数据库的账号密码，端口，那么数据库就不用修改</p>
+<div data-v-md-line="25"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code>#服务端口
 server.port=8081 
 
 #日志配置
@@ -355,11 +352,11 @@ html.out.folder=g:/webser/easyblog/html/
 #是否开启前段web接口
 web.api.open=true
 </code></pre>
-</div></div><p data-v-md-line="43">修改这里的几个路径就可以了<br>
+</div></div><p data-v-md-line="42">修改这里的几个路径就可以了<br>
 要将 application.properties 和easyblog-1.0.0.jar放到一个目录，然后开启doc，执行java -jar easyblog-1.0.0.jar 就可以启动服务了。</p>
-<h1 data-v-md-heading="测试服务是否正常" data-v-md-line="46">测试服务是否正常</h1>
-<p data-v-md-line="47">我们打开浏览器输入 http://localhost:8081/api/view/loadBlogList 如果有数据返回说明后台服务已经完全OK</p>
-<p data-v-md-line="49"><strong><strong>补充</strong></strong>：<br>
+<h1 data-v-md-heading="测试服务是否正常" data-v-md-line="45">测试服务是否正常</h1>
+<p data-v-md-line="46">我们打开浏览器输入 http://localhost:8081/api/view/loadBlogList 如果有数据返回说明后台服务已经完全OK</p>
+<p data-v-md-line="48"><strong><strong>补充</strong></strong>：<br>
 在配置文件中增加 一行<br>
 spring.favicon.enabled=false<br>
 就可以解决启动找不到favicon.icon的报错了</p>
