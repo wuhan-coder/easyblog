@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>修改vscode缩进参考线样式 - 我是程序员</title>
-        <meta name="keywords" content="vscode,vscode缩进线样式">
-        <meta name="description" content="vscode默认激活代码块缩进线样式与其他缩进线样式区分不明显，添加配置更改当前激活代码块缩进线样式。">
+    <title>Java Stram应用 - 我是程序员</title>
+        <meta name="keywords" content="Java Stram应用">
+        <meta name="description" content="filter过滤List resultUserList = list.stream().filter(user -&gt; user.getDepartmentId()==1).collect(Collectors.toList());mapList userNameList = list.stream().map(user -&gt; user.getName()).collect(Collectors.toList());distinct去重List distinctUsers = list.stream().distinct().collect(Collectors.toList());">
 
     <link rel="stylesheet" href="../resource/static/plugin/highlight/styles/github.min.css">
     <link rel="stylesheet" href="../resource/static/plugin/viewer/viewer.min.css">
@@ -162,30 +162,16 @@
         <div class="container">
             <div class="container-content">
                 <div>
-                    <div class="blog-title">修改vscode缩进参考线样式</div>
+                    <div class="blog-title">Java Stram应用</div>
                     <div class="blog-info">
-                        <div class="time">2022-10-14 10:12:05</div>
+                        <div class="time">2023-05-15 03:48:43</div>
                         <div class="nick-name">作者：<a href="../user.html#100000">程序员老罗</a></div>
                         <div class="category">分类专栏：
-                                <a href="../category/10005.html">编程小技巧</a>
+                                <a href="../category/10001.html">Java</a>
                         </div>
 
                     </div>
-                    <div class="content" id="content"><p data-v-md-line="1">vscode默认的缩进参考线不是很明显如下图<br>
-<img src="../resource/image/202210/sHnhvvByxLmQumDVnhoMFKcUcIDSWD.png" alt="图片"></p>
-<p data-v-md-line="4"><img src="../resource/image/202210/orAwIVVZdCjfsfnbILBkOtRVcEGpzs.png" alt="图片"></p>
-<p data-v-md-line="6">与其他参考线区分不明显，如果一个方法写长，寻找代码看的时候不太清晰<br>
-202210late也一样不明显</p>
-<p data-v-md-line="9">我们ctrl+p 搜索 settings.json<br>
-添加如下配置</p>
-<div data-v-md-line="11"><div class="v-md-pre-wrapper v-md-pre-wrapper-json extra-class"><pre class="v-md-hljs-json"><code> <span class="hljs-attr">&quot;workbench.colorCustomizations&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
-        <span class="hljs-attr">&quot;editorIndentGuide.activeBackground&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;#007bff&quot;</span><span class="hljs-punctuation">,</span>
- <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
-</code></pre>
-</div></div><p data-v-md-line="16">当然颜色自己换了，然后就可以看到毕竟明显的区分了<br>
-<img src="../resource/image/202210/JWQHxGnSuSVJkLWOekBhtYTbHKXdFv.png" alt="图片"><br>
-<img src="../resource/image/202210/hecMeLfgiHdhGMzeejrlNEyUTUdreX.png" alt="图片"></p>
-</div>
+                    <div class="content" id="content"><h1 style="text-align: left;"><span style="color: rgb(79, 79, 79); background-color: rgb(255, 255, 255);">filter 过滤</span></h1><p style="text-align: left;"><br></p><pre><code >List resultUserList = list.stream().filter(user -&gt; user.getDepartmentId() == 1).collect(Collectors.toList());</code></pre><p><br></p><h1 style="text-align: left;"><span style="color: rgb(26, 26, 26);">map</span></h1><p style="text-align: left;"><br></p><pre><code >List userNameList = list.stream().map(user -&gt; user.getName()).collect(Collectors.toList());</code></pre><p><br></p><h1 style="text-align: left;"><span style="color: rgb(26, 26, 26);">distinct 去重</span></h1><p style="text-align: left;"><br></p><pre><code > List distinctUsers = list.stream().distinct().collect(Collectors.toList());</code></pre><p><br></p><p style="text-align: left;"><span style="color: rgb(51, 51, 51);">根据某个属性去重</span></p><p style="text-align: left;"><br></p><pre><code >  List distinctUsers2 = list.stream().collect(collectingAndThen(toCollection(() -&gt; new TreeSet&lt;&gt;(Comparator.comparing(user -&gt; user.getUserId()))),                ArrayList::new));</code></pre><p><br></p><p style="text-align: left;"><br></p><h1 style="text-align: left;"><span style="color: rgb(26, 26, 26);">排序</span></h1><p style="text-align: left;"><span style="color: rgb(51, 51, 51);">升序</span></p><p style="text-align: left;"><br></p><pre><code >List sortUserList = list.stream().sorted(Comparator.comparing(User::getUserId).reversed()).collect(Collectors.toList());</code></pre><p><br></p><p style="text-align: left;"><span style="color: rgb(51, 51, 51);">降序</span></p><p style="text-align: left;"><br></p><pre><code >List sortUserList = list.stream().sorted(Comparator.comparing(User::getUserId)).collect(Collectors.toList());</code></pre><p><br></p><h2 style="text-align: left;"></h2><h1 style="text-align: left;"><span style="color: rgb(26, 26, 26);">toMap 数组转为Map</span></h1><p style="text-align: left;"><br></p><pre><code >Map useMap = list.stream().collect(Collectors.toMap(user -&gt; user.getUserId(), Function.identity()));</code></pre><p><br></p><p style="text-align: left;"><span style="color: rgb(51, 51, 51);">重复的key报错，取其中一个key</span></p><p style="text-align: left;"><br></p><pre><code >Map useMap2 = list.stream().collect(Collectors.toMap(user -&gt; user.getUserId(), Function.identity(), (data1, data2) -&gt; data2));</code></pre><p><br></p><p style="text-align: left;"><br></p><h1 style="text-align: left;"><span style="color: rgb(26, 26, 26);">groupingBy 分组</span></h1><p style="text-align: left;"><br></p><pre><code > Map&gt; departmentMap = list.stream().collect(Collectors.groupingBy(User::getDepartmentId));</code></pre><p><br></p><p style="text-align: left;"><br></p><h1 style="text-align: left;"><span style="color: rgb(26, 26, 26);">joining 连接</span></h1><p style="text-align: left;"><br></p><pre><code > String userNames = list.stream().map(user -&gt; user.getName()).collect(Collectors.joining(","));</code></pre><p><br></p><h1 style="text-align: left;"><span style="color: rgb(26, 26, 26);">minBy 取最小值</span></h1><p style="text-align: left;"><br></p><pre><code > User minUserId = list.stream().collect(Collectors.minBy(Comparator.comparingInt(user -&gt; user.getUserId()))).get();</code></pre><p><br></p><h1 style="text-align: left;"><span style="color: rgb(26, 26, 26);">maxBy 取最大值</span></h1><p style="text-align: left;"><br></p><pre><code >User maxUserId = list.stream().collect(Collectors.maxBy(Comparator.comparingInt(user -&gt; user.getUserId()))).get();</code></pre><p><br></p><h1 style="text-align: left;"><span style="color: rgb(26, 26, 26);">count 求总数量</span></h1><p style="text-align: left;"><br></p><pre><code >   Long count = list.stream().filter(user -&gt; user.getDepartmentId() == 2).count();</code></pre><p><br></p><h1 style="text-align: left;"><span style="color: rgb(26, 26, 26);">sum求和</span></h1><p style="text-align: left;"><br></p><pre><code >Integer sum = list.stream().mapToInt(user -&gt; user.getUserId()).sum();</code></pre><p><br></p><h1 style="text-align: left;"><span style="color: rgb(26, 26, 26);">anyMatch 是否匹配</span></h1><p style="text-align: left;"><br></p><pre><code >Boolean matchAny = list.stream().anyMatch(user -&gt; "赵六".equals(user.getName()));</code></pre><p><br></p><p style="text-align: left;"><br></p><p><br></p></div>
                 </div>
             </div>
         </div>
