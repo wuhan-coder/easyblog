@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Vite 环境变量使用 - 我是程序员</title>
-        <meta name="keywords" content="vite,vue3,vue3环境变量">
-        <meta name="description" content="Vite 环境变量使用">
+    <title>[vscode] 代码提示不能默认选中第一项问题 - 我是程序员</title>
+        <meta name="keywords" content="[vscode] 代码提示不能默认选中第一项问题">
+        <meta name="description" content="码代码时发现一个问题，有些代码提示无法选中第一项。解决办法：在设置中搜索prevent将图中的“snippetspreventquiksuggestion”取消勾选其原因是补全后编译器认为代码处于活动中，勾选中后编译器会阻止快速建议，也就是代码提示，会导致无法用键盘选中提示，只能通过鼠标选中。">
 
     <link rel="stylesheet" href="../resource/static/plugin/highlight/styles/github.min.css">
     <link rel="stylesheet" href="../resource/static/plugin/viewer/viewer.min.css">
@@ -162,61 +162,23 @@
         <div class="container">
             <div class="container-content">
                 <div>
-                    <div class="blog-title">Vite 环境变量使用</div>
+                    <div class="blog-title">[vscode] 代码提示不能默认选中第一项问题</div>
                     <div class="blog-info">
-                        <div class="time">2022-05-29 01:21:55</div>
+                        <div class="time">2023-05-25 03:25:14</div>
                         <div class="nick-name">作者：<a href="../user.html#100000">程序员老罗</a></div>
                         <div class="category">分类专栏：
-                                <a href="../category/10003.html">Vue3</a>
+                                <a href="../category/10005.html">编程小技巧</a>
                         </div>
 
                     </div>
-                    <div class="content" id="content"><h1 data-v-md-heading="vite-环境变量使用" data-v-md-line="1">Vite 环境变量使用</h1>
-<h2 data-v-md-heading="环境变量位置" data-v-md-line="2">环境变量位置</h2>
-<blockquote data-v-md-line="3">
-<p data-v-md-line="3">一定是在根目录下，否则不生效</p>
-</blockquote>
-<p data-v-md-line="5">.env.dev</p>
-<div data-v-md-line="6"><div class="v-md-pre-wrapper v-md-pre-wrapper-shell extra-class"><pre class="v-md-hljs-shell"><code>NODE_ENV=development
-VITE_APP_PROXY_TARGET=http://127.0.0.1:8091/
-</code></pre>
-</div></div><p data-v-md-line="10">.env.prod</p>
-<div data-v-md-line="11"><div class="v-md-pre-wrapper v-md-pre-wrapper-shell extra-class"><pre class="v-md-hljs-shell"><code>NODE_ENV=&quot;production&quot;
-VUE_APP_PROXY_TARGET=&quot;/&quot;
-</code></pre>
-</div></div><h2 data-v-md-heading="package-json配置" data-v-md-line="16">package.json配置</h2>
-<div data-v-md-line="18"><div class="v-md-pre-wrapper v-md-pre-wrapper-shell extra-class"><pre class="v-md-hljs-shell"><code>  &quot;scripts&quot;: {
-    &quot;dev&quot;: &quot;vite --mode=dev&quot;,
-    &quot;build&quot;: &quot;vite build --mode prod&quot;,
-    &quot;preview&quot;: &quot;vite preview&quot;
-  },
-</code></pre>
-</div></div><h2 data-v-md-heading="在-模板中使用" data-v-md-line="26">在 模板中使用</h2>
-<p data-v-md-line="27">直接使用 import.meta.env.VITE_APP_PROXY_TARGET 就可以获取</p>
-<h2 data-v-md-heading="在vite-config-js-中使用" data-v-md-line="29">在vite.config.js 中使用</h2>
-<div data-v-md-line="30"><div class="v-md-pre-wrapper v-md-pre-wrapper-shell extra-class"><pre class="v-md-hljs-shell"><code>import { defineConfig, loadEnv } from &#x27;vite&#x27;
-import vue from &#x27;@vitejs/plugin-vue&#x27;
-export default ({ mode }) =&gt; {
-  return defineConfig({
-    plugins: [vue()],
-    server: {
-      port: 3000,
-      proxy: {
-        &#x27;/api&#x27;: {
-          target: loadEnv(mode, process.cwd()).VITE_APP_PROXY_TARGET, // 目标代理接口地址
-          secure: false,
-          changeOrigin: true, // 开启代理，在本地创建一个虚拟服务端
-          // ws: true, // 是否启用websockets
-          pathRewrite: {
-            &#x27;^/api&#x27;: &#x27;/api&#x27;,
-          },
-        },
-      },
-    },
-  })
-}
-</code></pre>
-</div></div></div>
+                    <div class="content" id="content"><p data-v-md-line="1">码代码时发现一个问题，有些代码提示无法选中第一项。<br>
+<img src="../resource/image/202305/HxXEdFGeGSPwfDiZEImuRqvjhwDjty.png" alt="图片"></p>
+<p data-v-md-line="4"><img src="../resource/image/202305/CRhZvqniQEKoiNcIBeUuHzMRXdQHPX.png" alt="图片"></p>
+<p data-v-md-line="6">解决办法：在设置中搜索prevent</p>
+<p data-v-md-line="8"><img src="../resource/image/202305/IDQAdGRerJdfpuFdDRJYdjDoijWTuQ.png" alt="图片"></p>
+<p data-v-md-line="10">将图中的“snippets prevent quik suggestion”取消勾选</p>
+<p data-v-md-line="12">其原因是补全后编译器认为代码处于活动中，勾选中后编译器会阻止快速建议，也就是代码提示，会导致无法用键盘选中提示，只能通过鼠标选中。</p>
+</div>
                 </div>
             </div>
         </div>
