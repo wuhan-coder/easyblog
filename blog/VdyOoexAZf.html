@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>[vscode] 代码提示不能默认选中第一项问题 - 我是程序员</title>
-        <meta name="keywords" content="[vscode] 代码提示不能默认选中第一项问题">
-        <meta name="description" content="码代码时发现一个问题，有些代码提示无法选中第一项。解决办法：在设置中搜索prevent将图中的“snippetspreventquiksuggestion”取消勾选其原因是补全后编译器认为代码处于活动中，勾选中后编译器会阻止快速建议，也就是代码提示，会导致无法用键盘选中提示，只能通过鼠标选中。">
+    <title>JAVA自定义注解 - 我是程序员</title>
+        <meta name="keywords" content="JAVA自定义注解">
+        <meta name="description" content="Java自定义注解 元注解">
 
     <link rel="stylesheet" href="../resource/static/plugin/highlight/styles/github.min.css">
     <link rel="stylesheet" href="../resource/static/plugin/viewer/viewer.min.css">
@@ -161,22 +161,31 @@
         <div class="container">
             <div class="container-content">
                 <div>
-                    <div class="blog-title">[vscode] 代码提示不能默认选中第一项问题</div>
+                    <div class="blog-title">JAVA自定义注解</div>
                     <div class="blog-info">
-                        <div class="time">2023-05-25 03:25:14</div>
+                        <div class="time">2023-09-16 03:45:17</div>
                         <div class="nick-name">作者：<a href="../user.html#100000">程序员老罗</a></div>
                         <div class="category">分类专栏：
-                                <a href="../category/10005.html">编程小技巧</a>
+                                <a href="../category/10001.html">Java</a>
                         </div>
 
                     </div>
-                    <div class="content" id="content"><p data-v-md-line="1">码代码时发现一个问题，有些代码提示无法选中第一项。<br>
-<img src="../resource/image/202305/HxXEdFGeGSPwfDiZEImuRqvjhwDjty.png" alt="图片"></p>
-<p data-v-md-line="4"><img src="../resource/image/202305/CRhZvqniQEKoiNcIBeUuHzMRXdQHPX.png" alt="图片"></p>
-<p data-v-md-line="6">解决办法：在设置中搜索prevent</p>
-<p data-v-md-line="8"><img src="../resource/image/202305/IDQAdGRerJdfpuFdDRJYdjDoijWTuQ.png" alt="图片"></p>
-<p data-v-md-line="10">将图中的“snippets prevent quik suggestion”取消勾选</p>
-<p data-v-md-line="12">其原因是补全后编译器认为代码处于活动中，勾选中后编译器会阻止快速建议，也就是代码提示，会导致无法用键盘选中提示，只能通过鼠标选中。</p>
+                    <div class="content" id="content"><h1 data-v-md-heading="一、概念" data-v-md-line="1">一、概念</h1>
+<p data-v-md-line="2">Annotation（注解）是 Java 提供的一种对元程序中元素关联信息和元数据（metadata）的途径和方法。</p>
+<p data-v-md-line="4">Annatation(注解)是一个接口，程序可以通过反射来获取指定程序中元素的 Annotation对象，然后通过该Annotation 对象来获取注解中的元数据信息。</p>
+<h1 data-v-md-heading="二、-4-种标准元注解" data-v-md-line="6">二、 4 种标准元注解</h1>
+<p data-v-md-line="7">元注解的作用是负责注解其他注解。 Java5.0 定义了 4 个标准的 meta-annotation 类型，它们被用来提供对其它 annotation 类型作说明。</p>
+<p data-v-md-line="9">1、@Target 修饰的对象范围<br>
+@Target说明了Annotation所修饰的对象范围： Annotation可被用于 packages、types（类、接口、枚举、Annotation 类型）、类型成员（方法、构造方法、成员变量、枚举值）、方法参数和本地变量（如循环变量、catch 参数）。在 Annotation 类型的声明中使用了 target 可更加明晰其修饰的目标</p>
+<p data-v-md-line="12">2、@Retention 定义被保留的时间长短<br>
+Retention 定义了该 Annotation 被保留的时间长短：表示需要在什么级别保存注解信息，用于描述注解的生命周期（即：被描述的注解在什么范围内有效），取值（RetentionPoicy）由：</p>
+<p data-v-md-line="15">SOURCE:在源文件中有效（即源文件保留）<br>
+CLASS:在 class 文件中有效（即 class 保留）<br>
+RUNTIME:在运行时有效（即运行时保留）<br>
+3、@Documented 描述-javadoc<br>
+@ Documented 用于描述其它类型的 annotation 应该被作为被标注的程序成员的公共 API，因此可以被例如 javadoc 此类的工具文档化。</p>
+<p data-v-md-line="21">4、@Inherited 阐述了某个被标注的类型是被继承的<br>
+@Inherited 元注解是一个标记注解，@Inherited 阐述了某个被标注的类型是被继承的。如果一个使用了@Inherited 修饰的 annotation 类型被用于一个 class，则这个 annotation 将被用于该class 的子类。</p>
 </div>
                 </div>
             </div>
