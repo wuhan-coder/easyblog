@@ -235,35 +235,19 @@ public Object aroundAdvice(ProceedingJoinPoint joinPoint) throws Throwable {
 }
 </code></pre>
 </div></div><h1 data-v-md-heading="切点定义方式" data-v-md-line="95">切点定义方式</h1>
-<h2 data-v-md-heading="切点表达式" data-v-md-line="96">切点表达式</h2>
-<p data-v-md-line="98">execution([可见性] 返回类型 [声明类型].方法名(参数) [异常类型])</p>
-<p data-v-md-line="100">其中：</p>
-<p data-v-md-line="102">execution：切入点表达式关键字；</p>
-<p data-v-md-line="104">[可见性]：可选，指定方法的可见性，如 public、private、protected 或 *；</p>
-<p data-v-md-line="106">返回类型：指定方法的返回类型，如 void、int、String 等；</p>
-<p data-v-md-line="108">[声明类型]：可选，指定方法所属的类、接口、注解等声明类型；</p>
-<p data-v-md-line="110">方法名：指定方法的名称，支持通配符 *；</p>
-<p data-v-md-line="112">参数：指定方法的参数类型列表，用逗号分隔，支持通配符 *；</p>
-<p data-v-md-line="114">[异常类型]：可选，指定方法可能抛出的异常类型。</p>
-<p data-v-md-line="116">例:</p>
-<p data-v-md-line="118">execution(public * com.example.service.UserService.addUser(…))：指定 com.example.service.UserService 类中的 addUser 方法；</p>
-<p data-v-md-line="120">execution(* com.example.service.<em>.</em>(…))：指定 com.example.service 包下的所有方法；</p>
-<p data-v-md-line="122">execution(* com.example.service…<em>.</em>(…))：指定 com.example.service 包及其子包下的所有方法；</p>
-<p data-v-md-line="124">execution(* com.example.service.UserService.*(String))：指定 com.example.service.UserService 类中所有参数类型为 String 的方法。</p>
-<p data-v-md-line="126">此外，切入点表达式还支持 &amp;&amp;（逻辑与）、||（逻辑或）和 !（逻辑非）等运算符，以及 @annotation、@within、@args 等注解限定符。</p>
-<h2 data-v-md-heading="注解" data-v-md-line="129">注解</h2>
-<p data-v-md-line="131">纯注解形式的 AOP 在 Spring Boot 中使用也非常简单，具体步骤如下：</p>
-<h3 data-v-md-heading="定义注解" data-v-md-line="133">定义注解</h3>
-<p data-v-md-line="134">在需要增强的方法上添加注解 @LogExecutionTime，该注解可以自定义一个别名，比如 @MyLog。</p>
-<div data-v-md-line="136"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code>@Target(ElementType.METHOD)
+<h2 data-v-md-heading="注解" data-v-md-line="98">注解</h2>
+<p data-v-md-line="100">纯注解形式的 AOP 在 Spring Boot 中使用也非常简单，具体步骤如下：</p>
+<h3 data-v-md-heading="定义注解" data-v-md-line="102">定义注解</h3>
+<p data-v-md-line="103">在需要增强的方法上添加注解 @LogExecutionTime，该注解可以自定义一个别名，比如 @MyLog。</p>
+<div data-v-md-line="105"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code>@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface LogExecutionTime {
 }
 </code></pre>
-</div></div><h3 data-v-md-heading="使用注解" data-v-md-line="142">使用注解</h3>
-<p data-v-md-line="143">创建一个切面类，使用注解 @Aspect 表示该类是一个切面类，使用注解 @Component 将该类交给 Spring 管理。</p>
-<h4 data-v-md-heading="内置配置" data-v-md-line="145">内置配置</h4>
-<div data-v-md-line="146"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code>@Aspect
+</div></div><h3 data-v-md-heading="使用注解" data-v-md-line="111">使用注解</h3>
+<p data-v-md-line="112">创建一个切面类，使用注解 @Aspect 表示该类是一个切面类，使用注解 @Component 将该类交给 Spring 管理。</p>
+<h4 data-v-md-heading="内置配置" data-v-md-line="114">内置配置</h4>
+<div data-v-md-line="115"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code>@Aspect
 @Component
 public class LogAspect {
     @Around(&quot;@annotation(com.xxx.LogExecutionTime)&quot;)
@@ -276,8 +260,8 @@ public class LogAspect {
     }
 }
 </code></pre>
-</div></div><h4 data-v-md-heading="注解配置" data-v-md-line="160">注解配置</h4>
-<div data-v-md-line="161"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code>@Aspect
+</div></div><h4 data-v-md-heading="注解配置" data-v-md-line="129">注解配置</h4>
+<div data-v-md-line="130"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code>@Aspect
 @Component
 public class LogAspect {
     @Pointcut(&quot;@annotation(com.xxx.LogExecutionTime)&quot;)
@@ -294,15 +278,15 @@ public class LogAspect {
     }
 }
 </code></pre>
-</div></div><h4 data-v-md-heading="公共配置" data-v-md-line="179">公共配置</h4>
-<div data-v-md-line="180"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code>public class CommonPointcut {
+</div></div><h4 data-v-md-heading="公共配置" data-v-md-line="148">公共配置</h4>
+<div data-v-md-line="149"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code>public class CommonPointcut {
     @Pointcut(&quot;@annotation(com.xxx.LogExecutionTime)&quot;)
     public void pointcut() {
         // 注意定义切点的方法的访问权限为public
     }
 }
 </code></pre>
-</div></div><div data-v-md-line="188"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code>@Aspect
+</div></div><div data-v-md-line="157"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code>@Aspect
 @Component
 public class LogAspect {
     @Around(&quot;com.xxx.CommonPointcut.pointcut()&quot;)
@@ -315,7 +299,23 @@ public class LogAspect {
     }
 }
 </code></pre>
-</div></div></div>
+</div></div><h2 data-v-md-heading="切点表达式" data-v-md-line="172">切点表达式</h2>
+<p data-v-md-line="174">execution([可见性] 返回类型 [声明类型].方法名(参数) [异常类型])</p>
+<p data-v-md-line="176">其中：</p>
+<p data-v-md-line="178">execution：切入点表达式关键字；</p>
+<p data-v-md-line="180">[可见性]：可选，指定方法的可见性，如 public、private、protected 或 *；</p>
+<p data-v-md-line="182">返回类型：指定方法的返回类型，如 void、int、String 等；</p>
+<p data-v-md-line="184">[声明类型]：可选，指定方法所属的类、接口、注解等声明类型；</p>
+<p data-v-md-line="186">方法名：指定方法的名称，支持通配符 *；</p>
+<p data-v-md-line="188">参数：指定方法的参数类型列表，用逗号分隔，支持通配符 *；</p>
+<p data-v-md-line="190">[异常类型]：可选，指定方法可能抛出的异常类型。</p>
+<p data-v-md-line="192">例:</p>
+<p data-v-md-line="194">execution(public * com.example.service.UserService.addUser(…))：指定 com.example.service.UserService 类中的 addUser 方法；</p>
+<p data-v-md-line="196">execution(* com.example.service.<em>.</em>(…))：指定 com.example.service 包下的所有方法；</p>
+<p data-v-md-line="198">execution(* com.example.service…<em>.</em>(…))：指定 com.example.service 包及其子包下的所有方法；</p>
+<p data-v-md-line="200">execution(* com.example.service.UserService.*(String))：指定 com.example.service.UserService 类中所有参数类型为 String 的方法。</p>
+<p data-v-md-line="202">此外，切入点表达式还支持 &amp;&amp;（逻辑与）、||（逻辑或）和 !（逻辑非）等运算符，以及 @annotation、@within、@args 等注解限定符。</p>
+</div>
                 </div>
             </div>
         </div>
