@@ -253,17 +253,59 @@ public Object aroundAdvice(ProceedingJoinPoint joinPoint) throws Throwable {
 <p data-v-md-line="126">此外，切入点表达式还支持 &amp;&amp;（逻辑与）、||（逻辑或）和 !（逻辑非）等运算符，以及 @annotation、@within、@args 等注解限定符。</p>
 <h2 data-v-md-heading="注解" data-v-md-line="129">注解</h2>
 <p data-v-md-line="131">纯注解形式的 AOP 在 Spring Boot 中使用也非常简单，具体步骤如下：</p>
-<p data-v-md-line="133">1.在需要增强的方法上添加注解 @LogExecutionTime，该注解可以自定义一个别名，比如 @MyLog。</p>
-<div data-v-md-line="135"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code>@Target(ElementType.METHOD)
+<h3 data-v-md-heading="定义注解" data-v-md-line="133">定义注解</h3>
+<p data-v-md-line="134">在需要增强的方法上添加注解 @LogExecutionTime，该注解可以自定义一个别名，比如 @MyLog。</p>
+<div data-v-md-line="136"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code>@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface LogExecutionTime {
 }
 </code></pre>
-</div></div><p data-v-md-line="141">2.创建一个切面类，使用注解 @Aspect 表示该类是一个切面类，使用注解 @Component 将该类交给 Spring 管理。</p>
-<div data-v-md-line="143"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code>@Aspect
+</div></div><h3 data-v-md-heading="使用注解" data-v-md-line="142">使用注解</h3>
+<p data-v-md-line="143">创建一个切面类，使用注解 @Aspect 表示该类是一个切面类，使用注解 @Component 将该类交给 Spring 管理。</p>
+<h3 data-v-md-heading="内置配置" data-v-md-line="145">内置配置</h3>
+<div data-v-md-line="146"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code>@Aspect
 @Component
 public class LogAspect {
-    @Around(&quot;@annotation(LogExecutionTime)&quot;)
+    @Around(&quot;@annotation(com.xxx.LogExecutionTime)&quot;)
+    public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
+        long start = System.currentTimeMillis();
+        Object proceed = joinPoint.proceed();
+        long executionTime = System.currentTimeMillis() - start;
+        System.out.println(joinPoint.getSignature() + &quot; executed in &quot; + executionTime + &quot;ms&quot;);
+        return proceed;
+    }
+}
+</code></pre>
+</div></div><h3 data-v-md-heading="注解配置" data-v-md-line="160">注解配置</h3>
+<div data-v-md-line="161"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code>@Aspect
+@Component
+public class LogAspect {
+    @Pointcut(&quot;@annotation(com.xxx.LogExecutionTime)&quot;)
+    private void pointcut() {
+        // 切点表达式定义方法，方法修饰符可以是private或public
+    }
+    @Around(&quot;pointcut()&quot;)
+    public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
+        long start = System.currentTimeMillis();
+        Object proceed = joinPoint.proceed();
+        long executionTime = System.currentTimeMillis() - start;
+        System.out.println(joinPoint.getSignature() + &quot; executed in &quot; + executionTime + &quot;ms&quot;);
+        return proceed;
+    }
+}
+</code></pre>
+</div></div><h3 data-v-md-heading="公共配置" data-v-md-line="179">公共配置</h3>
+<div data-v-md-line="180"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code>public class CommonPointcut {
+    @Pointcut(&quot;@annotation(com.xxx.LogExecutionTime)&quot;)
+    public void pointcut() {
+        // 注意定义切点的方法的访问权限为public
+    }
+}
+</code></pre>
+</div></div><div data-v-md-line="188"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code>@Aspect
+@Component
+public class LogAspect {
+    @Around(&quot;com.xxx.CommonPointcut.pointcut()&quot;)
     public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
         long start = System.currentTimeMillis();
         Object proceed = joinPoint.proceed();
