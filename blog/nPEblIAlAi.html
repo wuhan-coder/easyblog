@@ -201,60 +201,66 @@
 <p data-v-md-line="52">环绕通知（Around Advice）：可以在目标方法执行前后执行特定的逻辑，还可以控制目标方法的执行，即可以选择是否执行目标方法或者如何执行目标方法。</p>
 <p data-v-md-line="54">最终通知（After Finally Advice）：在目标方法执行完毕后，无论是否抛出异常都会执行的通知。</p>
 <h2 data-v-md-heading="前置通知" data-v-md-line="56">前置通知</h2>
-<p data-v-md-line="58">@Before(“execution(* com.example.service.UserService.*(…))”)<br>
-public void beforeAdvice() {<br>
-// 在目标方法执行前执行的逻辑<br>
-}</p>
-<h2 data-v-md-heading="后置通知" data-v-md-line="62">后置通知</h2>
-<p data-v-md-line="64">@After(“execution(* com.example.service.UserService.*(…))”)<br>
-public void afterAdvice() {<br>
-// 在目标方法执行后执行的逻辑<br>
-}</p>
-<h2 data-v-md-heading="返回通知" data-v-md-line="68">返回通知</h2>
-<p data-v-md-line="70">@AfterReturning(pointcut = “execution(* com.example.service.UserService.*(…))”, returning = “result”)<br>
-public void afterReturningAdvice(Object result) {<br>
-// 在目标方法返回结果后执行的逻辑，result 是目标方法的返回值<br>
-}</p>
-<h2 data-v-md-heading="异常通知" data-v-md-line="74">异常通知</h2>
-<p data-v-md-line="76">@AfterThrowing(pointcut = “execution(* com.example.service.UserService.*(…))”, throwing = “ex”)<br>
-public void afterThrowingAdvice(Exception ex) {<br>
-// 在目标方法抛出异常后执行的逻辑，ex 是目标方法抛出的异常<br>
-}</p>
-<h2 data-v-md-heading="环绕通知" data-v-md-line="80">环绕通知</h2>
-<p data-v-md-line="82">@Around(“execution(* com.example.service.UserService.*(…))”)<br>
-public Object aroundAdvice(ProceedingJoinPoint joinPoint) throws Throwable {<br>
-// 在目标方法执行前后执行特定的逻辑，可以控制目标方法的执行<br>
-// 执行目标方法<br>
-Object result = joinPoint.proceed();<br>
-// 在目标方法执行后执行的逻辑<br>
-return result;<br>
-}</p>
-<h1 data-v-md-heading="切点定义方式" data-v-md-line="91">切点定义方式</h1>
-<h2 data-v-md-heading="切点表达式" data-v-md-line="92">切点表达式</h2>
-<p data-v-md-line="94">execution([可见性] 返回类型 [声明类型].方法名(参数) [异常类型])</p>
-<p data-v-md-line="96">其中：</p>
-<p data-v-md-line="98">execution：切入点表达式关键字；</p>
-<p data-v-md-line="100">[可见性]：可选，指定方法的可见性，如 public、private、protected 或 *；</p>
-<p data-v-md-line="102">返回类型：指定方法的返回类型，如 void、int、String 等；</p>
-<p data-v-md-line="104">[声明类型]：可选，指定方法所属的类、接口、注解等声明类型；</p>
-<p data-v-md-line="106">方法名：指定方法的名称，支持通配符 *；</p>
-<p data-v-md-line="108">参数：指定方法的参数类型列表，用逗号分隔，支持通配符 *；</p>
-<p data-v-md-line="110">[异常类型]：可选，指定方法可能抛出的异常类型。</p>
-<p data-v-md-line="112">例:</p>
-<p data-v-md-line="114">execution(public * com.example.service.UserService.addUser(…))：指定 com.example.service.UserService 类中的 addUser 方法；</p>
-<p data-v-md-line="116">execution(* com.example.service.<em>.</em>(…))：指定 com.example.service 包下的所有方法；</p>
-<p data-v-md-line="118">execution(* com.example.service…<em>.</em>(…))：指定 com.example.service 包及其子包下的所有方法；</p>
-<p data-v-md-line="120">execution(* com.example.service.UserService.*(String))：指定 com.example.service.UserService 类中所有参数类型为 String 的方法。</p>
-<p data-v-md-line="122">此外，切入点表达式还支持 &amp;&amp;（逻辑与）、||（逻辑或）和 !（逻辑非）等运算符，以及 @annotation、@within、@args 等注解限定符。</p>
-<h2 data-v-md-heading="注解" data-v-md-line="125">注解</h2>
-<p data-v-md-line="127">纯注解形式的 AOP 在 Spring Boot 中使用也非常简单，具体步骤如下：</p>
-<p data-v-md-line="129">1.在需要增强的方法上添加注解 @LogExecutionTime，该注解可以自定义一个别名，比如 @MyLog。</p>
-<p data-v-md-line="131">@Target(ElementType.METHOD)<br>
-@Retention(RetentionPolicy.RUNTIME)<br>
-public @interface LogExecutionTime {<br>
-}<br>
-2.创建一个切面类，使用注解 @Aspect 表示该类是一个切面类，使用注解 @Component 将该类交给 Spring 管理。</p>
-<div data-v-md-line="137"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code>@Aspect
+<div data-v-md-line="57"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code>@Before(&quot;execution(* com.example.service.UserService.*(..))&quot;)
+public void beforeAdvice() {
+    // 在目标方法执行前执行的逻辑
+}
+</code></pre>
+</div></div><h2 data-v-md-heading="后置通知" data-v-md-line="63">后置通知</h2>
+<div data-v-md-line="64"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code>@After(&quot;execution(* com.example.service.UserService.*(..))&quot;)
+public void afterAdvice() {
+    // 在目标方法执行后执行的逻辑
+}
+</code></pre>
+</div></div><h2 data-v-md-heading="返回通知" data-v-md-line="70">返回通知</h2>
+<div data-v-md-line="71"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code>@AfterReturning(pointcut = &quot;execution(* com.example.service.UserService.*(..))&quot;, returning = &quot;result&quot;)
+public void afterReturningAdvice(Object result) {
+    // 在目标方法返回结果后执行的逻辑，result 是目标方法的返回值
+}
+</code></pre>
+</div></div><h2 data-v-md-heading="异常通知" data-v-md-line="77">异常通知</h2>
+<div data-v-md-line="78"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code>@AfterThrowing(pointcut = &quot;execution(* com.example.service.UserService.*(..))&quot;, throwing = &quot;ex&quot;)
+public void afterThrowingAdvice(Exception ex) {
+    // 在目标方法抛出异常后执行的逻辑，ex 是目标方法抛出的异常
+}
+</code></pre>
+</div></div><h2 data-v-md-heading="环绕通知" data-v-md-line="84">环绕通知</h2>
+<div data-v-md-line="85"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code>@Around(&quot;execution(* com.example.service.UserService.*(..))&quot;)
+public Object aroundAdvice(ProceedingJoinPoint joinPoint) throws Throwable {
+    // 在目标方法执行前后执行特定的逻辑，可以控制目标方法的执行
+    // 执行目标方法
+    Object result = joinPoint.proceed();
+    // 在目标方法执行后执行的逻辑
+    return result;
+}
+</code></pre>
+</div></div><h1 data-v-md-heading="切点定义方式" data-v-md-line="95">切点定义方式</h1>
+<h2 data-v-md-heading="切点表达式" data-v-md-line="96">切点表达式</h2>
+<p data-v-md-line="98">execution([可见性] 返回类型 [声明类型].方法名(参数) [异常类型])</p>
+<p data-v-md-line="100">其中：</p>
+<p data-v-md-line="102">execution：切入点表达式关键字；</p>
+<p data-v-md-line="104">[可见性]：可选，指定方法的可见性，如 public、private、protected 或 *；</p>
+<p data-v-md-line="106">返回类型：指定方法的返回类型，如 void、int、String 等；</p>
+<p data-v-md-line="108">[声明类型]：可选，指定方法所属的类、接口、注解等声明类型；</p>
+<p data-v-md-line="110">方法名：指定方法的名称，支持通配符 *；</p>
+<p data-v-md-line="112">参数：指定方法的参数类型列表，用逗号分隔，支持通配符 *；</p>
+<p data-v-md-line="114">[异常类型]：可选，指定方法可能抛出的异常类型。</p>
+<p data-v-md-line="116">例:</p>
+<p data-v-md-line="118">execution(public * com.example.service.UserService.addUser(…))：指定 com.example.service.UserService 类中的 addUser 方法；</p>
+<p data-v-md-line="120">execution(* com.example.service.<em>.</em>(…))：指定 com.example.service 包下的所有方法；</p>
+<p data-v-md-line="122">execution(* com.example.service…<em>.</em>(…))：指定 com.example.service 包及其子包下的所有方法；</p>
+<p data-v-md-line="124">execution(* com.example.service.UserService.*(String))：指定 com.example.service.UserService 类中所有参数类型为 String 的方法。</p>
+<p data-v-md-line="126">此外，切入点表达式还支持 &amp;&amp;（逻辑与）、||（逻辑或）和 !（逻辑非）等运算符，以及 @annotation、@within、@args 等注解限定符。</p>
+<h2 data-v-md-heading="注解" data-v-md-line="129">注解</h2>
+<p data-v-md-line="131">纯注解形式的 AOP 在 Spring Boot 中使用也非常简单，具体步骤如下：</p>
+<p data-v-md-line="133">1.在需要增强的方法上添加注解 @LogExecutionTime，该注解可以自定义一个别名，比如 @MyLog。</p>
+<div data-v-md-line="135"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code>@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface LogExecutionTime {
+}
+</code></pre>
+</div></div><p data-v-md-line="141">2.创建一个切面类，使用注解 @Aspect 表示该类是一个切面类，使用注解 @Component 将该类交给 Spring 管理。</p>
+<div data-v-md-line="143"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code>@Aspect
 @Component
 public class LogAspect {
     @Around(&quot;@annotation(LogExecutionTime)&quot;)
