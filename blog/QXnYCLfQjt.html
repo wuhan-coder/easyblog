@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>electron中使用vue - 我是程序员</title>
-        <meta name="keywords" content="electron,electron vue">
-        <meta name="description" content="electron中使用vue">
+    <title>使用vite 构建vue3+electron项目 - 我是程序员</title>
+        <meta name="keywords" content="使用vite 构建vue3+electron项目">
+        <meta name="description" content="构建vue3项目构建项目npmcreatevite@latestelectron-demo引入electronnpminstallelectron-Dnpminstallvite-plugin-electron-D#渲染进程和主进程的通信npminstallvite-plugin-electron-renderer-D修改vite.config.js引入electron和electronRender进程间通讯import{fileURLToPath,URL}from'node:url'import{defineConfig}from'vite'importvuefrom'@vitejs/plu">
 
     <link rel="stylesheet" href="../resource/static/plugin/highlight/styles/github.min.css">
     <link rel="stylesheet" href="../resource/static/plugin/viewer/viewer.min.css">
@@ -161,40 +161,134 @@
         <div class="container">
             <div class="container-content">
                 <div>
-                    <div class="blog-title">electron中使用vue</div>
+                    <div class="blog-title">使用vite 构建vue3+electron项目</div>
                     <div class="blog-info">
-                        <div class="time">2022-05-25 06:18:23</div>
+                        <div class="time">2023-11-24 09:13:40</div>
                         <div class="nick-name">作者：<a href="../user.html#100000">程序员老罗</a></div>
                         <div class="category">分类专栏：
                                 <a href="../category/10002.html">electron</a>
                         </div>
 
                     </div>
-                    <div class="content" id="content"><h1 data-v-md-heading="在electron中使用vue" data-v-md-line="1">在electron中使用vue</h1>
-<h2 data-v-md-heading="创建vue项目" data-v-md-line="2">创建vue项目</h2>
-<div data-v-md-line="3"><div class="v-md-pre-wrapper v-md-pre-wrapper-shell extra-class"><pre class="v-md-hljs-shell"><code>vue create electron-demo
+                    <div class="content" id="content"><h1 data-v-md-heading="构建vue3项目" data-v-md-line="1">构建vue3项目</h1>
+<h2 data-v-md-heading="构建项目" data-v-md-line="3">构建项目</h2>
+<div data-v-md-line="4"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code>npm create vite@latest electron-demo
 </code></pre>
-</div></div><p data-v-md-line="6">选择自定义<br>
-<img src="../resource/image/202205/ypyNIlUevGAuCKhqxVbCbcdTaODmLE.png" alt="image.png"></p>
-<p data-v-md-line="9">选择配置<br>
-<img src="../resource/image/202205/fnmLDoUBfwsbRrrwlirrjyPQZbCdsb.png" alt="image.png"></p>
-<p data-v-md-line="12">选择vue3<br>
-<img src="../resource/image/202205/xvrNFadSzBtaQYeUCbAtHeMPQELEvs.png" alt="image.png"></p>
-<p data-v-md-line="15">选择路由模式<br>
-<img src="../resource/image/202205/yyNbMkCDroELLwJpAjkLfPvbgmlODg.png" alt="image.png"></p>
-<p data-v-md-line="18">后续操作就一路默认</p>
-<p data-v-md-line="20">创建完后，进入到项目 执行</p>
-<div data-v-md-line="21"><div class="v-md-pre-wrapper v-md-pre-wrapper-shell extra-class"><pre class="v-md-hljs-shell"><code>npm run serve
+</div></div><h1 data-v-md-heading="引入electron" data-v-md-line="8">引入electron</h1>
+<div data-v-md-line="9"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code>npm install electron -D
+npm install vite-plugin-electron -D
+#渲染进程和主进程的通信
+npm install vite-plugin-electron-renderer -D
 </code></pre>
-</div></div><p data-v-md-line="24">然后访问</p>
-<h2 data-v-md-heading="添加-electron支持" data-v-md-line="26">添加 electron支持</h2>
-<div data-v-md-line="28"><div class="v-md-pre-wrapper v-md-pre-wrapper-shell extra-class"><pre class="v-md-hljs-shell"><code>vue add electron-builder
+</div></div><h2 data-v-md-heading="修改vite-config-js" data-v-md-line="16">修改vite.config.js</h2>
+<p data-v-md-line="17">引入 electron 和 electronRender 进程间通讯</p>
+<div data-v-md-line="18"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code>import { fileURLToPath, URL } from 'node:url'
+
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import electron from 'vite-plugin-electron'
+import electronRender from 'vite-plugin-electron-renderer'
+
+export default defineConfig({
+  plugins: [
+    vue(), electron({
+      entry: 'src/electron/index.js'
+    }),electronRender()
+  ],
+  resolve: {
+    alias: {
+      '@': fileURLToPath(new URL('./src', import.meta.url))
+    }
+  },
+  server: {
+    port:3000
+  }
+})
+
 </code></pre>
-</div></div><p data-v-md-line="32">然后执行</p>
-<div data-v-md-line="33"><div class="v-md-pre-wrapper v-md-pre-wrapper-shell extra-class"><pre class="v-md-hljs-shell"><code>vue-cli-service electron:serve
+</div></div><h2 data-v-md-heading="创建electron-主进程窗口" data-v-md-line="44">创建electron 主进程窗口</h2>
+<p data-v-md-line="45">src目录下新建/electron/index.js</p>
+<div data-v-md-line="46"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code>import path from &quot;path&quot;;
+const { app, BrowserWindow, ipcMain,shell } = require('electron');
+
+const createWindow = () =&gt; {
+  const win = new BrowserWindow({
+    width: 800,
+    height: 600,
+    titleBarStyle: 'hidden',
+    webPreferences: {
+      contextIsolation: false, // 是否开启隔离上下文
+      nodeIntegration: true, // 渲染进程使用Node API
+      // preload: path.join(__dirname, &quot;../electron-preload/index.js&quot;), // 需要引用js文件
+    }
+  });
+  win.webContents.openDevTools();
+  win.setMenu(null)
+  // 如果打包了，渲染index.html
+  if (app.isPackaged) {
+    win.loadFile(path.join(__dirname, &quot;../index.html&quot;));
+  } else {
+    win.loadURL(process.env['VITE_DEV_SERVER_URL'])
+  }
+
+  ipcMain.on('msg', (_, msg) =&gt; {
+    console.log('渲染进程传递信息 :&gt;&gt; ', msg);
+    win.webContents.send('load', { msg: '我已经收到消息' + msg })
+  });
+
+
+};
+
+app.whenReady().then(() =&gt; {
+  createWindow(); // 创建窗口
+  app.on('activate', () =&gt; {
+    if (BrowserWindow.getAllWindows().length === 0) {
+      createWindow();
+    }
+  });
+});
+
+// 关闭窗口
+app.on('window-all-closed', () =&gt; {
+  if (process.platform !== 'darwin') {
+    app.quit();
+  }
+});
+
+process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
 </code></pre>
-</div></div><p data-v-md-line="36">就可以打开带有窗口的vue项目</p>
-</div>
+</div></div><h2 data-v-md-heading="页面" data-v-md-line="97">页面</h2>
+<div data-v-md-line="98"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code>&lt;template&gt;
+  &lt;div&gt;
+    &lt;el-button type=&quot;primary&quot; @click=&quot;send&quot;&gt;按钮&lt;/el-button&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script setup&gt;
+import { ipcRenderer } from 'electron'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+const send = () =&gt; {
+  ipcRenderer.send('msg', '页面消息')
+}
+
+const openNewWin = () =&gt; {
+  ipcRenderer.send('openNewWin')
+}
+
+ipcRenderer.on('load', (_, msg) =&gt; {
+  console.log('主进程传递信息 :&gt;&gt; ', msg)
+})
+
+&lt;/script&gt;
+
+&lt;style lang=&quot;scss&quot; scoped&gt;
+&lt;/style&gt;
+
+</code></pre>
+</div></div></div>
                 </div>
             </div>
         </div>
