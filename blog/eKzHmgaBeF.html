@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>vue devtools 安装 - 我是程序员</title>
-        <meta name="keywords" content="vue devtools 安装">
-        <meta name="description" content="1、下载地址：https://wwur.lanzout.com/i23eZ0mt58mh密码:gyts2、google浏览器打开chrome://extensions/3、将文件拖入，启用插件4、控制台就可以看到插件">
+    <title>centos 安装ffmpeg - 我是程序员</title>
+        <meta name="keywords" content="centos 安装ffmpeg">
+        <meta name="description" content="安装扩展yuminstallautomakeautoconfmakegccgcc-c++libtoolzlibzlib-develcurlcurl-develalsa-libalsa-lib-develgettextgettext-develexpatexpat-develnasmpkgconfig安装yasm-支持编译x264wgethttp://www.tortall.net/projects/yasm/releases/yasm-1.3.0.tar.gztar-zxvfyasm-1.3.0.tar.gzcdyasm-1.3.0./configuremake-j8makeinstall安装">
 
     <link rel="stylesheet" href="../resource/static/plugin/highlight/styles/github.min.css">
     <link rel="stylesheet" href="../resource/static/plugin/viewer/viewer.min.css">
@@ -161,21 +161,58 @@
         <div class="container">
             <div class="container-content">
                 <div>
-                    <div class="blog-title">vue devtools 安装</div>
+                    <div class="blog-title">centos 安装ffmpeg</div>
                     <div class="blog-info">
-                        <div class="time">2023-02-07 09:36:17</div>
+                        <div class="time">2024-05-05 04:17:55</div>
                         <div class="nick-name">作者：<a href="../user.html#100000">程序员老罗</a></div>
                         <div class="category">分类专栏：
-                                <a href="../category/10003.html">Vue3</a>
+                                <a href="../category/10007.html">linux服务器</a>
                         </div>
 
                     </div>
-                    <div class="content" id="content"><p data-v-md-line="2">1、下载地址：https://wwur.lanzout.com/i23eZ0mt58mh 密码:gyts<br>
-2、google浏览器打开  chrome://extensions/<br>
-3、将文件拖入，启用插件<br>
-4、控制台就可以看到插件<br>
-<img src="../resource/image/202302/fahEatGKesUmTHdRMEjaKQFByDVCqc.png" alt="图片"></p>
-</div>
+                    <div class="content" id="content"><h1 data-v-md-heading="安装扩展" data-v-md-line="1">安装扩展</h1>
+<div data-v-md-line="2"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code>yum install automake autoconf make gcc gcc-c++ libtool zlib zlib-devel curl curl-devel alsa-lib alsa-lib-devel gettext gettext-devel expat expat-devel nasm pkgconfig
+</code></pre>
+</div></div><h1 data-v-md-heading="安装yasm-支持编译x264" data-v-md-line="6">安装yasm - 支持编译x264</h1>
+<div data-v-md-line="7"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code>wget http://www.tortall.net/projects/yasm/releases/yasm-1.3.0.tar.gz
+tar -zxvf yasm-1.3.0.tar.gz
+cd yasm-1.3.0
+./configure
+make -j8
+make install
+</code></pre>
+</div></div><h1 data-v-md-heading="安装gnutls、lame" data-v-md-line="16">安装gnutls、lame</h1>
+<div data-v-md-line="17"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code>yum install gnutls gnutls-devel
+
+yum install lame lame-devel
+
+</code></pre>
+</div></div><h1 data-v-md-heading="安装-x264库" data-v-md-line="24">安装 x264库</h1>
+<div data-v-md-line="25"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code>#卸载系统自带的旧版x264
+yum remove x264 x264-devel
+
+#安装 x264
+wget -c ftp://ftp.videolan.org/pub/x264/snapshots/x264-snapshot-20120718-2245-stable.tar.bz2
+# 未安装 bzip2 则执行安装命令
+yum install bzip2
+tar jxvf x264-snapshot-20120718-2245-stable.tar.bz2
+cd x264-snapshot-20120718-2245-stable
+./configure --enable-shared  --enable-static
+make -j8
+make install
+</code></pre>
+</div></div><h1 data-v-md-heading="安装ffmpeg" data-v-md-line="40">安装ffmpeg</h1>
+<div data-v-md-line="41"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code>wget http://www.ffmpeg.org/releases/ffmpeg-3.1.tar.gz
+tar -zxvf ffmpeg-3.1.tar.gz
+cd ffmpeg-3.1
+./configure --prefix=/usr/local/ --enable-gpl --enable-version3 --enable-nonfree --enable-shared --enable-zlib --enable-bzlib --enable-libmp3lame --enable-libx264 --enable-pic
+make -j8
+make install
+</code></pre>
+</div></div><h1 data-v-md-heading="检查是否安装成功" data-v-md-line="50">检查是否安装成功</h1>
+<div data-v-md-line="51"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code>ffmpeg -version
+</code></pre>
+</div></div></div>
                 </div>
             </div>
         </div>

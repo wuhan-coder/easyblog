@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>vue devtools 安装 - 我是程序员</title>
-        <meta name="keywords" content="vue devtools 安装">
-        <meta name="description" content="1、下载地址：https://wwur.lanzout.com/i23eZ0mt58mh密码:gyts2、google浏览器打开chrome://extensions/3、将文件拖入，启用插件4、控制台就可以看到插件">
+    <title>centos 安装nginx - 我是程序员</title>
+        <meta name="keywords" content="centos 安装nginx">
+        <meta name="description" content="centos 安装nginx">
 
     <link rel="stylesheet" href="../resource/static/plugin/highlight/styles/github.min.css">
     <link rel="stylesheet" href="../resource/static/plugin/viewer/viewer.min.css">
@@ -161,20 +161,37 @@
         <div class="container">
             <div class="container-content">
                 <div>
-                    <div class="blog-title">vue devtools 安装</div>
+                    <div class="blog-title">centos 安装nginx</div>
                     <div class="blog-info">
-                        <div class="time">2023-02-07 09:36:17</div>
+                        <div class="time">2024-05-05 04:11:24</div>
                         <div class="nick-name">作者：<a href="../user.html#100000">程序员老罗</a></div>
                         <div class="category">分类专栏：
-                                <a href="../category/10003.html">Vue3</a>
+                                <a href="../category/10007.html">linux服务器</a>
                         </div>
 
                     </div>
-                    <div class="content" id="content"><p data-v-md-line="2">1、下载地址：https://wwur.lanzout.com/i23eZ0mt58mh 密码:gyts<br>
-2、google浏览器打开  chrome://extensions/<br>
-3、将文件拖入，启用插件<br>
-4、控制台就可以看到插件<br>
-<img src="../resource/image/202302/fahEatGKesUmTHdRMEjaKQFByDVCqc.png" alt="图片"></p>
+                    <div class="content" id="content"><h1 data-v-md-heading="下载nginx" data-v-md-line="1">下载nginx</h1>
+<div data-v-md-line="2"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code>#创建目录
+mkdir /webser/
+
+#进入目录
+cd /webser
+
+#下载nginx
+wget http://nginx.org/download/nginx-1.20.1.tar.gz
+
+</code></pre>
+</div></div><h1 data-v-md-heading="编译安装" data-v-md-line="13">编译安装</h1>
+<div data-v-md-line="14"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code>tar zxvf nginx-1.20.1.tar.gz
+
+cd nginx-1.20.1
+
+./configure  --prefix=/webser/nginx --with-http_ssl_module --with-stream
+
+make &amp;&amp; make install
+
+</code></pre>
+</div></div><p data-v-md-line="24">进入 /webser/nginx 目录就可以进行配置使用了</p>
 </div>
                 </div>
             </div>
