@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>[vscode] 代码提示不能默认选中第一项问题 - 我是程序员</title>
-        <meta name="keywords" content="[vscode] 代码提示不能默认选中第一项问题">
-        <meta name="description" content="码代码时发现一个问题，有些代码提示无法选中第一项。解决办法：在设置中搜索prevent将图中的“snippetspreventquiksuggestion”取消勾选其原因是补全后编译器认为代码处于活动中，勾选中后编译器会阻止快速建议，也就是代码提示，会导致无法用键盘选中提示，只能通过鼠标选中。">
+    <title>centos安装mysql 5.7版本 - 我是程序员</title>
+        <meta name="keywords" content="mysql">
+        <meta name="description" content="centos 安装mysql5.7">
 
     <link rel="stylesheet" href="../resource/static/plugin/highlight/styles/github.min.css">
     <link rel="stylesheet" href="../resource/static/plugin/viewer/viewer.min.css">
@@ -161,23 +161,105 @@
         <div class="container">
             <div class="container-content">
                 <div>
-                    <div class="blog-title">[vscode] 代码提示不能默认选中第一项问题</div>
+                    <div class="blog-title">centos安装mysql 5.7版本</div>
                     <div class="blog-info">
-                        <div class="time">2023-05-25 03:25:14</div>
+                        <div class="time">2024-05-05 03:55:28</div>
                         <div class="nick-name">作者：<a href="../user.html#100000">程序员老罗</a></div>
                         <div class="category">分类专栏：
-                                <a href="../category/10005.html">编程小技巧</a>
+                                <a href="../category/10001.html">Java</a>
                         </div>
 
                     </div>
-                    <div class="content" id="content"><p data-v-md-line="1">码代码时发现一个问题，有些代码提示无法选中第一项。<br>
-<img src="../resource/image/202305/HxXEdFGeGSPwfDiZEImuRqvjhwDjty.png" alt="图片"></p>
-<p data-v-md-line="4"><img src="../resource/image/202305/CRhZvqniQEKoiNcIBeUuHzMRXdQHPX.png" alt="图片"></p>
-<p data-v-md-line="6">解决办法：在设置中搜索prevent</p>
-<p data-v-md-line="8"><img src="../resource/image/202305/IDQAdGRerJdfpuFdDRJYdjDoijWTuQ.png" alt="图片"></p>
-<p data-v-md-line="10">将图中的“snippets prevent quik suggestion”取消勾选</p>
-<p data-v-md-line="12">其原因是补全后编译器认为代码处于活动中，勾选中后编译器会阻止快速建议，也就是代码提示，会导致无法用键盘选中提示，只能通过鼠标选中。</p>
-</div>
+                    <div class="content" id="content"><h1 data-v-md-heading="下载mysql" data-v-md-line="1">下载mysql</h1>
+<p data-v-md-line="2">创建目录</p>
+<div data-v-md-line="4"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code>#创建目录
+mkdir /webser/mysql
+
+#下载mysql
+wget https://downloads.mysql.com/archives/get/p/23/file/mysql-5.7.27-el7-x86_64.tar.gz
+</code></pre>
+</div></div><h1 data-v-md-heading="卸载系统自带的mariadb" data-v-md-line="12">卸载系统自带的mariadb</h1>
+<p data-v-md-line="13">安装mysql的话会和mariadb的文件冲突,所以先卸载</p>
+<div data-v-md-line="15"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code>rpm -qa|grep mariadb
+
+rpm -e --nodeps mariadb-libs-5.5.44-2.el7.centos.x86_64
+</code></pre>
+</div></div><h1 data-v-md-heading="创建mysql用户和组" data-v-md-line="21">创建mysql用户和组</h1>
+<div data-v-md-line="22"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code>groupadd mysql
+useradd -r -g mysql mysql
+</code></pre>
+</div></div><h1 data-v-md-heading="安装mysql" data-v-md-line="27">安装mysql</h1>
+<div data-v-md-line="28"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code>#解压
+tar -zxvf mysql-5.7.27-el7-x86_64.tar.gz
+#重命名
+mv mysql-5.7.27-el7-x86_64 mysql
+#修改权限
+chown -R mysql:mysql /webser/mysql
+chmod -R 755 /webser/mysql
+
+#创建数据存储目录
+mkdir -p /webser/mysqldata/{data,logs,tmp}
+
+# 将这些目录赋给mysql用户
+chown -R mysql.mysql /webser/mysqldata/
+</code></pre>
+</div></div><h1 data-v-md-heading="修改配置" data-v-md-line="44">修改配置</h1>
+<p data-v-md-line="45">vim /etc/my.cnf</p>
+<div data-v-md-line="46"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code>[client]
+port = 3306
+socket = /webser/mysqldata/tmp/mysql.sock
+ 
+[mysqld]
+user = mysql
+port = 3306 
+ 
+basedir = /webser/mysql
+datadir = /webser/mysqldata/data 
+socket = /webser/mysqldata/tmp/mysql.sock
+pid-file = /webser/mysqldata/tmp/mysqld.pid
+tmpdir = /webser/mysqldata/tmp 
+log-error = /webser/mysqldata/logs/error.log
+</code></pre>
+</div></div><h1 data-v-md-heading="配置环境" data-v-md-line="62">配置环境</h1>
+<div data-v-md-line="63"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code># 将mysql自带服务添加到系统服务中
+cd /webser/mysql/support-files
+cp mysql.server /etc/init.d/mysql
+ 
+# 修改服务配置文件
+vim /etc/init.d/mysql
+ 
+# 添加以下内容
+basedir=/webser/mysql
+datadir=/webser/mysqldata
+ 
+# 注册开机启动服务
+chkconfig --add mysql
+chkconfig --list
+</code></pre>
+</div></div><h1 data-v-md-heading="初始化数据库" data-v-md-line="80">初始化数据库</h1>
+<div data-v-md-line="81"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code>/webser/mysql/bin/mysqld --initialize --user=mysql --basedir=/webser/mysql --datadir=/webser/mysqldata/data
+
+#获取临时密码
+cat /webser/mysqldata/logs/error.log |grep password
+</code></pre>
+</div></div><h1 data-v-md-heading="启动服务-修改密码" data-v-md-line="87">启动服务 修改密码</h1>
+<div data-v-md-line="88"><div class="v-md-pre-wrapper v-md-pre-wrapper- extra-class"><pre class="v-md-hljs-"><code>service mysql start
+
+#使用初始密码登录mysql服务 并修改密码  后面输入自己的刚才看到的临时密码
+mysql -uroot -p
+
+
+# 更改root密码为root
+alter user 'root'@'localhost' identified by 'root';
+
+# 允许远程连接mysql
+use mysql;
+update user set host='%' where user='root';
+ 
+# 刷新权限
+flush privileges;
+</code></pre>
+</div></div></div>
                 </div>
             </div>
         </div>
